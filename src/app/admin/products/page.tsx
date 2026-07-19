@@ -233,13 +233,18 @@ export default function AdminProductsPage() {
               </div>
               <div>
                 <label className="block font-black mb-1">COLOR</label>
-                <input 
-                  type="text" 
+                <select 
                   value={currentProduct.color || ''} 
-                  onChange={e => setCurrentProduct({...currentProduct, color: e.target.value.toUpperCase()})}
+                  onChange={e => setCurrentProduct({...currentProduct, color: e.target.value})}
                   className="w-full border-[3px] border-black p-2 font-bold uppercase"
-                  placeholder="e.g. BLACK, RED..."
-                />
+                >
+                  <option value="" disabled>Select Color</option>
+                  <option value="BLACK">BLACK</option>
+                  <option value="WHITE">WHITE</option>
+                  <option value="RED">RED</option>
+                  <option value="BLUE">BLUE</option>
+                  <option value="YELLOW">YELLOW</option>
+                </select>
               </div>
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
