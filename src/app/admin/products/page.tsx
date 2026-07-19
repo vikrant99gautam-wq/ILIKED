@@ -38,8 +38,6 @@ export default function AdminProductsPage() {
         body: JSON.stringify({
           ...currentProduct,
           sizes: currentProduct.sizes || ["M", "L"],
-          inStockSizes: currentProduct.inStockSizes || ["M", "L"],
-          images: currentProduct.images || [],
         }),
       });
     }
