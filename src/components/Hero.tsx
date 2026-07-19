@@ -28,32 +28,28 @@ export default function Hero() {
   return (
     <section className="relative w-full min-h-[100svh] bg-[#E5F1FB] flex flex-col overflow-x-hidden">
       
-      {/* 1. Original V5 Organic Cartoon Blobs (Background) */}
+      {/* 1. Original V5 Organic Cartoon Blobs (Background) - SCALED DOWN */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         <motion.div 
           animate={{ scale: [1, 1.05, 1], rotate: [0, 10, 0] }} 
           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-32 -right-32 w-[600px] h-[600px] md:w-[800px] md:h-[800px] bg-[#FFD700] rounded-full border-[6px] border-black opacity-90 shadow-[10px_10px_0_rgba(0,0,0,0.1)]"
+          className="absolute -top-16 -right-16 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-[#FFD700] rounded-full border-[4px] md:border-[6px] border-black opacity-90 shadow-[6px_6px_0_rgba(0,0,0,0.1)]"
         />
         <motion.div 
-          animate={{ scale: [1, 1.1, 1], x: [0, 30, 0], y: [0, -20, 0] }} 
+          animate={{ scale: [1, 1.1, 1], x: [0, 20, 0], y: [0, -15, 0] }} 
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -bottom-40 -left-20 w-[500px] h-[400px] md:w-[700px] md:h-[500px] bg-[var(--color-coral-red)] rounded-[120px] rotate-12 border-[6px] border-black opacity-90 shadow-[10px_10px_0_rgba(0,0,0,0.1)]"
+          className="absolute -bottom-20 -left-10 w-[300px] h-[250px] md:w-[500px] md:h-[350px] bg-[var(--color-coral-red)] rounded-[80px] rotate-12 border-[4px] md:border-[6px] border-black opacity-90 shadow-[6px_6px_0_rgba(0,0,0,0.1)]"
         />
-        <motion.div 
-          animate={{ y: [0, 40, 0] }} 
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute top-1/4 left-10 md:top-1/3 md:left-40 w-[150px] h-[200px] bg-[#19B85A] rounded-full rotate-[-20deg] border-[5px] border-black opacity-80"
-        />
+        {/* Removed the green blob to reduce quantity */}
       </div>
 
-      {/* Floating Hand-drawn Elements */}
-      <FloatingStar className="bottom-[20%] md:bottom-[30%] left-[2%] md:left-[5%] w-12 h-12 md:w-16 md:h-16 text-[#FFD700] drop-shadow-[2px_2px_0_#111]" delay={0} />
-      <FloatingStar className="top-1/3 right-1/4 w-10 h-10 md:w-12 md:h-12 text-[var(--color-coral-red)] drop-shadow-[2px_2px_0_#111]" delay={1.5} />
-      <FloatingStar className="bottom-40 left-[40%] w-16 h-16 md:w-20 md:h-20 text-white drop-shadow-[2px_2px_0_#111]" delay={3} />
+      {/* Floating Hand-drawn Elements - REDUCED QUANTITY */}
+      <FloatingStar className="bottom-[25%] left-[10%] w-8 h-8 md:w-12 md:h-12 text-[#FFD700] drop-shadow-[2px_2px_0_#111]" delay={0} />
+      <FloatingStar className="top-1/4 right-1/4 w-8 h-8 md:w-10 md:h-10 text-[var(--color-coral-red)] drop-shadow-[2px_2px_0_#111]" delay={1.5} />
+      {/* Removed 1 star */}
       
-      <FloatingSquiggle className="top-40 right-20 w-24 h-24 text-black" delay={1} />
-      <FloatingSquiggle className="bottom-32 right-1/3 w-32 h-32 text-black opacity-50" delay={2.5} />
+      <FloatingSquiggle className="top-32 right-10 w-16 h-16 md:w-20 md:h-20 text-black opacity-60" delay={1} />
+      {/* Removed 1 squiggle */}
 
       {/* 2. Original V5 Unified Ground */}
       <div className="absolute inset-0 pointer-events-none flex justify-center items-end z-10 overflow-hidden">

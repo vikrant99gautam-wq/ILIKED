@@ -23,21 +23,26 @@ export default function CurrentlyLiked() {
         style={{ backgroundImage: 'radial-gradient(#111 3px, transparent 3px)', backgroundSize: '32px 32px' }}
       ></div>
 
-      {/* Section Header */}
-      <div className="w-full max-w-[1440px] flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 z-10 relative">
-        <div>
-          <h2 className="text-[12px] md:text-[14px] font-bold tracking-[0.3em] text-[var(--color-electric-blue)] mb-4 bg-white px-3 py-1 rounded-sm border-[3px] border-black shadow-[4px_4px_0px_#111] rotate-[-2deg] inline-block">NOW SHOWING</h2>
-          <h3 
-            className="text-5xl md:text-7xl font-cartoon tracking-widest text-[#FFD700] mb-2 rotate-[1deg]"
-            style={{ WebkitTextStroke: '2px #111', textShadow: '6px 6px 0px #111' }}
-          >
-            CURRENTLY LIKED<span className="text-[var(--color-coral-red)]">!</span>
-          </h3>
+      {/* Title Section */}
+      <div className="w-full flex flex-col items-center justify-center pt-10 md:pt-20 px-4 mb-6 md:mb-10 z-10 relative">
+        <div className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-4 py-1 rotate-[-2deg] mb-4">
+          <span className="font-sans font-black text-[var(--color-electric-blue)] tracking-[0.2em] text-sm">NOW SHOWING</span>
         </div>
-        <button className="cartoon-btn px-6 py-3 bg-[#FFD700] text-black text-[14px] font-black tracking-widest group hover:bg-[var(--color-electric-blue)] hover:text-white mt-8 md:mt-0 rotate-[-1deg] transition-colors">
-          VIEW ALL LIKES 
-          <span className="inline-block ml-2 group-hover:translate-x-1 transition-transform">→</span>
-        </button>
+        
+        <h2 className="font-cartoon text-5xl md:text-8xl text-[#FFD700] flex flex-col items-center leading-[0.8] mb-4 md:mb-8" style={{ WebkitTextStroke: '2px #111', textShadow: '4px 4px 0 #111' }}>
+          <span>CURRENTLY</span>
+          <span className="text-white ml-8 md:ml-16 rotate-[2deg]">
+            LIKED<span className="text-[var(--color-coral-red)]">!</span>
+          </span>
+        </h2>
+        
+        <Link 
+          href="/shop" 
+          className="group relative inline-flex items-center justify-center bg-[#FFD700] border-[4px] border-black px-8 py-3 w-full max-w-[400px] shadow-[6px_6px_0_#111] hover:shadow-[2px_2px_0_#111] hover:translate-y-1 hover:translate-x-1 transition-all"
+        >
+          <span className="font-cartoon text-black text-xl tracking-widest">VIEW ALL LIKES</span>
+          <span className="ml-3 font-bold group-hover:translate-x-2 transition-transform">→</span>
+        </Link>
       </div>
 
       {/* 4-Column Cartoon Grid */}
