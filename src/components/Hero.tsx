@@ -74,10 +74,10 @@ export default function Hero() {
           {/* Animated Comic Card Container */}
           <motion.div 
             whileHover={{ scale: 1.02, rotate: -2, y: -10 }}
-            className="relative w-[130%] lg:w-[650px] h-[450px] bg-white border-[8px] border-black rounded-[32px] shadow-[16px_16px_0_#111] overflow-hidden flex flex-row items-center group cursor-pointer transition-shadow hover:shadow-[24px_24px_0_#111] ml-12"
+            className="relative w-[130%] lg:w-[650px] h-[450px] bg-white border-[8px] border-black rounded-[32px] shadow-[16px_16px_0_#111] flex flex-row items-center group cursor-pointer transition-shadow hover:shadow-[24px_24px_0_#111] ml-12"
           >
             {/* Comic Halftone Background inside card */}
-            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#111 3px, transparent 3px)', backgroundSize: '24px 24px' }}></div>
+            <div className="absolute inset-0 opacity-10 pointer-events-none rounded-[24px] overflow-hidden" style={{ backgroundImage: 'radial-gradient(#111 3px, transparent 3px)', backgroundSize: '24px 24px' }}></div>
             
             {/* Left Side: Action Text */}
             <div className="relative w-1/2 h-full flex flex-col items-center justify-center z-20 pl-8">
@@ -155,10 +155,10 @@ export default function Hero() {
         {/* Middle: The Model Card (Split left text, right model) */}
         <div className="w-full max-w-[360px] relative pointer-events-auto">
           <motion.div 
-            className="w-full h-[220px] bg-white border-[4px] border-black rounded-[24px] shadow-[8px_8px_0_#111] overflow-hidden relative flex flex-row"
+            className="w-full h-[220px] bg-white border-[4px] border-black rounded-[24px] shadow-[8px_8px_0_#111] relative flex flex-row"
           >
             {/* Background pattern */}
-            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#111 3px, transparent 3px)', backgroundSize: '24px 24px' }}></div>
+            <div className="absolute inset-0 opacity-10 pointer-events-none rounded-[20px] overflow-hidden" style={{ backgroundImage: 'radial-gradient(#111 3px, transparent 3px)', backgroundSize: '24px 24px' }}></div>
             
             {/* Tag */}
             <div className="absolute top-2 left-2 bg-[var(--color-electric-blue)] border-[2px] border-black shadow-[3px_3px_0_#111] px-3 py-1 rotate-[-6deg] z-30">
