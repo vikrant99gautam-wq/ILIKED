@@ -3,31 +3,30 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
-const INITIAL_CART = [
-  { id: 1, name: "STAY FRESH TEE", price: 3825, size: "L", color: "WHITE", quantity: 1, image: "/images/primary-model.png", bgColor: "bg-[#E5F1F9]" },
-  { id: 2, name: "VIBE CHECK HOODIE", price: 7225, size: "XL", color: "BLACK", quantity: 2, image: "/images/model-anim-2.png", bgColor: "bg-[var(--color-coral-red)]" },
-];
+import { useCartStore } from "@/lib/store";
 
 export default function BagPage() {
-  const [cart, setCart] = useState(INITIAL_CART);
+  const cart = useCartStore((state) => state.items);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const removeItem = useCartStore((state) => state.removeFromCart);
+  const [mounted, setMounted] = useState(false);
 
-  const updateQuantity = (id: number, delta: number) => {
-    setCart(prev => prev.map(item => {
-      if (item.id === id) {
-        const newQ = item.quantity + delta;
-        return { ...item, quantity: newQ > 0 ? newQ : 1 };
-      }
-      return item;
-    }));
-  };
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  const removeItem = (id: number) => {
-    setCart(prev => prev.filter(item => item.id !== id));
+  const handleUpdateQuantity = (id: string, size: string, currentQty: number, delta: number) => {
+    const newQ = currentQty + delta;
+    updateQuantity(id, size, newQ > 0 ? newQ : 1);
   };
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const shipping = cart.length > 0 ? 850 : 0;
   const total = subtotal + shipping;
+
+  if (!mounted) {
+    return <main className="min-h-screen bg-[#F4F4F0] pt-[120px] pb-24 px-6 md:px-12"></main>;
+  }
 
   return (
     <main className="min-h-screen bg-[#F4F4F0] pt-[120px] pb-24 px-6 md:px-12">
@@ -77,16 +76,16 @@ export default function BagPage() {
                         
                         {/* Quantity Controls */}
                         <div className="flex items-center border-[3px] border-black bg-[#F4F4F0] shadow-[3px_3px_0_#111]">
-                          <button onClick={() => updateQuantity(item.id, -1)} className="w-10 h-10 flex items-center justify-center font-black text-xl hover:bg-white transition-colors border-r-[3px] border-black">-</button>
+                          <button onClick={() => handleUpdateQuantity(item.id, item.size, item.quantity, -1)} className="w-10 h-10 flex items-center justify-center font-black text-xl hover:bg-white transition-colors border-r-[3px] border-black">-</button>
                           <span className="w-12 h-10 flex items-center justify-center font-black text-xl">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.id, 1)} className="w-10 h-10 flex items-center justify-center font-black text-xl hover:bg-white transition-colors border-l-[3px] border-black">+</button>
+                          <button onClick={() => handleUpdateQuantity(item.id, item.size, item.quantity, 1)} className="w-10 h-10 flex items-center justify-center font-black text-xl hover:bg-white transition-colors border-l-[3px] border-black">+</button>
                         </div>
                       </div>
                     </div>
 
                     {/* Remove Button (Red X Sticker) */}
                     <button 
-                      onClick={() => removeItem(item.id)}
+                      onClick={() => removeItem(item.id, item.size)}
                       className="absolute -top-4 -right-4 w-10 h-10 bg-[var(--color-coral-red)] border-[3px] border-black rounded-full flex items-center justify-center rotate-[12deg] hover:scale-110 hover:rotate-[-12deg] transition-all shadow-[3px_3px_0_#111]"
                     >
                       <span className="font-black text-white text-xl">X</span>

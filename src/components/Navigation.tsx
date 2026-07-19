@@ -2,12 +2,17 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useCartStore } from "@/lib/store";
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const cartItems = useCartStore((state) => state.items);
+  const cartItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
@@ -37,15 +42,16 @@ export default function Navigation() {
             <Link href="/shop" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-[var(--color-coral-red)] hover:text-white transition-all uppercase">SHOP</Link>
             <Link href="/moods" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-[#19B85A] hover:text-white transition-all uppercase">MOODS</Link>
             <Link href="/story" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-[var(--color-electric-blue)] hover:text-white transition-all uppercase">OUR STORY</Link>
+            <Link href="/profile" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-black hover:text-white transition-all uppercase">PROFILE</Link>
             <Link href="/bag" className="cartoon-btn px-6 py-2 bg-[var(--color-electric-blue)] text-white flex items-center gap-2 ml-4">
-              BAG (0) <span className="w-3 h-3 rounded-full bg-[var(--color-coral-red)] border-2 border-black block"></span>
+              BAG ({mounted ? cartItemCount : 0}) {mounted && cartItemCount > 0 && <span className="w-3 h-3 rounded-full bg-[var(--color-coral-red)] border-2 border-black block"></span>}
             </Link>
           </div>
 
           {/* Mobile Menu Toggle & Cart */}
           <div className="flex md:hidden items-center gap-4 text-[13px] font-black tracking-widest text-black z-[200]">
              <Link href="/bag" onClick={() => setIsMobileMenuOpen(false)} className="cartoon-btn px-4 py-1.5 bg-[var(--color-electric-blue)] text-white flex items-center gap-2">
-              BAG <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-coral-red)] border border-black block"></span>
+              BAG ({mounted ? cartItemCount : 0}) {mounted && cartItemCount > 0 && <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-coral-red)] border border-black block"></span>}
             </Link>
             <div 
               onClick={(e) => {
@@ -77,6 +83,9 @@ export default function Navigation() {
           </Link>
           <Link href="/story" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-[var(--color-electric-blue)] hover:text-white transition-colors">
             OUR STORY
+          </Link>
+          <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-black hover:text-white transition-colors">
+            PROFILE
           </Link>
         </div>
         

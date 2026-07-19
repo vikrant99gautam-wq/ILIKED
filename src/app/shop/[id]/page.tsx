@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams } from "next/navigation";
 
+import { useCartStore } from "@/lib/store";
+
 export default function ProductDetailsPage() {
   const params = useParams();
   const [product, setProduct] = useState<any>(null);
@@ -10,6 +12,23 @@ export default function ProductDetailsPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const addToCart = useCartStore(state => state.addToCart);
+
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      alert("Please select a size first!");
+      return;
+    }
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      size: selectedSize,
+      quantity: 1,
+      image: product.image,
+    });
+    alert("Added to stash!");
+  };
   
 
   useEffect(() => {
@@ -95,7 +114,7 @@ export default function ProductDetailsPage() {
           </div>
 
           {/* Buy Button */}
-          <button className="w-full cartoon-btn py-4 bg-black hover:bg-[var(--color-electric-blue)] text-white border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
+          <button onClick={handleAddToCart} className="w-full cartoon-btn py-4 bg-black hover:bg-[var(--color-electric-blue)] text-white border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
              <span className="font-cartoon text-3xl tracking-widest">ADD TO STASH</span>
           </button>
 

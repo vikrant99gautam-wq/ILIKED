@@ -1,15 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-
-const CHECKOUT_ITEMS = [
-  { id: 1, name: "STAY FRESH TEE", price: 3825, size: "L", quantity: 1, image: "/images/primary-model.png" },
-  { id: 2, name: "VIBE CHECK HOODIE", price: 7225, size: "XL", quantity: 2, image: "/images/model-anim-2.png" },
-];
+import { useCartStore } from "@/lib/store";
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const cartItems = useCartStore((state) => state.items);
+  const clearCart = useCartStore((state) => state.clearCart);
+  const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -21,8 +20,12 @@ export default function CheckoutPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const subtotal = CHECKOUT_ITEMS.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = 850; // Flat ₹850 shipping
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const shipping = cartItems.length > 0 ? 850 : 0; // Flat ₹850 shipping
   const total = subtotal + shipping;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,7 +37,7 @@ export default function CheckoutPage() {
         customer_name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         total: total,
-        items: CHECKOUT_ITEMS
+        items: cartItems
       };
 
       const res = await fetch("/api/orders", {
@@ -45,6 +48,7 @@ export default function CheckoutPage() {
 
       if (res.ok) {
         const orderData = await res.json();
+        clearCart();
         router.push(`/checkout/success?orderId=${orderData.id}`);
       } else {
         alert("Something went wrong!");
@@ -55,6 +59,10 @@ export default function CheckoutPage() {
       setIsSubmitting(false);
     }
   };
+
+  if (!mounted) {
+    return <main className="min-h-screen bg-white pt-[76px]"></main>;
+  }
 
   return (
     <main className="min-h-screen bg-white pt-[76px]">
@@ -139,8 +147,8 @@ export default function CheckoutPage() {
           <div className="relative z-10 bg-white border-[4px] border-black p-6 lg:p-8 shadow-[8px_8px_0_#111]">
             {/* Order Items Mini Summary */}
             <div className="space-y-6 mb-8 border-b-[3px] border-dashed border-black pb-8">
-              {CHECKOUT_ITEMS.map((item) => (
-                <div key={item.id} className="flex justify-between items-center">
+              {cartItems.map((item) => (
+                <div key={`${item.id}-${item.size}`} className="flex justify-between items-center">
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 bg-white border-[3px] border-black flex items-center justify-center p-1 shrink-0">
                       <img src={item.image} alt={item.name} className="w-full h-full object-contain" />

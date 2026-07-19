@@ -28,16 +28,19 @@ export default function AdminProductsPage() {
       await fetch(`/api/products/${currentProduct.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(currentProduct),
+        body: JSON.stringify({
+          ...currentProduct,
+          sizes: typeof currentProduct.sizes === 'string' ? (currentProduct.sizes as string).split(',').map(s => s.trim()) : currentProduct.sizes
+        }),
       });
     } else {
-      // Create (Mock default fields for simplicity if missing)
+      // Create
       await fetch(`/api/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...currentProduct,
-          sizes: currentProduct.sizes || ["M", "L"],
+          sizes: typeof currentProduct.sizes === 'string' ? (currentProduct.sizes as string).split(',').map(s => s.trim()) : (currentProduct.sizes || ["M", "L"]),
         }),
       });
     }
@@ -163,6 +166,16 @@ export default function AdminProductsPage() {
                     className="w-full border-[3px] border-black p-2 font-bold"
                   />
                 </div>
+              </div>
+              <div>
+                <label className="block font-black mb-1">SIZES (Comma separated)</label>
+                <input 
+                  type="text" 
+                  value={Array.isArray(currentProduct.sizes) ? currentProduct.sizes.join(', ') : (currentProduct.sizes || 'S, M, L, XL')} 
+                  onChange={e => setCurrentProduct({...currentProduct, sizes: e.target.value as any})}
+                  className="w-full border-[3px] border-black p-2 font-bold"
+                  placeholder="S, M, L, XL"
+                />
               </div>
               <div>
                 <label className="block font-black mb-1">IMAGE URL</label>
