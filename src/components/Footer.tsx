@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -47,9 +48,9 @@ export default function Footer() {
            
            <div className="flex flex-col gap-6">
               <h4 className="font-black text-gray-500 tracking-[0.2em] text-xs">MENU</h4>
-              <a href="/shop" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[#FFD700] hover:translate-x-2 transition-all tracking-widest drop-shadow-[2px_2px_0_#000]">SHOP</a>
-              <a href="/moods" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[var(--color-coral-red)] hover:translate-x-2 transition-all tracking-widest drop-shadow-[2px_2px_0_#000]">MOODS</a>
-              <a href="/story" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[#19B85A] hover:translate-x-2 transition-all tracking-widest drop-shadow-[2px_2px_0_#000]">OUR STORY</a>
+              <Link href="/shop" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[#FFD700] hover:translate-x-2 transition-all tracking-widest drop-shadow-[2px_2px_0_#000]">SHOP</Link>
+              <Link href="/moods" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[var(--color-coral-red)] hover:translate-x-2 transition-all tracking-widest drop-shadow-[2px_2px_0_#000]">MOODS</Link>
+              <Link href="/story" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[#19B85A] hover:translate-x-2 transition-all tracking-widest drop-shadow-[2px_2px_0_#000]">OUR STORY</Link>
            </div>
 
            <div className="flex flex-col gap-6">

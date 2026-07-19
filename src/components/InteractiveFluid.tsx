@@ -15,8 +15,8 @@ export default function InteractiveFluid() {
     canvas.width = width;
     canvas.height = height;
 
-    let mouse = { x: width / 2, y: height / 2 };
-    let target = { x: width / 2, y: height / 2 };
+    const mouse = { x: width / 2, y: height / 2 };
+    const target = { x: width / 2, y: height / 2 };
 
     const handleMouseMove = (e: MouseEvent) => {
       target.x = e.clientX;

@@ -34,7 +34,7 @@ export default function ShopGrid() {
   };
 
   // Filter & Sort Logic
-  let filteredProducts = [...products].filter(p => {
+  const filteredProducts = [...products].filter(p => {
     if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) return false;
     if (selectedSizes.length > 0 && !p.sizes.some((s: string) => selectedSizes.includes(s))) return false;
     if (selectedColors.length > 0 && !selectedColors.includes(p.color)) return false;

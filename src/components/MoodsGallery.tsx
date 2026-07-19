@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const MOODS_DATA = [
   { id: 1, image: "/images/model-anim-1.png", label: "STREET VIBE", rotate: "rotate-[-3deg]", color: "bg-[#FFD700]" },
@@ -60,9 +61,9 @@ export default function MoodsGallery() {
                 
                 {/* Shop Overlay */}
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <a href="/shop" className="bg-[#FFD700] border-[3px] border-black px-6 py-2 rotate-[-5deg] shadow-[4px_4px_0_#111]">
+                  <Link href="/shop" className="bg-[#FFD700] border-[3px] border-black px-6 py-2 rotate-[-5deg] shadow-[4px_4px_0_#111]">
                     <span className="font-black text-black uppercase tracking-widest">Shop Look ↗</span>
-                  </a>
+                  </Link>
                 </div>
               </div>
 

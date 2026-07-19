@@ -110,7 +110,7 @@ export default function AdminSettingsPage() {
             <div className="border-[3px] border-black p-4 bg-gray-50 mt-4 flex items-center justify-between">
               <div>
                 <label className="block font-black text-xl">MAINTENANCE MODE</label>
-                <p className="text-gray-600 font-bold text-sm">Show a "Coming Soon" page to visitors.</p>
+                <p className="text-gray-600 font-bold text-sm">Show a &quot;Coming Soon&quot; page to visitors.</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input 
