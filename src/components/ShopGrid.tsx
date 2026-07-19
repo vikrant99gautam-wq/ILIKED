@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import FOMOBar from "@/components/FOMOBar";
 
-const CATEGORIES = ["TEES", "HOODIES", "ACCESSORIES", "BOTTOMS"];
+const CATEGORIES = ["NORMAL TEES", "OVERSIZED TEES", "OPTIC WASH TEES"];
 const SIZES = ["S", "M", "L", "XL", "ONE SIZE"];
 const COLORS = [
   { name: "BLACK", hex: "#111" },

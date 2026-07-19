@@ -187,6 +187,19 @@ export default function AdminProductsPage() {
                   className="w-full border-[3px] border-black p-2 font-bold"
                 />
               </div>
+              <div>
+                <label className="block font-black mb-1">CATEGORY</label>
+                <select 
+                  value={currentProduct.category || ''} 
+                  onChange={e => setCurrentProduct({...currentProduct, category: e.target.value})}
+                  className="w-full border-[3px] border-black p-2 font-bold uppercase"
+                >
+                  <option value="" disabled>Select Category</option>
+                  <option value="NORMAL TEES">NORMAL TEES</option>
+                  <option value="OVERSIZED TEES">OVERSIZED TEES</option>
+                  <option value="OPTIC WASH TEES">OPTIC WASH TEES</option>
+                </select>
+              </div>
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
                   <label className="block font-black mb-1">PRICE (₹)</label>
