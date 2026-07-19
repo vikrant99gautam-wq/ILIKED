@@ -1,14 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { useCartStore } from "@/lib/store";
 
 export default function ProductDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const [product, setProduct] = useState<any>(null);
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
+  const [colorVariants, setColorVariants] = useState<any[]>([]);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
@@ -34,24 +36,22 @@ export default function ProductDetailsPage() {
   
 
   useEffect(() => {
-    // Fetch product by ID
     if (params.id) {
-      fetch(`/api/products/${params.id}`)
-        .then(r => r.json())
-        .then(data => {
-          if (data.error) setProduct(null);
-          else setProduct(data);
-        })
-        .catch(() => setProduct(null));
-
-      // Fetch related products
-      fetch('/api/products')
-        .then(r => r.json())
-        .then(data => {
-          if (!data.error && Array.isArray(data)) {
-            setRelatedProducts(data.filter((p: any) => p.id !== params.id).slice(0, 3));
+      Promise.all([
+        fetch(`/api/products/${params.id}`).then(r => r.json()),
+        fetch('/api/products').then(r => r.json())
+      ]).then(([productData, allProductsData]) => {
+        if (productData.error) {
+          setProduct(null);
+        } else {
+          setProduct(productData);
+          if (!allProductsData.error && Array.isArray(allProductsData)) {
+            const variants = allProductsData.filter((p: any) => p.name === productData.name);
+            setColorVariants(variants);
+            setRelatedProducts(allProductsData.filter((p: any) => p.name !== productData.name).slice(0, 3));
           }
-        });
+        }
+      }).catch(() => setProduct(null));
     }
   }, [params.id]);
 
@@ -91,14 +91,35 @@ export default function ProductDetailsPage() {
             <span className="font-black text-xs md:text-sm tracking-widest">(4.9/5 FROM 24 REVIEWS)</span>
           </div>
 
-          {/* Color Label */}
-          <div className="mb-6 inline-block">
-            <div className="border-[3px] border-black inline-block px-4 py-2 bg-white shadow-[4px_4px_0_#111]">
-              <span className="font-black tracking-[0.2em] text-sm uppercase">
-                COLOR: <span className="text-[var(--color-electric-blue)]">{product.color || "SIGNATURE"}</span>
-              </span>
+          {/* Color Selector */}
+          {colorVariants.length > 0 && (
+            <div className="mb-6">
+              <h3 className="font-black tracking-[0.2em] text-gray-500 text-sm mb-3">
+                SELECT COLOR: <span className="text-black uppercase">{product.color || "SIGNATURE"}</span>
+              </h3>
+              <div className="flex gap-4">
+                {colorVariants.map(variant => {
+                  const getBgColor = (colorName: string) => {
+                    const c = colorName?.toLowerCase();
+                    if (c === "white") return "#fff";
+                    if (c === "red") return "#ff3333";
+                    if (c === "blue") return "var(--color-electric-blue)";
+                    if (c === "yellow") return "#FFD700";
+                    return "#222";
+                  };
+                  return (
+                    <button
+                      key={variant.id}
+                      onClick={() => router.push(`/shop/${variant.id}`)}
+                      className={`w-10 h-10 rounded-full border-[3px] border-black shadow-[2px_2px_0_#111] transition-all hover:-translate-y-1 ${variant.id === product.id ? 'ring-[4px] ring-[var(--color-electric-blue)] ring-offset-2 scale-110' : ''}`}
+                      style={{ backgroundColor: getBgColor(variant.color) }}
+                      title={variant.color}
+                    />
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Size Selector */}
           <div className="mb-6">
