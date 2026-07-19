@@ -32,7 +32,7 @@ export default function CheckoutPage() {
     try {
       const orderPayload = {
         customer_name: `${formData.firstName} ${formData.lastName}`,
-        customer_email: formData.email,
+        email: formData.email,
         total: total,
         items: CHECKOUT_ITEMS
       };
