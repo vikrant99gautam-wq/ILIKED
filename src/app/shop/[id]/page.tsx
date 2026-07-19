@@ -46,7 +46,7 @@ export default function ProductDetailsPage() {
     <main className="min-h-screen bg-[#F4F4F0] pt-[76px]">
       
       {/* Split Screen Container */}
-      <div className="flex flex-col lg:flex-row w-full relative lg:h-[calc(100vh-76px)]">
+      <div className="flex flex-col-reverse lg:flex-row w-full relative lg:h-[calc(100vh-76px)]">
         
         {/* Left Side: Command Center (Flows Naturally) */}
         <div className="w-full lg:w-[45%] p-6 md:p-8 lg:p-8 lg:pt-8 flex flex-col justify-start bg-white border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black relative z-20 overflow-y-auto">
@@ -109,7 +109,7 @@ export default function ProductDetailsPage() {
         </div>
 
         {/* Right Side: Interactive Gallery */}
-        <div className="w-full lg:w-[55%] h-[70vh] lg:h-auto bg-[#F4F4F0] relative z-10 flex flex-col border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black">
+        <div className="w-full lg:w-[55%] h-[60vh] lg:h-auto bg-[#F4F4F0] relative z-10 flex flex-col border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black">
           
           {/* Main Image Area */}
           <div 
