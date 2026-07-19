@@ -23,11 +23,11 @@ export default function Navigation() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full z-[100] transition-all duration-300 h-[76px] flex items-center ${
+        className={`fixed top-0 left-0 w-full z-[100] transition-all duration-300 h-[76px] flex items-center px-6 md:px-12 ${
           scrolled || isMobileMenuOpen ? "bg-white/95 backdrop-blur-md border-b border-black shadow-[0_4px_0_#111]" : "bg-transparent"
         }`}
       >
-        <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 flex justify-between items-center text-[var(--color-primary-black)]">
+        <div className="w-full max-w-[1440px] mx-auto flex justify-between items-center text-[var(--color-primary-black)]">
           {/* Brand Logo */}
           <Link href="/" className="relative flex items-center hover:scale-105 transition-transform z-[110]" onClick={() => setIsMobileMenuOpen(false)}>
             <img 
