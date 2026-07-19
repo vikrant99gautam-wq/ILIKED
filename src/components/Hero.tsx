@@ -198,6 +198,20 @@ export default function Hero() {
           </a>
         </div>
         
+        {/* Scroll Down Indicator */}
+        <div className="w-full flex justify-center mt-auto pt-4 pb-2 pointer-events-auto">
+          <motion.div 
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="flex flex-col items-center opacity-70"
+          >
+            <span className="font-cartoon text-black text-[12px] tracking-[0.3em] mb-1 opacity-80">SCROLL DOWN</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="text-black">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </motion.div>
+        </div>
+        
       </div>
     </section>
   );
