@@ -7,7 +7,9 @@ export default function AdminSettingsPage() {
     store_name: "",
     contact_email: "",
     currency: "USD",
-    maintenance_mode: false
+    maintenance_mode: false,
+    free_shipping_threshold: 2000,
+    shipping_cost: 850
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
