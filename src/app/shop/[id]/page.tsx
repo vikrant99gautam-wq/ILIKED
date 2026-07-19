@@ -11,9 +11,6 @@ export default function ProductDetailsPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   
-  // Fabric Zoom Lens State
-  const [lensPosition, setLensPosition] = useState({ x: 0, y: 0, xPercent: 50, yPercent: 50 });
-  const [isHoveringImage, setIsHoveringImage] = useState(false);
 
   useEffect(() => {
     // Fetch product by ID
@@ -44,17 +41,6 @@ export default function ProductDetailsPage() {
     { src: product.image, color: product.bgColor },
     { src: product.hoverImage, color: "bg-[#FFD700]" }
   ];
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - left;
-    const y = e.clientY - top;
-    
-    const xPercent = (x / width) * 100;
-    const yPercent = (y / height) * 100;
-
-    setLensPosition({ x, y, xPercent, yPercent });
-  };
 
   return (
     <main className="min-h-screen bg-[#F4F4F0] pt-[76px]">
@@ -127,52 +113,8 @@ export default function ProductDetailsPage() {
           
           {/* Main Image Area */}
           <div 
-            className={`relative w-full flex-1 flex items-center justify-center overflow-hidden transition-colors duration-500 ${isHoveringImage ? 'cursor-none' : 'cursor-crosshair'} ${productImages[activeImageIndex]?.color || product.bgColor}`}
-            onMouseMove={handleMouseMove}
-            onMouseEnter={() => setIsHoveringImage(true)}
-            onMouseLeave={() => setIsHoveringImage(false)}
+            className={`relative w-full flex-1 flex items-center justify-center overflow-hidden transition-colors duration-500 cursor-crosshair ${productImages[activeImageIndex]?.color || product.bgColor}`}
           >
-            {/* The Microscope Lens */}
-            <AnimatePresence>
-              {isHoveringImage && (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0 }}
-                  transition={{ type: "spring", bounce: 0.5, duration: 0.4 }}
-                  className="absolute pointer-events-none z-50 rounded-full border-[6px] border-black shadow-[15px_15px_0_rgba(0,0,0,0.6)] overflow-hidden bg-white"
-                  style={{
-                    width: '300px',
-                    height: '300px',
-                    left: lensPosition.x - 150, // center on cursor
-                    top: lensPosition.y - 150,
-                    backgroundImage: `url(${productImages[activeImageIndex]?.src})`,
-                    backgroundSize: '300%', // 3x zoom
-                    backgroundPosition: `${lensPosition.xPercent}% ${lensPosition.yPercent}%`,
-                    backgroundRepeat: 'no-repeat'
-                  }}
-                >
-                  {/* Crosshair Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-40">
-                    <div className="w-full h-[2px] bg-black absolute"></div>
-                    <div className="h-full w-[2px] bg-black absolute"></div>
-                    {/* Ring */}
-                    <div className="w-[120px] h-[120px] rounded-full border-[2px] border-black absolute"></div>
-                  </div>
-                  
-                  {/* Halftone texture inside lens */}
-                  <div 
-                    className="absolute inset-0 opacity-15 pointer-events-none mix-blend-overlay"
-                    style={{ backgroundImage: 'radial-gradient(circle, #000 2px, transparent 2.5px)', backgroundSize: '16px 16px' }}
-                  ></div>
-                  
-                  {/* Lens Label */}
-                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black px-3 py-1 border-[2px] border-white/20 rounded-sm">
-                    <span className="font-mono text-[10px] text-white tracking-widest uppercase">100% COTTON</span>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             {/* Halftone Overlay */}
             <div 
