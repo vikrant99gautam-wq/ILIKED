@@ -69,73 +69,141 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* 3. The Content Split Layout (z-20) */}
-      <div className="absolute inset-0 flex flex-col md:flex-row pointer-events-none z-20 pt-[80px] md:pt-0 pb-10">
+      {/* --- DESKTOP LAYOUT --- */}
+      <div className="hidden md:flex absolute inset-0 flex-col md:flex-row pointer-events-none z-20">
         
         {/* Left Column: The Model */}
-        <div className="relative w-full md:w-1/2 h-[45%] md:h-full flex items-center justify-center overflow-visible pointer-events-auto z-30 px-4">
+        <div className="relative w-1/2 h-full flex items-center justify-center overflow-visible pointer-events-auto z-30">
           
           {/* Animated Comic Card Container */}
           <motion.div 
             whileHover={{ scale: 1.02, rotate: -2, y: -10 }}
-            className="relative w-full max-w-[320px] md:max-w-none md:w-[130%] lg:w-[650px] aspect-[16/10] md:aspect-auto md:h-[450px] bg-white border-[4px] md:border-[8px] border-black rounded-[20px] md:rounded-[32px] shadow-[6px_6px_0_#111] md:shadow-[16px_16px_0_#111] overflow-hidden flex flex-row items-center group cursor-pointer transition-shadow hover:shadow-[24px_24px_0_#111] ml-0 md:ml-12 mt-4 md:mt-0"
+            className="relative w-[130%] lg:w-[650px] h-[450px] bg-white border-[8px] border-black rounded-[32px] shadow-[16px_16px_0_#111] overflow-hidden flex flex-row items-center group cursor-pointer transition-shadow hover:shadow-[24px_24px_0_#111] ml-12"
           >
             {/* Comic Halftone Background inside card */}
             <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#111 3px, transparent 3px)', backgroundSize: '24px 24px' }}></div>
             
             {/* Left Side: Action Text */}
-            <div className="relative w-1/2 h-full flex flex-col items-center justify-center z-20 pl-2 md:pl-8">
+            <div className="relative w-1/2 h-full flex flex-col items-center justify-center z-20 pl-8">
               <motion.div 
-                className="font-cartoon text-3xl sm:text-4xl md:text-7xl text-[#FFD700] rotate-[-10deg] opacity-90 group-hover:scale-110 transition-transform duration-300 flex flex-col leading-[0.8]" 
+                className="font-cartoon text-7xl text-[#FFD700] rotate-[-10deg] opacity-90 group-hover:scale-110 transition-transform duration-300 flex flex-col leading-[0.8]" 
                 style={{ WebkitTextStroke: '2px #111', textShadow: '4px 4px 0 #111' }}
               >
                 <span>STAY</span>
-                <span className="text-[var(--color-coral-red)] text-4xl sm:text-5xl md:text-8xl ml-1 md:ml-4">FRESH</span>
+                <span className="text-[var(--color-coral-red)] text-8xl ml-4">FRESH</span>
               </motion.div>
             </div>
 
             {/* Right Side: Model Container */}
             <div className="relative w-1/2 h-full flex items-end justify-center z-10 group-hover:scale-110 transition-transform duration-500 origin-bottom">
-              <div className="absolute -bottom-[5%] w-[160%] h-[130%] md:w-[160%] md:h-[125%] right-[-10%] md:right-[-20%]">
+              <div className="absolute -bottom-[5%] w-[160%] h-[125%] right-[-20%]">
                 <ModelFlipbook />
               </div>
             </div>
 
             {/* Comic Sticker */}
-            <div className="absolute top-2 left-2 md:top-6 md:left-6 bg-[var(--color-electric-blue)] border-[2px] md:border-[3px] border-black shadow-[3px_3px_0_#111] md:shadow-[4px_4px_0_#111] px-2 md:px-4 py-1 rotate-[-6deg] z-30 group-hover:rotate-[4deg] transition-transform">
-              <span className="font-cartoon text-white text-xs md:text-xl tracking-widest">VOL. 1</span>
+            <div className="absolute top-6 left-6 bg-[var(--color-electric-blue)] border-[3px] border-black shadow-[4px_4px_0_#111] px-4 py-1 rotate-[-6deg] z-30 group-hover:rotate-[4deg] transition-transform">
+              <span className="font-cartoon text-white text-xl tracking-widest">VOL. 1</span>
             </div>
             
           </motion.div>
         </div>
 
         {/* Right Column: Typography & CTA */}
-        <div className="relative w-full md:w-1/2 h-[55%] md:h-full flex flex-col items-center justify-center md:justify-center pointer-events-auto px-4 pb-4 md:pb-0">
+        <div className="relative w-1/2 h-full flex flex-col items-center justify-center pointer-events-auto">
           
           {/* Stacked Bubbly Typography */}
-          <div className="flex flex-col md:flex-col items-center md:items-stretch gap-1 md:gap-0 font-cartoon text-6xl sm:text-7xl md:text-[16vw] leading-[0.8] text-white tracking-widest drop-shadow-[0_10px_10px_rgba(0,0,0,0.2)] mt-auto md:mt-0" style={{ WebkitTextStroke: '4px #111', textShadow: '6px 6px 0 #111' }}>
-            <div className="flex justify-center md:justify-start w-full">
-              <motion.span animate={{ y: [0, -10, 0], rotate: [0, -5, 0] }} transition={{ duration: 4, repeat: Infinity, delay: 0, ease: "easeInOut" }} className="inline-block">I</motion.span>
+          <div className="flex flex-col items-stretch font-cartoon text-[16vw] leading-[0.8] text-white tracking-widest drop-shadow-[0_10px_10px_rgba(0,0,0,0.2)]" style={{ WebkitTextStroke: '4px #111', textShadow: '8px 8px 0 #111' }}>
+            <div className="flex justify-start">
+              <motion.span animate={{ y: [0, -15, 0], rotate: [0, -5, 0] }} transition={{ duration: 4, repeat: Infinity, delay: 0, ease: "easeInOut" }} className="inline-block">I</motion.span>
             </div>
-            <div className="flex mt-1 md:mt-8 w-full justify-center md:justify-start">
+            <div className="flex mt-8">
               {["L", "I", "K", "E", "D"].map((letter, i) => (
-                <motion.span key={i} animate={{ y: [0, -10, 0], rotate: [0, i % 2 === 0 ? 5 : -5, 0] }} transition={{ duration: 4, repeat: Infinity, delay: (i + 1) * 0.15, ease: "easeInOut" }} className="inline-block">{letter}</motion.span>
+                <motion.span key={i} animate={{ y: [0, -15, 0], rotate: [0, i % 2 === 0 ? 5 : -5, 0] }} transition={{ duration: 4, repeat: Infinity, delay: (i + 1) * 0.15, ease: "easeInOut" }} className="inline-block">{letter}</motion.span>
               ))}
             </div>
           </div>
 
           {/* Comic Speech Bubble CTA */}
-          <a href="#shop" className="mt-8 md:mt-16 group cursor-pointer ml-0 md:ml-12 mb-auto md:mb-0">
-            <motion.div whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.95 }} className="relative bg-white border-[4px] md:border-[5px] border-black rounded-[24px] md:rounded-[40px] px-8 py-3 md:px-10 md:py-6 shadow-[6px_6px_0_#111] md:shadow-[8px_8px_0_#111] transition-transform">
-              <div className="absolute -bottom-4 md:-bottom-6 left-6 md:left-8 w-6 h-6 md:w-10 md:h-10 bg-white border-b-[4px] border-l-[4px] md:border-b-[5px] md:border-l-[5px] border-black rounded-bl-xl transform -rotate-12 shadow-[-4px_4px_0_#111] -z-10 clip-path-tail"></div>
+          <a href="#shop" className="mt-16 group cursor-pointer ml-12">
+            <motion.div whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.95 }} className="relative bg-white border-[5px] border-black rounded-[40px] px-10 py-6 shadow-[8px_8px_0_#111] transition-transform">
+              <div className="absolute -bottom-6 left-8 w-10 h-10 bg-white border-b-[5px] border-l-[5px] border-black rounded-bl-xl transform -rotate-12 shadow-[-4px_4px_0_#111] -z-10 clip-path-tail"></div>
               <div className="flex flex-col items-center justify-center transform -rotate-2">
-                <span className="font-cartoon text-black text-lg md:text-3xl tracking-widest leading-none">SHOP</span>
-                <span className="font-cartoon text-[var(--color-coral-red)] text-2xl md:text-4xl tracking-widest leading-none mt-1" style={{ WebkitTextStroke: '1px #111' }}>THE DROP</span>
+                <span className="font-cartoon text-black text-3xl tracking-widest leading-none">SHOP</span>
+                <span className="font-cartoon text-[var(--color-coral-red)] text-4xl tracking-widest leading-none mt-1" style={{ WebkitTextStroke: '1px #111' }}>THE DROP</span>
               </div>
             </motion.div>
           </a>
-
         </div>
+      </div>
+
+      {/* --- NEW DEDICATED MOBILE LAYOUT --- */}
+      <div className="flex md:hidden relative z-20 flex-col items-center justify-between w-full min-h-[100svh] pt-[90px] pb-6 px-4">
+        
+        {/* Top: Big Brand Text (Horizontal) */}
+        <div className="w-full flex justify-center mt-2 pointer-events-auto">
+          <div className="flex items-center font-cartoon text-[18vw] text-white tracking-widest drop-shadow-[0_8px_8px_rgba(0,0,0,0.2)]" style={{ WebkitTextStroke: '3px #111', textShadow: '4px 4px 0 #111' }}>
+            {["I", "\u00A0", "L", "I", "K", "E", "D"].map((letter, i) => (
+              <motion.span 
+                key={i} 
+                animate={{ y: [0, -6, 0], rotate: letter === "\u00A0" ? 0 : (i % 2 === 0 ? 4 : -4) }} 
+                transition={{ duration: 4, repeat: Infinity, delay: i * 0.1, ease: "easeInOut" }} 
+                className="inline-block"
+              >
+                {letter}
+              </motion.span>
+            ))}
+          </div>
+        </div>
+
+        {/* Middle: The Model Card (Perfect Aspect Ratio Box) */}
+        <div className="w-full max-w-[340px] flex flex-col justify-center my-6 relative pointer-events-auto">
+          <motion.div 
+            className="w-full bg-white border-[4px] border-black rounded-[24px] shadow-[8px_8px_0_#111] overflow-visible relative flex flex-col"
+          >
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none rounded-[20px] overflow-hidden" style={{ backgroundImage: 'radial-gradient(#111 3px, transparent 3px)', backgroundSize: '24px 24px' }}></div>
+            
+            {/* Tag */}
+            <div className="absolute -top-4 -left-2 bg-[var(--color-electric-blue)] border-[2px] border-black shadow-[3px_3px_0_#111] px-4 py-1 rotate-[-6deg] z-30">
+              <span className="font-cartoon text-white text-lg tracking-widest">VOL. 1</span>
+            </div>
+
+            {/* Title inside card */}
+            <div className="w-full flex justify-center pt-6 pb-2 z-20 relative">
+               <motion.div 
+                className="font-cartoon text-4xl text-[#FFD700] rotate-[-4deg] flex flex-col items-center leading-none" 
+                style={{ WebkitTextStroke: '2px #111', textShadow: '3px 3px 0 #111' }}
+              >
+                <span>STAY</span>
+                <span className="text-[var(--color-coral-red)] text-5xl mt-1">FRESH</span>
+              </motion.div>
+            </div>
+
+            {/* Model Image sticking out */}
+            <div className="w-full aspect-[4/3] relative z-10 -mt-2">
+               <div className="absolute inset-x-[-15%] bottom-0 h-[130%] flex justify-center items-end">
+                 <div className="w-full h-full relative">
+                   <ModelFlipbook />
+                 </div>
+               </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Bottom: CTA */}
+        <div className="w-full flex justify-center mt-auto pointer-events-auto pb-4">
+          <a href="#shop" className="group cursor-pointer">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative bg-white border-[4px] border-black rounded-[30px] px-10 py-4 shadow-[6px_6px_0_#111]">
+              <div className="absolute -bottom-4 left-8 w-6 h-6 bg-white border-b-[4px] border-l-[4px] border-black rounded-bl-xl transform -rotate-12 shadow-[-4px_4px_0_#111] -z-10 clip-path-tail"></div>
+              <div className="flex flex-col items-center justify-center">
+                <span className="font-cartoon text-black text-xl tracking-widest leading-none">SHOP</span>
+                <span className="font-cartoon text-[var(--color-coral-red)] text-3xl tracking-widest leading-none mt-1" style={{ WebkitTextStroke: '1px #111' }}>THE DROP</span>
+              </div>
+            </motion.div>
+          </a>
+        </div>
+        
       </div>
     </section>
   );

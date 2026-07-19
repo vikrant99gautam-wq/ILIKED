@@ -43,20 +43,21 @@ export default function Navigation() {
           </div>
 
           {/* Mobile Menu Toggle & Cart */}
-          <div className="flex md:hidden items-center gap-4 text-[13px] font-black tracking-widest text-black z-[110]">
+          <div className="flex md:hidden items-center gap-4 text-[13px] font-black tracking-widest text-black z-[200]">
              <Link href="/bag" onClick={() => setIsMobileMenuOpen(false)} className="cartoon-btn px-4 py-1.5 bg-[var(--color-electric-blue)] text-white flex items-center gap-2">
               BAG <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-coral-red)] border border-black block"></span>
             </Link>
-            <button 
-              onClick={() => {
-                console.log("Menu toggled", !isMobileMenuOpen);
+            <div 
+              onClick={(e) => {
+                e.preventDefault();
                 setIsMobileMenuOpen(!isMobileMenuOpen);
               }}
-              className="flex flex-col gap-[5px] justify-center h-10 w-10 bg-black items-center cartoon-btn relative z-50 pointer-events-auto"
+              className="flex flex-col gap-[5px] justify-center h-10 w-10 bg-black items-center cartoon-btn relative z-[200] cursor-pointer"
+              style={{ touchAction: "manipulation" }}
             >
               <span className={`w-5 h-[3px] bg-white block transition-all ${isMobileMenuOpen ? "rotate-45 translate-y-[4px]" : ""}`}></span>
               <span className={`w-5 h-[3px] bg-white block transition-all ${isMobileMenuOpen ? "-rotate-45 -translate-y-[4px]" : ""}`}></span>
-            </button>
+            </div>
           </div>
         </div>
       </nav>
