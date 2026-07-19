@@ -63,28 +63,28 @@ export default function ProductDetailsPage() {
       <div className="flex flex-col lg:flex-row w-full relative lg:min-h-[calc(100vh-76px)]">
         
         {/* Left Side: Command Center (Flows Naturally) */}
-        <div className="w-full lg:w-[45%] p-8 md:p-12 lg:p-16 pt-16 lg:pt-24 flex flex-col justify-start bg-white border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black relative z-20">
+        <div className="w-full lg:w-[45%] p-6 md:p-8 lg:p-12 lg:pt-16 flex flex-col justify-center bg-white border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black relative z-20">
           
-          <h1 className="font-cartoon text-6xl md:text-8xl text-black tracking-widest leading-[0.8] mb-4 drop-shadow-[4px_4px_0_var(--color-electric-blue)] uppercase">
+          <h1 className="font-cartoon text-5xl md:text-7xl lg:text-7xl text-black tracking-widest leading-[0.8] mb-4 drop-shadow-[4px_4px_0_var(--color-electric-blue)] uppercase">
             {product.name}
           </h1>
 
-          <div className="mb-6">
-             <span className="font-sans font-black text-black text-3xl tracking-wide">${Number(product.price).toFixed(2)}</span>
+          <div className="mb-4">
+             <span className="font-sans font-black text-black text-2xl tracking-wide">${Number(product.price).toFixed(2)}</span>
           </div>
 
           {/* Size Selector */}
-          <div className="mt-4 mb-12">
+          <div className="mt-2 mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-black tracking-[0.2em] text-gray-500">SELECT SIZE</h3>
+              <h3 className="font-black tracking-[0.2em] text-gray-500 text-sm">SELECT SIZE</h3>
               <button 
                 onClick={() => setIsSizeGuideOpen(true)} 
-                className="font-black tracking-widest text-[var(--color-coral-red)] underline hover:text-black transition-colors"
+                className="font-black tracking-widest text-[var(--color-coral-red)] underline hover:text-black transition-colors text-sm"
               >
                 SIZE GUIDE
               </button>
             </div>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3">
               {product.sizes?.map((size: string) => {
                 const inStock = product.stock > 0;
                 return (
@@ -92,7 +92,7 @@ export default function ProductDetailsPage() {
                     key={size}
                     disabled={!inStock}
                     onClick={() => setSelectedSize(size)}
-                    className={`relative w-16 h-16 border-[4px] border-black font-cartoon text-3xl flex items-center justify-center transition-transform
+                    className={`relative w-14 h-14 border-[3px] border-black font-cartoon text-2xl flex items-center justify-center transition-transform
                       ${!inStock ? "bg-gray-200 text-gray-400 cursor-not-allowed" : 
                         selectedSize === size ? "bg-black text-white shadow-[4px_4px_0_var(--color-coral-red)] scale-110" : "bg-white text-black hover:bg-gray-100 hover:-translate-y-1 shadow-[4px_4px_0_#111]"}
                     `}
@@ -100,7 +100,7 @@ export default function ProductDetailsPage() {
                     {size}
                     {/* Out of stock strike */}
                     {!inStock && (
-                      <span className="absolute inset-0 font-black text-[var(--color-coral-red)] text-5xl leading-none flex items-center justify-center pointer-events-none opacity-80">X</span>
+                      <span className="absolute inset-0 font-black text-[var(--color-coral-red)] text-4xl leading-none flex items-center justify-center pointer-events-none opacity-80">X</span>
                     )}
                   </button>
                 );
@@ -109,13 +109,13 @@ export default function ProductDetailsPage() {
           </div>
 
           {/* Buy Button */}
-          <button className="w-full cartoon-btn py-6 bg-black hover:bg-[var(--color-electric-blue)] text-white border-[4px] border-black shadow-[8px_8px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
-             <span className="font-cartoon text-4xl tracking-widest">ADD TO STASH</span>
+          <button className="w-full cartoon-btn py-4 bg-black hover:bg-[var(--color-electric-blue)] text-white border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
+             <span className="font-cartoon text-3xl tracking-widest">ADD TO STASH</span>
           </button>
 
           {/* Details / Specs */}
-          <div className="mt-12 p-6 border-[3px] border-dashed border-black bg-[#F4F4F0]">
-            <p className="font-mono text-sm md:text-base font-bold text-black uppercase leading-relaxed">
+          <div className="mt-8 p-4 border-[3px] border-dashed border-black bg-[#F4F4F0]">
+            <p className="font-mono text-xs md:text-sm font-bold text-black uppercase leading-relaxed">
               {product.description}
             </p>
           </div>
