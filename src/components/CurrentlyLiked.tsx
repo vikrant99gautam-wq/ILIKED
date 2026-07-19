@@ -75,7 +75,7 @@ export default function CurrentlyLiked() {
                   <span className="text-[20px] xl:text-[24px] font-cartoon tracking-widest text-black leading-none">{product.name}</span>
                   <span className="text-[10px] xl:text-[12px] font-black text-black mt-2 tracking-widest uppercase border-[2px] border-black bg-white w-fit px-2 py-0.5 shadow-[2px_2px_0px_#111] rotate-[1deg]">{product.color}</span>
                 </div>
-                <span className="text-[18px] xl:text-[20px] font-cartoon tracking-widest text-white bg-[var(--color-coral-red)] border-[3px] border-black px-3 py-1 shadow-[4px_4px_0px_#111] rotate-[3deg] group-hover:rotate-[-2deg] transition-transform">${product.price}</span>
+                <span className="text-[18px] xl:text-[20px] font-cartoon tracking-widest text-white bg-[var(--color-coral-red)] border-[3px] border-black px-3 py-1 shadow-[4px_4px_0px_#111] rotate-[3deg] group-hover:rotate-[-2deg] transition-transform">₹{product.price}</span>
               </div>
               <FOMOBar stockLeft={product.stock} />
             </div>

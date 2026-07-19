@@ -91,7 +91,7 @@ export default function AdminOrdersPage() {
                   <td className="p-4 font-bold">#{order.id.slice(-6)}</td>
                   <td className="p-4 font-bold">{order.customer_name}</td>
                   <td className="p-4">{new Date(order.created_at || Date.now()).toLocaleDateString()}</td>
-                  <td className="p-4 font-cartoon text-xl">${order.total}</td>
+                  <td className="p-4 font-cartoon text-xl">₹{order.total}</td>
                   <td className="p-4">
                     <span className={`font-black px-3 py-1 border-[2px] border-black ${getStatusColor(order.status)}`}>
                       {order.status}
@@ -124,7 +124,7 @@ export default function AdminOrdersPage() {
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="font-cartoon text-2xl">${order.total}</span>
+                  <span className="font-cartoon text-2xl">₹{order.total}</span>
                   <button 
                     onClick={() => setSelectedOrder(order)}
                     className="px-4 py-2 border-[2px] border-black bg-[#FFD700] font-black text-sm"
@@ -185,7 +185,7 @@ export default function AdminOrdersPage() {
                         <p className="text-sm">Qty: {item.quantity} | Size: {item.size}</p>
                       </div>
                     </div>
-                    <span className="font-cartoon text-xl">${item.price * item.quantity}</span>
+                    <span className="font-cartoon text-xl">₹{item.price * item.quantity}</span>
                   </div>
                 ))
               ) : (
@@ -195,7 +195,7 @@ export default function AdminOrdersPage() {
 
             <div className="flex justify-between items-center bg-black text-white p-4 font-cartoon text-3xl border-[4px] border-black mb-8 shadow-[4px_4px_0_#FFD700]">
               <span>TOTAL</span>
-              <span>${selectedOrder.total}</span>
+              <span>₹{selectedOrder.total}</span>
             </div>
 
             <div className="flex justify-between">

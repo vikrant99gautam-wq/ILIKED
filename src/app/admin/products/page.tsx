@@ -86,7 +86,7 @@ export default function AdminProductsPage() {
                     <img src={p.image} className="w-16 h-16 object-contain bg-gray-100 border-[2px] border-black" alt={p.name} />
                   </td>
                   <td className="p-4 font-bold">{p.name}</td>
-                  <td className="p-4 font-cartoon text-xl">${p.price}</td>
+                  <td className="p-4 font-cartoon text-xl">₹{p.price}</td>
                   <td className="p-4">
                     <span className={`font-black px-2 py-1 border-[2px] border-black ${p.stock <= 3 ? 'bg-[var(--color-coral-red)] text-white' : 'bg-[#19B85A] text-black'}`}>
                       {p.stock}
@@ -109,7 +109,7 @@ export default function AdminProductsPage() {
                   <img src={p.image} className="w-20 h-20 object-contain bg-gray-100 border-[2px] border-black shrink-0" alt={p.name} />
                   <div className="flex flex-col">
                     <span className="font-bold text-lg leading-tight">{p.name}</span>
-                    <span className="font-cartoon text-2xl">${p.price}</span>
+                    <span className="font-cartoon text-2xl">₹{p.price}</span>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -146,7 +146,7 @@ export default function AdminProductsPage() {
               </div>
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
-                  <label className="block font-black mb-1">PRICE ($)</label>
+                  <label className="block font-black mb-1">PRICE (₹)</label>
                   <input 
                     type="number" 
                     value={currentProduct.price || 0} 

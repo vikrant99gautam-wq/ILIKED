@@ -56,7 +56,7 @@ export default function ProductDetailsPage() {
           </h1>
 
           <div className="mb-4">
-             <span className="font-sans font-black text-black text-2xl tracking-wide">${Number(product.price).toFixed(2)}</span>
+             <span className="font-sans font-black text-black text-2xl tracking-wide">₹{Number(product.price).toFixed(2)}</span>
           </div>
 
           {/* Size Selector */}
@@ -229,7 +229,7 @@ export default function ProductDetailsPage() {
                   </h3>
                   
                   <div className="absolute -top-5 right-4 bg-[#FFD700] border-[3px] border-black px-4 py-1 rotate-[5deg] group-hover:rotate-[-5deg] group-hover:scale-110 transition-transform shadow-[4px_4px_0_#111]">
-                    <span className="font-black text-black text-lg">${relProduct.price}</span>
+                    <span className="font-black text-black text-lg">₹{relProduct.price}</span>
                   </div>
                 </div>
               </motion.div>

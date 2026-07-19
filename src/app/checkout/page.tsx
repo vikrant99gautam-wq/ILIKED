@@ -1,10 +1,60 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
+const CHECKOUT_ITEMS = [
+  { id: 1, name: "STAY FRESH TEE", price: 3825, size: "L", quantity: 1, image: "/images/primary-model.png" },
+  { id: 2, name: "UTILITY CARGO", price: 7225, size: "32", quantity: 1, image: "/images/gallery-1.png" },
+];
+
 export default function CheckoutPage() {
-  const [step, setStep] = useState(1);
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const subtotal = CHECKOUT_ITEMS.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const shipping = 850; // Flat ₹850 shipping
+  const total = subtotal + shipping;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const orderPayload = {
+        customer_name: `${formData.firstName} ${formData.lastName}`,
+        customer_email: formData.email,
+        total: total,
+        items: CHECKOUT_ITEMS
+      };
+
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderPayload)
+      });
+
+      if (res.ok) {
+        const orderData = await res.json();
+        router.push(`/checkout/success?orderId=${orderData.id}`);
+      } else {
+        alert("Something went wrong!");
+        setIsSubmitting(false);
+      }
+    } catch (err) {
+      alert("Error placing order.");
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-white pt-[76px]">
@@ -19,7 +69,7 @@ export default function CheckoutPage() {
             <p className="font-bold text-gray-500 uppercase tracking-widest">Where do we drop the heat?</p>
           </div>
 
-          <form className="space-y-8 max-w-2xl" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-8 max-w-2xl" onSubmit={handleSubmit}>
             {/* Contact */}
             <div className="space-y-4">
               <h3 className="font-black text-2xl border-b-[4px] border-black pb-2 inline-block">1. CONTACT</h3>
@@ -27,6 +77,9 @@ export default function CheckoutPage() {
                 <label className="font-bold text-sm tracking-widest uppercase">Email Address</label>
                 <input 
                   type="email" 
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
                   placeholder="YOU@EXAMPLE.COM" 
                   className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
                 />
@@ -40,34 +93,36 @@ export default function CheckoutPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
                   <label className="font-bold text-sm tracking-widest uppercase">First Name</label>
-                  <input type="text" className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
+                  <input required type="text" value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="font-bold text-sm tracking-widest uppercase">Last Name</label>
-                  <input type="text" className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
+                  <input required type="text" value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-2">
                 <label className="font-bold text-sm tracking-widest uppercase">Street Address</label>
-                <input type="text" className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
+                <input required type="text" value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 <div className="flex flex-col gap-2 md:col-span-1">
                   <label className="font-bold text-sm tracking-widest uppercase">City</label>
-                  <input type="text" className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
+                  <input required type="text" value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
                 </div>
                 <div className="flex flex-col gap-2 md:col-span-1">
                   <label className="font-bold text-sm tracking-widest uppercase">State/Prov</label>
-                  <input type="text" className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
+                  <input required type="text" value={formData.state} onChange={(e) => setFormData({...formData, state: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
                 </div>
                 <div className="flex flex-col gap-2 col-span-2 md:col-span-1">
                   <label className="font-bold text-sm tracking-widest uppercase">ZIP Code</label>
-                  <input type="text" className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
+                  <input required type="text" value={formData.zip} onChange={(e) => setFormData({...formData, zip: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
                 </div>
               </div>
             </div>
+
+            <button id="hiddenSubmit" type="submit" className="hidden"></button>
           </form>
 
         </div>
@@ -84,52 +139,46 @@ export default function CheckoutPage() {
           <div className="relative z-10 bg-white border-[4px] border-black p-6 lg:p-8 shadow-[8px_8px_0_#111]">
             {/* Order Items Mini Summary */}
             <div className="space-y-6 mb-8 border-b-[3px] border-dashed border-black pb-8">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-white border-[3px] border-black flex items-center justify-center p-1">
-                    <img src="/images/primary-model.png" alt="Item" className="w-full h-full object-contain" />
+              {CHECKOUT_ITEMS.map((item) => (
+                <div key={item.id} className="flex justify-between items-center">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-white border-[3px] border-black flex items-center justify-center p-1 shrink-0">
+                      <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                    </div>
+                    <div>
+                      <p className="font-black text-lg leading-none">{item.name}</p>
+                      <p className="text-gray-500 text-sm mt-1">SIZE: {item.size} | QTY: {item.quantity}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-black text-lg leading-none">STAY FRESH TEE</p>
-                    <p className="text-gray-500 text-sm mt-1">SIZE: L | QTY: 1</p>
-                  </div>
+                  <p className="font-black text-xl">₹{item.price}</p>
                 </div>
-                <p className="font-black text-xl">$45.00</p>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-white border-[3px] border-black flex items-center justify-center p-1">
-                    <img src="/images/gallery-1.png" alt="Item" className="w-full h-full object-contain" />
-                  </div>
-                  <div>
-                    <p className="font-black text-lg leading-none">UTILITY CARGO</p>
-                    <p className="text-gray-500 text-sm mt-1">SIZE: 32 | QTY: 1</p>
-                  </div>
-                </div>
-                <p className="font-black text-xl">$85.00</p>
-              </div>
+              ))}
             </div>
 
             {/* Totals */}
             <div className="space-y-2 text-lg">
               <div className="flex justify-between">
                 <span className="text-gray-500 font-bold tracking-widest text-sm">SUBTOTAL</span>
-                <span className="font-black">$130.00</span>
+                <span className="font-black">₹{subtotal}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500 font-bold tracking-widest text-sm">SHIPPING</span>
-                <span className="font-black">$10.00</span>
+                <span className="font-black">₹{shipping}</span>
               </div>
               <div className="flex justify-between pt-4 border-t-[3px] border-dashed border-black mt-4 text-3xl text-[var(--color-coral-red)]">
                 <span className="font-cartoon tracking-widest">TOTAL</span>
-                <span className="font-black">$140.00</span>
+                <span className="font-black">₹{total}</span>
               </div>
             </div>
           </div>
 
           <div className="relative z-10 mt-6">
-            <button className="w-full bg-[#FFD700] text-black border-[4px] border-black py-6 font-cartoon text-4xl tracking-widest hover:bg-[var(--color-electric-blue)] hover:text-white transition-colors duration-300 shadow-[8px_8px_0_#111] active:translate-y-1 active:translate-x-1 active:shadow-none">
-              SEAL THE DEAL
+            <button 
+              onClick={() => document.getElementById('hiddenSubmit')?.click()}
+              disabled={isSubmitting}
+              className={`w-full bg-[#FFD700] text-black border-[4px] border-black py-6 font-cartoon text-4xl tracking-widest transition-colors duration-300 shadow-[8px_8px_0_#111] ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[var(--color-electric-blue)] hover:text-white active:translate-y-1 active:translate-x-1 active:shadow-none'}`}
+            >
+              {isSubmitting ? "PROCESSING..." : "SEAL THE DEAL"}
             </button>
             <p className="text-center text-gray-500 text-xs mt-6 font-bold tracking-widest uppercase">
               By confirming, you agree that this drip is non-refundable.

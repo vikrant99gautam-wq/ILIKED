@@ -73,7 +73,7 @@ export default function BagPage() {
                       </div>
                       
                       <div className="flex items-center justify-between mt-6">
-                        <span className="font-black text-2xl">${item.price}</span>
+                        <span className="font-black text-2xl">₹{item.price}</span>
                         
                         {/* Quantity Controls */}
                         <div className="flex items-center border-[3px] border-black bg-[#F4F4F0] shadow-[3px_3px_0_#111]">
@@ -112,7 +112,7 @@ export default function BagPage() {
                     {cart.map(item => (
                       <div key={`receipt-${item.id}`} className="flex justify-between text-lg md:text-xl font-bold">
                         <span>{item.quantity}x {item.name.substring(0,12)}..</span>
-                        <span>${item.price * item.quantity}</span>
+                        <span>₹{item.price * item.quantity}</span>
                       </div>
                     ))}
                   </div>
@@ -120,18 +120,18 @@ export default function BagPage() {
                   <div className="border-t-[3px] border-dashed border-black py-6 space-y-2">
                     <div className="flex justify-between text-xl md:text-2xl font-bold">
                       <span>SUBTOTAL</span>
-                      <span>${subtotal}</span>
+                      <span>₹{subtotal}</span>
                     </div>
                     <div className="flex justify-between text-xl md:text-2xl font-bold">
                       <span>SHIPPING</span>
-                      <span>${shipping}</span>
+                      <span>₹{shipping}</span>
                     </div>
                   </div>
 
                   <div className="border-y-4 border-black py-4 mt-4">
                     <div className="flex justify-between items-end">
                       <span className="font-black text-3xl">TOTAL</span>
-                      <span className="font-black text-4xl md:text-5xl">${total}</span>
+                      <span className="font-black text-4xl md:text-5xl">₹{total}</span>
                     </div>
                   </div>
 
