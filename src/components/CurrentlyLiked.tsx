@@ -25,14 +25,14 @@ export default function CurrentlyLiked() {
       ></div>
 
       {/* Title Section */}
-      <div className="w-full flex flex-col items-center justify-center pt-10 md:pt-20 px-4 mb-6 md:mb-10 z-10 relative">
-        <div className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-4 py-1 rotate-[-2deg] mb-4">
+      <div className="w-full flex flex-col items-center justify-center pt-10 md:pt-20 px-4 mb-10 md:mb-12 z-10 relative mt-4">
+        <div className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-4 py-1 rotate-[-2deg] mb-8 md:mb-8">
           <span className="font-sans font-black text-[var(--color-electric-blue)] tracking-[0.2em] text-sm">NOW SHOWING</span>
         </div>
         
-        <h2 className="font-cartoon text-5xl md:text-8xl text-[#FFD700] flex flex-col items-center leading-[0.8] mb-4 md:mb-8" style={{ WebkitTextStroke: '2px #111', textShadow: '4px 4px 0 #111' }}>
+        <h2 className="font-cartoon text-6xl md:text-8xl text-[#FFD700] flex flex-col items-center leading-none md:leading-[0.8] mb-10 md:mb-12" style={{ WebkitTextStroke: '2px #111', textShadow: '4px 4px 0 #111' }}>
           <span>CURRENTLY</span>
-          <span className="text-white ml-8 md:ml-16 rotate-[2deg]">
+          <span className="text-white ml-8 md:ml-16 rotate-[2deg] mt-2 md:mt-0">
             LIKED<span className="text-[var(--color-coral-red)]">!</span>
           </span>
         </h2>
