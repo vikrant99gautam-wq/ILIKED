@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Product } from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -9,6 +10,8 @@ export default function AdminProductsPage() {
   // Form State
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Partial<Product>>({});
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchProducts();
@@ -52,6 +55,33 @@ export default function AdminProductsPage() {
     if (!confirm("Delete this product?")) return;
     await fetch(`/api/products/${id}`, { method: "DELETE" });
     fetchProducts();
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('products')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      alert("Error uploading image: " + uploadError.message);
+      setIsUploading(false);
+      return;
+    }
+
+    const { data } = supabase.storage
+      .from('products')
+      .getPublicUrl(filePath);
+
+    setCurrentProduct({...currentProduct, image: data.publicUrl});
+    setIsUploading(false);
   };
 
   return (
@@ -178,13 +208,36 @@ export default function AdminProductsPage() {
                 />
               </div>
               <div>
-                <label className="block font-black mb-1">IMAGE URL</label>
-                <input 
-                  type="text" 
-                  value={currentProduct.image || ''} 
-                  onChange={e => setCurrentProduct({...currentProduct, image: e.target.value})}
-                  className="w-full border-[3px] border-black p-2 font-bold"
-                />
+                <label className="block font-black mb-1">IMAGE</label>
+                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="cartoon-btn px-4 py-2 bg-[var(--color-electric-blue)] text-white font-black whitespace-nowrap"
+                  >
+                    {isUploading ? "UPLOADING..." : "UPLOAD FILE"}
+                  </button>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <span className="font-black text-gray-500 mx-2">OR</span>
+                  <input 
+                    type="text" 
+                    value={currentProduct.image || ''} 
+                    onChange={e => setCurrentProduct({...currentProduct, image: e.target.value})}
+                    placeholder="Paste URL directly..."
+                    className="w-full border-[3px] border-black p-2 font-bold flex-1"
+                  />
+                </div>
+                {currentProduct.image && (
+                  <div className="mt-4">
+                    <img src={currentProduct.image} alt="Preview" className="w-32 h-32 object-contain border-[3px] border-black bg-gray-100" />
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block font-black mb-1">DESCRIPTION</label>
