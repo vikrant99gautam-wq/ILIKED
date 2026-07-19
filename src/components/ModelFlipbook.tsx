@@ -20,7 +20,7 @@ export default function ModelFlipbook() {
   }, [nextFrame]);
 
   return (
-    <div className="relative w-full h-full z-30 flex justify-center items-end pb-0 md:pb-4 overflow-hidden group">
+    <div className="relative w-full h-full z-30 flex justify-center items-end pb-0 md:pb-4 overflow-visible group">
       
       {/* Cross-Fade Images */}
       <div className="absolute inset-0 w-full h-full flex justify-center items-end z-10">
