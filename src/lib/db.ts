@@ -16,6 +16,24 @@ export interface Product {
   description: string;
 }
 
+export interface Order {
+  id: string;
+  customer_name: string;
+  email: string;
+  total: number;
+  status: 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
+  items: any[];
+  created_at?: string;
+}
+
+export interface StoreSettings {
+  id?: string;
+  store_name: string;
+  contact_email: string;
+  currency: string;
+  maintenance_mode: boolean;
+}
+
 export async function getProducts() {
   const { data, error } = await supabase.from('products').select('*');
   if (error) {
