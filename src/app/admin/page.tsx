@@ -1,7 +1,7 @@
 import { getProducts } from "@/lib/db";
 
 export default async function AdminDashboard() {
-  const products = getProducts();
+  const products = await getProducts();
   const lowStockProducts = products.filter(p => p.stock <= 3);
 
   return (
