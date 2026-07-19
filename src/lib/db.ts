@@ -1,7 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-
-const dbPath = path.join(process.cwd(), 'src/data/db.json');
+import { supabase } from './supabase';
 
 export interface Product {
   id: string;
@@ -19,63 +16,46 @@ export interface Product {
   description: string;
 }
 
-export interface DB {
-  products: Product[];
-  settings: {
-    storeName: string;
-    isStoreOpen: boolean;
-  };
-  orders: any[];
-}
-
-export function readDB(): DB {
-  try {
-    const data = fs.readFileSync(dbPath, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error("Error reading DB:", error);
-    return { products: [], settings: { storeName: 'I LIKED', isStoreOpen: true }, orders: [] };
+export async function getProducts() {
+  const { data, error } = await supabase.from('products').select('*');
+  if (error) {
+    console.error("Error fetching products:", error);
+    return [];
   }
+  return data || [];
 }
 
-export function writeDB(data: DB): void {
-  try {
-    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (error) {
-    console.error("Error writing DB:", error);
+export async function getProductById(id: string) {
+  const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
+  if (error) {
+    console.error("Error fetching product:", error);
+    return null;
   }
+  return data;
 }
 
-// Helper Functions for Products
-export function getProducts() {
-  return readDB().products;
-}
-
-export function getProductById(id: string) {
-  return readDB().products.find(p => p.id === id);
-}
-
-export function updateProduct(id: string, updates: Partial<Product>) {
-  const db = readDB();
-  const index = db.products.findIndex(p => p.id === id);
-  if (index !== -1) {
-    db.products[index] = { ...db.products[index], ...updates };
-    writeDB(db);
-    return db.products[index];
+export async function updateProduct(id: string, updates: Partial<Product>) {
+  const { data, error } = await supabase.from('products').update(updates).eq('id', id).select().single();
+  if (error) {
+    console.error("Error updating product:", error);
+    return null;
   }
-  return null;
+  return data;
 }
 
-export function addProduct(product: Omit<Product, 'id'>) {
-  const db = readDB();
-  const newProduct = { ...product, id: Date.now().toString() };
-  db.products.push(newProduct);
-  writeDB(db);
-  return newProduct;
+export async function addProduct(product: Omit<Product, 'id'>) {
+  const newId = Date.now().toString();
+  const { data, error } = await supabase.from('products').insert([{ ...product, id: newId }]).select().single();
+  if (error) {
+    console.error("Error adding product:", error);
+    return null;
+  }
+  return data;
 }
 
-export function deleteProduct(id: string) {
-  const db = readDB();
-  db.products = db.products.filter(p => p.id !== id);
-  writeDB(db);
+export async function deleteProduct(id: string) {
+  const { error } = await supabase.from('products').delete().eq('id', id);
+  if (error) {
+    console.error("Error deleting product:", error);
+  }
 }
