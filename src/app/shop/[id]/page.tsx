@@ -25,7 +25,7 @@ export default function ProductDetailsPage() {
       price: product.price,
       size: selectedSize,
       quantity: 1,
-      image: product.image,
+      image: product.image ? product.image.split(',')[0].trim() : "",
     });
     alert("Added to stash!");
   };
@@ -56,10 +56,13 @@ export default function ProductDetailsPage() {
   if (!product) return <div className="min-h-screen pt-[120px] text-center font-cartoon text-4xl">LOADING...</div>;
 
   // Build images array for gallery if they exist on the product, else fallback to primary image
-  const productImages = product.images?.length > 0 ? product.images : [
-    { src: product.image, color: product.bgColor },
-    { src: product.hoverImage, color: "bg-[#FFD700]" }
-  ];
+  const imageList = product.image ? product.image.split(',').map((s: string) => s.trim()).filter(Boolean) : [];
+  const productImages = imageList.length > 1 
+    ? imageList.map((url: string) => ({ src: url, color: "bg-[#F4F4F0]" }))
+    : [
+        { src: imageList[0] || product.image, color: product.bgColor || "bg-[#F4F4F0]" },
+        ...(product.hoverImage ? [{ src: product.hoverImage, color: "bg-[#FFD700]" }] : [])
+      ];
 
   return (
     <main className="min-h-screen bg-[#F4F4F0] pt-[76px]">
@@ -235,7 +238,7 @@ export default function ProductDetailsPage() {
                   <div className="absolute inset-0 opacity-[0.15] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #000 2px, transparent 2.5px)', backgroundSize: '12px 12px' }}></div>
                   
                   {/* Primary Image */}
-                  <img src={relProduct.image} alt={relProduct.name} className="absolute w-full h-full object-contain drop-shadow-[6px_6px_0_#111] scale-[1.3] group-hover:scale-[1.4] group-hover:opacity-0 transition-all duration-500 z-10" />
+                  <img src={relProduct.image ? relProduct.image.split(',')[0].trim() : ''} alt={relProduct.name} className="absolute w-full h-full object-contain drop-shadow-[6px_6px_0_#111] scale-[1.3] group-hover:scale-[1.4] group-hover:opacity-0 transition-all duration-500 z-10" />
 
                   {/* Hover Image */}
                   <img src={relProduct.hoverImage} alt={`${relProduct.name} alternate`} className="absolute w-full h-full object-contain drop-shadow-[6px_6px_0_#111] opacity-0 scale-[1.15] group-hover:scale-[1.4] group-hover:opacity-100 transition-all duration-500 z-10" />

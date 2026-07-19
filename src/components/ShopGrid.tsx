@@ -213,7 +213,7 @@ export default function ShopGrid() {
                         
                         {/* Primary Image */}
                         <img 
-                          src={product.image} 
+                          src={product.image ? product.image.split(',')[0].trim() : ''} 
                           alt={product.name}
                           className="absolute w-full h-full object-contain drop-shadow-[6px_6px_0_#111] scale-[1.3] group-hover:scale-[1.4] group-hover:opacity-0 transition-all duration-500 z-10"
                         />

@@ -58,29 +58,39 @@ export default function AdminProductsPage() {
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
     setIsUploading(true);
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
-    const filePath = `${fileName}`;
+    
+    let uploadedUrls: string[] = [];
 
-    const { error: uploadError } = await supabase.storage
-      .from('products')
-      .upload(filePath, file);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
 
-    if (uploadError) {
-      alert("Error uploading image: " + uploadError.message);
-      setIsUploading(false);
-      return;
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        alert("Error uploading image: " + uploadError.message);
+        continue;
+      }
+
+      const { data } = supabase.storage
+        .from('products')
+        .getPublicUrl(filePath);
+
+      uploadedUrls.push(data.publicUrl);
     }
 
-    const { data } = supabase.storage
-      .from('products')
-      .getPublicUrl(filePath);
-
-    setCurrentProduct({...currentProduct, image: data.publicUrl});
+    const existingImages = currentProduct.image ? currentProduct.image.split(',').map(s=>s.trim()).filter(Boolean) : [];
+    const newImages = [...existingImages, ...uploadedUrls].join(', ');
+    
+    setCurrentProduct({...currentProduct, image: newImages});
     setIsUploading(false);
   };
 
@@ -208,7 +218,7 @@ export default function AdminProductsPage() {
                 />
               </div>
               <div>
-                <label className="block font-black mb-1">IMAGE</label>
+                <label className="block font-black mb-1">IMAGES (Add multiple)</label>
                 <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
                   <button
                     onClick={() => fileInputRef.current?.click()}
@@ -220,6 +230,7 @@ export default function AdminProductsPage() {
                   <input
                     type="file"
                     accept="image/*"
+                    multiple
                     ref={fileInputRef}
                     onChange={handleFileUpload}
                     className="hidden"
@@ -229,13 +240,26 @@ export default function AdminProductsPage() {
                     type="text" 
                     value={currentProduct.image || ''} 
                     onChange={e => setCurrentProduct({...currentProduct, image: e.target.value})}
-                    placeholder="Paste URL directly..."
+                    placeholder="Paste URLs separated by comma..."
                     className="w-full border-[3px] border-black p-2 font-bold flex-1"
                   />
                 </div>
                 {currentProduct.image && (
-                  <div className="mt-4">
-                    <img src={currentProduct.image} alt="Preview" className="w-32 h-32 object-contain border-[3px] border-black bg-gray-100" />
+                  <div className="mt-4 flex flex-wrap gap-4">
+                    {currentProduct.image.split(',').map((imgUrl, idx) => (
+                      <div key={idx} className="relative">
+                        <img src={imgUrl.trim()} alt={`Preview ${idx + 1}`} className="w-32 h-32 object-contain border-[3px] border-black bg-gray-100" />
+                        <button 
+                          onClick={() => {
+                            const newImages = currentProduct.image!.split(',').map(s=>s.trim()).filter((_, i) => i !== idx).join(', ');
+                            setCurrentProduct({...currentProduct, image: newImages});
+                          }}
+                          className="absolute -top-2 -right-2 bg-[var(--color-coral-red)] text-white font-black w-6 h-6 rounded-full border-2 border-black flex items-center justify-center text-xs"
+                        >
+                          X
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>

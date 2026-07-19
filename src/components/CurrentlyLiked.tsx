@@ -59,7 +59,7 @@ export default function CurrentlyLiked() {
               
               {/* Image Box */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none group-hover:scale-110 transition-transform duration-500">
-                <img src={product.image} alt={product.name} className="w-[90%] h-[90%] object-contain drop-shadow-[4px_4px_0_#111] z-10" />
+                <img src={product.image ? product.image.split(',')[0].trim() : ''} alt={product.name} className="w-[90%] h-[90%] object-contain drop-shadow-[4px_4px_0_#111] z-10" />
               </div>
               
               {/* Sticker Tag */}
