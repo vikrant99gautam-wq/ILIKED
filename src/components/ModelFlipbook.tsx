@@ -29,7 +29,7 @@ export default function ModelFlipbook() {
             key={num}
             src={`/images/model-anim-${num}.png`} 
             alt={`I LIKED Primary Model Frame ${num}`} 
-            className={`absolute w-[90%] md:w-[85%] h-full object-contain object-bottom pointer-events-none transition-opacity duration-1000 ease-in-out ${frame === idx ? 'opacity-100 z-20' : 'opacity-0 z-0'}`}
+            className={`absolute w-full md:w-[95%] h-[105%] object-contain object-bottom pointer-events-none p-4 transition-opacity duration-1000 ease-in-out ${frame === idx ? 'opacity-100 z-20' : 'opacity-0 z-0'}`}
             style={{
               // Stacked blurred white shadows create a perfectly smooth, rounded solid outline
               filter: 'drop-shadow(0 0 6px #fff) drop-shadow(0 0 6px #fff) drop-shadow(0 0 6px #fff) drop-shadow(0 0 6px #fff) drop-shadow(0px 0px 15px rgba(0,0,0,0.5))'
