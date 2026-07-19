@@ -89,8 +89,20 @@ export default function ShopGrid() {
         <div className="flex flex-col lg:flex-row gap-12">
           
           {/* Sidebar Filters */}
-          <div className={`lg:w-[280px] shrink-0 flex flex-col gap-8 transition-all ${isMobileFiltersOpen ? "block" : "hidden lg:flex"}`}>
+          <div className={`
+            fixed inset-0 z-[110] bg-white lg:static lg:bg-transparent lg:w-[280px] shrink-0 flex flex-col gap-8 transition-all overflow-y-auto lg:overflow-visible p-6 lg:p-0 pt-20 lg:pt-0
+            ${isMobileFiltersOpen ? "block" : "hidden lg:flex"}
+          `}>
             
+            {/* Mobile Close Button */}
+            <button 
+              onClick={() => setIsMobileFiltersOpen(false)}
+              className="lg:hidden absolute top-6 right-6 w-10 h-10 border-[3px] border-black flex items-center justify-center font-black text-xl hover:bg-gray-100"
+            >
+              X
+            </button>
+            <h2 className="lg:hidden font-cartoon text-4xl mb-4 border-b-[4px] border-black pb-4">FILTERS</h2>
+
             {/* Categories */}
             <div className="border-[4px] border-black p-5 bg-white shadow-[6px_6px_0_#111]">
               <h3 className="font-cartoon text-2xl tracking-widest mb-4">CATEGORY</h3>
@@ -150,12 +162,20 @@ export default function ShopGrid() {
             {/* Clear Filters */}
             {(selectedCategories.length > 0 || selectedSizes.length > 0 || selectedColors.length > 0) && (
               <button 
-                onClick={() => { setSelectedCategories([]); setSelectedSizes([]); setSelectedColors([]); }}
+                onClick={() => { setSelectedCategories([]); setSelectedSizes([]); setSelectedColors([]); setIsMobileFiltersOpen(false); }}
                 className="font-black tracking-widest uppercase text-sm text-[var(--color-coral-red)] underline hover:text-black transition-colors"
               >
                 Clear All Filters
               </button>
             )}
+            
+            {/* Mobile Apply Button */}
+            <button 
+              onClick={() => setIsMobileFiltersOpen(false)}
+              className="lg:hidden mt-4 cartoon-btn px-6 py-4 bg-black text-white font-black tracking-widest text-xl w-full"
+            >
+              APPLY FILTERS
+            </button>
 
           </div>
 
