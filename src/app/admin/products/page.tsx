@@ -128,6 +128,7 @@ export default function AdminProductsPage() {
               <tr>
                 <th className="p-4">IMAGE</th>
                 <th className="p-4">NAME</th>
+                <th className="p-4">COLOR</th>
                 <th className="p-4">PRICE</th>
                 <th className="p-4">STOCK</th>
                 <th className="p-4">ACTIONS</th>
@@ -140,6 +141,7 @@ export default function AdminProductsPage() {
                     <img src={p.image} className="w-16 h-16 object-contain bg-gray-100 border-[2px] border-black" alt={p.name} />
                   </td>
                   <td className="p-4 font-bold">{p.name}</td>
+                  <td className="p-4 font-bold text-sm text-gray-600 uppercase">{p.color || '-'}</td>
                   <td className="p-4 font-cartoon text-xl">₹{p.price}</td>
                   <td className="p-4">
                     <span className={`font-black px-2 py-1 border-[2px] border-black ${p.stock <= 3 ? 'bg-[var(--color-coral-red)] text-white' : 'bg-[#19B85A] text-black'}`}>
@@ -172,6 +174,7 @@ export default function AdminProductsPage() {
                   <img src={p.image} className="w-20 h-20 object-contain bg-gray-100 border-[2px] border-black shrink-0" alt={p.name} />
                   <div className="flex flex-col">
                     <span className="font-bold text-lg leading-tight">{p.name}</span>
+                    <span className="font-bold text-sm text-gray-500 uppercase">{p.color || '-'}</span>
                     <span className="font-cartoon text-2xl">₹{p.price}</span>
                   </div>
                 </div>
@@ -227,6 +230,16 @@ export default function AdminProductsPage() {
                   <option value="OVERSIZED TEES">OVERSIZED TEES</option>
                   <option value="OPTIC WASH TEES">OPTIC WASH TEES</option>
                 </select>
+              </div>
+              <div>
+                <label className="block font-black mb-1">COLOR</label>
+                <input 
+                  type="text" 
+                  value={currentProduct.color || ''} 
+                  onChange={e => setCurrentProduct({...currentProduct, color: e.target.value.toUpperCase()})}
+                  className="w-full border-[3px] border-black p-2 font-bold uppercase"
+                  placeholder="e.g. BLACK, RED..."
+                />
               </div>
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
