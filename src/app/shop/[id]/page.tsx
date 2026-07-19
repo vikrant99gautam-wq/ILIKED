@@ -14,6 +14,8 @@ export default function ProductDetailsPage() {
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const addToCart = useCartStore(state => state.addToCart);
 
+  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+
   const handleAddToCart = () => {
     if (!selectedSize) {
       alert("Please select a size first!");
@@ -77,12 +79,29 @@ export default function ProductDetailsPage() {
             {product.name}
           </h1>
 
-          <div className="mb-4">
+          <div className="mb-2">
              <span className="font-sans font-black text-black text-2xl tracking-wide">₹{Number(product.price).toFixed(2)}</span>
           </div>
 
+          {/* Reviews Summary */}
+          <div className="flex items-center gap-2 mb-6">
+            <div className="flex text-[#FFD700] text-xl drop-shadow-[2px_2px_0_#111]">
+              ★★★★★
+            </div>
+            <span className="font-black text-xs md:text-sm tracking-widest">(4.9/5 FROM 24 REVIEWS)</span>
+          </div>
+
+          {/* Color Label */}
+          <div className="mb-6 inline-block">
+            <div className="border-[3px] border-black inline-block px-4 py-2 bg-white shadow-[4px_4px_0_#111]">
+              <span className="font-black tracking-[0.2em] text-sm uppercase">
+                COLOR: <span className="text-[var(--color-electric-blue)]">{product.color || "SIGNATURE"}</span>
+              </span>
+            </div>
+          </div>
+
           {/* Size Selector */}
-          <div className="mt-2 mb-6">
+          <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-black tracking-[0.2em] text-gray-500 text-sm">SELECT SIZE</h3>
               <button 
@@ -120,6 +139,32 @@ export default function ProductDetailsPage() {
             </div>
           </div>
 
+          {/* FOMO Indicator */}
+          <div className="mb-4 flex">
+             {selectedSize ? (() => {
+                const stockStr = product.sizes?.find((s: string) => s.startsWith(selectedSize + ':'))?.split(':')[1];
+                const stock = stockStr ? parseInt(stockStr) : 0;
+                if (stock > 0 && stock <= 5) {
+                  return (
+                    <span className="font-black text-[var(--color-coral-red)] text-sm tracking-widest bg-white border-[2px] border-black px-3 py-1 shadow-[2px_2px_0_#111]">
+                      HURRY! ONLY {stock} LEFT IN THIS SIZE
+                    </span>
+                  );
+                } else if (stock > 5) {
+                  return (
+                    <span className="font-black text-[#19B85A] text-sm tracking-widest bg-white border-[2px] border-black px-3 py-1 shadow-[2px_2px_0_#111]">
+                      IN STOCK & READY TO SHIP
+                    </span>
+                  );
+                }
+                return null;
+              })() : (
+                <span className="font-black text-black text-sm tracking-widest bg-[#FFD700] border-[2px] border-black px-3 py-1 shadow-[2px_2px_0_#111]">
+                  SELLING FAST - SELECT A SIZE
+                </span>
+              )}
+          </div>
+
           {/* Buy Button */}
           <button onClick={handleAddToCart} className="w-full cartoon-btn py-4 bg-black hover:bg-[var(--color-electric-blue)] text-white border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
              <span className="font-cartoon text-3xl tracking-widest">ADD TO STASH</span>
@@ -130,6 +175,46 @@ export default function ProductDetailsPage() {
             <p className="font-mono text-xs md:text-sm font-bold text-black uppercase leading-relaxed">
               {product.description}
             </p>
+          </div>
+
+          {/* Model Info */}
+          <div className="mt-4 p-4 border-[3px] border-black bg-white shadow-[4px_4px_0_#111]">
+            <p className="font-black text-xs md:text-sm tracking-widest uppercase">
+              👕 MODEL IS 6'1" AND WEARING SIZE L FOR AN OVERSIZED FIT.
+            </p>
+          </div>
+
+          {/* Accordions */}
+          <div className="mt-8 flex flex-col gap-3 pb-8">
+            {[
+              { id: 'shipping', title: 'SHIPPING & DELIVERY', content: 'Free standard shipping on all orders over ₹2000. Express delivery takes 2-3 business days. All orders are tracked.' },
+              { id: 'care', title: 'CARE INSTRUCTIONS', content: 'Machine wash cold, inside out. Do not bleach. Tumble dry low or hang dry. Do not iron directly on the print or you will ruin it.' },
+              { id: 'returns', title: 'RETURNS & EXCHANGES', content: 'Not vibing with it? You have 7 days from delivery to return or exchange it. Items must be unworn and in original condition.' },
+            ].map((acc) => (
+              <div key={acc.id} className="border-[3px] border-black bg-white shadow-[4px_4px_0_#111] overflow-hidden">
+                <button 
+                  onClick={() => setOpenAccordion(openAccordion === acc.id ? null : acc.id)}
+                  className="w-full flex justify-between items-center p-4 hover:bg-gray-50 transition-colors"
+                >
+                  <span className="font-black tracking-widest text-sm uppercase">{acc.title}</span>
+                  <span className="font-black text-xl">{openAccordion === acc.id ? '−' : '+'}</span>
+                </button>
+                <AnimatePresence>
+                  {openAccordion === acc.id && (
+                    <motion.div 
+                      initial={{ height: 0 }}
+                      animate={{ height: "auto" }}
+                      exit={{ height: 0 }}
+                      className="overflow-hidden border-t-[3px] border-black"
+                    >
+                      <div className="p-4 bg-[#F4F4F0] font-mono text-xs md:text-sm font-bold text-black leading-relaxed">
+                        {acc.content}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
           </div>
 
         </div>
