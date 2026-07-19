@@ -60,10 +60,10 @@ export default function ProductDetailsPage() {
     <main className="min-h-screen bg-[#F4F4F0] pt-[76px]">
       
       {/* Split Screen Container */}
-      <div className="flex flex-col lg:flex-row w-full relative lg:min-h-[calc(100vh-76px)]">
+      <div className="flex flex-col lg:flex-row w-full relative lg:h-[calc(100vh-76px)]">
         
         {/* Left Side: Command Center (Flows Naturally) */}
-        <div className="w-full lg:w-[45%] p-6 md:p-8 lg:p-8 lg:pt-8 flex flex-col justify-center bg-white border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black relative z-20 overflow-y-auto max-h-[calc(100vh-76px)]">
+        <div className="w-full lg:w-[45%] p-6 md:p-8 lg:p-8 lg:pt-8 flex flex-col justify-start bg-white border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black relative z-20 overflow-y-auto">
           
           <h1 className="font-cartoon text-5xl md:text-6xl lg:text-6xl text-black tracking-widest leading-[0.85] mb-4 drop-shadow-[4px_4px_0_var(--color-electric-blue)] uppercase">
             {product.name}
