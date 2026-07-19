@@ -14,6 +14,7 @@ export default function ProductDetailsPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const addToCart = useCartStore(state => state.addToCart);
 
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
@@ -31,7 +32,9 @@ export default function ProductDetailsPage() {
       quantity: 1,
       image: product.image ? product.image.split(',')[0].trim() : "",
     });
-    alert("Added to stash!");
+    
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
   };
   
 
@@ -453,6 +456,32 @@ export default function ProductDetailsPage() {
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* Custom Add to Cart Toast */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 50, scale: 0.9 }}
+            className="fixed bottom-8 right-8 z-[9999] bg-[var(--color-electric-blue)] border-[4px] border-black shadow-[6px_6px_0_#111] p-4 pr-12 flex items-center gap-4"
+          >
+            <div className="w-12 h-12 bg-white border-[3px] border-black flex items-center justify-center p-1 shrink-0 overflow-hidden">
+               <img src={product.image ? product.image.split(',')[0].trim() : ""} alt="Added item" className="w-full h-full object-contain scale-110" />
+            </div>
+            <div>
+              <h4 className="font-cartoon text-2xl text-white tracking-widest leading-none drop-shadow-[2px_2px_0_#111]">ADDED TO STASH</h4>
+              <p className="font-black text-xs text-white uppercase tracking-widest mt-1">SIZE {selectedSize}</p>
+            </div>
+            <button 
+              onClick={() => setShowToast(false)}
+              className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center font-black text-white hover:text-black transition-colors"
+            >
+              X
+            </button>
+          </motion.div>
         )}
       </AnimatePresence>
     </main>
