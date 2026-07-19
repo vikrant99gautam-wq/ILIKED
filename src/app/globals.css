@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #FDFCF8; /* Warm cinematic white/cream */
+  --foreground: #111111;
+  
+  /* Brand Colors */
+  --color-pure-white: #FFFFFF;
+  --color-soft-canvas: #FDFCF8;
+  --color-primary-black: #111111;
+  --color-coral-red: #FF3F4F;
+  --color-electric-blue: #246BFD;
+  --color-fresh-green: #19B85A;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-outfit), Arial, Helvetica, sans-serif;
+  
+  --color-iliked-white: var(--color-pure-white);
+  --color-iliked-canvas: var(--color-soft-canvas);
+  --color-iliked-black: var(--color-primary-black);
+  --color-iliked-coral: var(--color-coral-red);
+  --color-iliked-blue: var(--color-electric-blue);
+  --color-iliked-green: var(--color-fresh-green);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+.font-cartoon {
+  font-family: 'Luckiest Guy', cursive;
+}
+
+
+
+/* Premium Typography Masking (Gas/Fluid Effect) */
+.fluid-gradient-text {
+  background: 
+    radial-gradient(circle at center, var(--color-coral-red) 0%, transparent 40%),
+    radial-gradient(circle at center, rgba(255, 63, 79, 0.7) 0%, transparent 35%),
+    var(--color-primary-black);
+  background-size: 250% 250%, 300% 300%, 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gasFlow 12s ease-in-out infinite alternate;
+}
+
+@keyframes gasFlow {
+  0% { background-position: 0% 0%, 100% 100%, 0% 0%; }
+  33% { background-position: 100% 0%, 0% 50%, 0% 0%; }
+  66% { background-position: 100% 100%, 50% 0%, 0% 0%; }
+  100% { background-position: 0% 100%, 0% 100%, 0% 0%; }
+}
+
+/* Ambient Glowing Background Orbs */
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-blob {
+  animation: blob 15s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Glassmorphism Floating Pill */
+.floating-pill {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 20px 40px rgba(17, 17, 17, 0.05);
+  border-radius: 100px;
+}
+
+/* Smooth Draw Animation for Underline */
+.draw-path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw 2s cubic-bezier(0.2, 1, 0.2, 1) forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Ticker Animation */
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-ticker {
+  animation: ticker 30s linear infinite;
+}
+
+/* --- CARTOON THEME UTILITIES --- */
+.cartoon-card {
+  border: 4px solid var(--color-primary-black);
+  box-shadow: 8px 8px 0px var(--color-primary-black);
+  transition: all 0.2s ease-in-out;
+}
+
+.cartoon-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0px var(--color-primary-black);
+}
+
+.cartoon-btn {
+  border: 3px solid var(--color-primary-black);
+  box-shadow: 4px 4px 0px var(--color-primary-black);
+  transition: all 0.15s ease-in-out;
+}
+
+.cartoon-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--color-primary-black);
+}
+
+.cartoon-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px var(--color-primary-black);
+}

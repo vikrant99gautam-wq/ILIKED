@@ -1,0 +1,99 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "STAY FRESH TEE",
+      "price": 45,
+      "category": "TEES",
+      "sizes": ["S", "M", "L", "XL"],
+      "color": "WHITE",
+      "image": "/images/primary-model.png",
+      "hoverImage": "/images/model-anim-1.png",
+      "bgColor": "bg-[#E5F1F9]",
+      "stock": 2,
+      "tag": "001",
+      "featured": true,
+      "description": "100% HEAVYWEIGHT COTTON. OVERSIZED BOXY FIT. SCREEN PRINTED IN THE TRENCHES. DON'T IRON OVER THE PRINT OR YOU'LL RUIN IT."
+    },
+    {
+      "id": "2",
+      "name": "VIBE CHECK HOODIE",
+      "price": 85,
+      "category": "HOODIES",
+      "sizes": ["M", "L", "XL"],
+      "color": "BLACK",
+      "image": "/images/model-anim-2.png",
+      "hoverImage": "/images/model-anim-3.png",
+      "bgColor": "bg-[var(--color-coral-red)]",
+      "stock": 8,
+      "tag": "JUST LIKED",
+      "featured": true,
+      "description": "PREMIUM FLEECE INTERIOR. BOXY DROPPED SHOULDER FIT. KEEPS YOU WARM IN THE TRENCHES."
+    },
+    {
+      "id": "3",
+      "name": "STREET BEAT CAP",
+      "price": 30,
+      "category": "ACCESSORIES",
+      "sizes": ["ONE SIZE"],
+      "color": "YELLOW",
+      "image": "/images/model-anim-1.png",
+      "hoverImage": "/images/primary-model.png",
+      "bgColor": "bg-[#FFD700]",
+      "stock": 1,
+      "tag": "RESTOCKED",
+      "featured": true,
+      "description": "VINTAGE WASHED COTTON TWILL. ADJUSTABLE STRAP. DON'T CAP."
+    },
+    {
+      "id": "4",
+      "name": "CLASSIC LOGO TEE",
+      "price": 40,
+      "category": "TEES",
+      "sizes": ["S", "M", "L", "XL"],
+      "color": "BLACK",
+      "image": "/images/secondary-model.png",
+      "hoverImage": "/images/model-anim-2.png",
+      "bgColor": "bg-[#19B85A]",
+      "stock": 12,
+      "tag": "002",
+      "featured": true,
+      "description": "THE ORIGINAL. THE CLASSIC. HEAVYWEIGHT COMBED COTTON."
+    },
+    {
+      "id": "5",
+      "name": "OVERSIZED ZIP UP",
+      "price": 95,
+      "category": "HOODIES",
+      "sizes": ["L", "XL"],
+      "color": "BLUE",
+      "image": "/images/model-anim-3.png",
+      "hoverImage": "/images/secondary-model.png",
+      "bgColor": "bg-[#E5F1F9]",
+      "stock": 3,
+      "tag": "",
+      "featured": false,
+      "description": "HEAVY ZIP. BIG HOOD. HIDES YOUR FACE."
+    },
+    {
+      "id": "6",
+      "name": "CHUNKY BEANIE",
+      "price": 25,
+      "category": "ACCESSORIES",
+      "sizes": ["ONE SIZE"],
+      "color": "BLUE",
+      "image": "/images/primary-model.png",
+      "hoverImage": "/images/model-anim-1.png",
+      "bgColor": "bg-[var(--color-electric-blue)]",
+      "stock": 20,
+      "tag": "",
+      "featured": false,
+      "description": "THICK KNIT. FITS ALL HEAD SIZES. PERFECT FOR WINTER."
+    }
+  ],
+  "settings": {
+    "storeName": "I LIKED",
+    "isStoreOpen": true
+  },
+  "orders": []
+}
