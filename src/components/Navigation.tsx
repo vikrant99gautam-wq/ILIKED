@@ -63,34 +63,27 @@ export default function Navigation() {
       </nav>
 
       {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            key="mobile-menu-overlay"
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 20, stiffness: 100 }}
-            className="fixed inset-0 z-[90] bg-[#F4F4F0] flex flex-col items-center justify-center pt-20 pointer-events-auto"
-          >
-            <div className="flex flex-col gap-6 w-full px-8 text-center">
-              <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-[var(--color-coral-red)] hover:text-white transition-colors">
-                SHOP
-              </Link>
-              <Link href="/moods" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-[#19B85A] hover:text-white transition-colors">
-                MOODS
-              </Link>
-              <Link href="/story" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-[var(--color-electric-blue)] hover:text-white transition-colors">
-                OUR STORY
-              </Link>
-            </div>
-            
-            <div className="mt-12 opacity-50 font-black tracking-widest text-sm uppercase">
-              STAY FRESH
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div
+        className={`fixed inset-0 z-[90] bg-[#F4F4F0] flex flex-col items-center justify-center pt-20 pointer-events-auto transition-transform duration-300 ease-in-out ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex flex-col gap-6 w-full px-8 text-center">
+          <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-[var(--color-coral-red)] hover:text-white transition-colors">
+            SHOP
+          </Link>
+          <Link href="/moods" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-[#19B85A] hover:text-white transition-colors">
+            MOODS
+          </Link>
+          <Link href="/story" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-[var(--color-electric-blue)] hover:text-white transition-colors">
+            OUR STORY
+          </Link>
+        </div>
+        
+        <div className="mt-12 opacity-50 font-black tracking-widest text-sm uppercase">
+          STAY FRESH
+        </div>
+      </div>
     </>
   );
 }
