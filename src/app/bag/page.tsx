@@ -60,7 +60,7 @@ export default function BagPage() {
                     className="relative bg-white border-[4px] border-black p-4 flex flex-col md:flex-row gap-6 shadow-[8px_8px_0_#111]"
                   >
                     {/* Item Image */}
-                    <div className={`w-full md:w-40 h-40 ${item.bgColor} border-[3px] border-black flex-shrink-0 overflow-hidden relative`}>
+                    <div className="w-full md:w-40 h-40 bg-white border-[3px] border-black flex-shrink-0 overflow-hidden relative">
                       <img src={item.image} alt={item.name} className="absolute w-full h-full object-contain drop-shadow-[4px_4px_0_#111] scale-125" />
                     </div>
 
@@ -68,7 +68,7 @@ export default function BagPage() {
                     <div className="flex-1 flex flex-col justify-between">
                       <div>
                         <h3 className="font-cartoon text-3xl tracking-widest uppercase">{item.name}</h3>
-                        <p className="font-black text-gray-500 tracking-widest">SIZE: {item.size} | COLOR: {item.color}</p>
+                        <p className="font-black text-gray-500 tracking-widest">SIZE: {item.size}</p>
                       </div>
                       
                       <div className="flex items-center justify-between mt-6">
