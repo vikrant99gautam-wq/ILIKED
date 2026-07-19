@@ -10,9 +10,13 @@ export default function BagPage() {
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeFromCart);
   const [mounted, setMounted] = useState(false);
+  const [settings, setSettings] = useState<any>(null);
 
   useEffect(() => {
     setMounted(true);
+    fetch('/api/settings').then(r => r.json()).then(data => {
+      if (!data.error) setSettings(data);
+    });
   }, []);
 
   const handleUpdateQuantity = (id: string, size: string, currentQty: number, delta: number) => {
@@ -21,8 +25,22 @@ export default function BagPage() {
   };
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = cart.length > 0 ? 850 : 0;
+  
+  // Calculate dynamic shipping
+  let shipping = 0;
+  let threshold = 2000;
+  if (settings) {
+    threshold = settings.free_shipping_threshold || 0;
+    if (cart.length > 0) {
+      shipping = (threshold > 0 && subtotal >= threshold) ? 0 : (settings.shipping_cost || 0);
+    }
+  } else {
+    shipping = cart.length > 0 ? 850 : 0; // Fallback before settings load
+  }
+  
   const total = subtotal + shipping;
+  const progress = threshold > 0 ? Math.min((subtotal / threshold) * 100, 100) : 100;
+  const amountNeeded = threshold > 0 ? threshold - subtotal : 0;
 
   if (!mounted) {
     return <main className="min-h-screen bg-[#F4F4F0] pt-[120px] pb-24 px-6 md:px-12"></main>;
@@ -32,9 +50,29 @@ export default function BagPage() {
     <main className="min-h-screen bg-[#F4F4F0] pt-[120px] pb-24 px-6 md:px-12">
       <div className="max-w-[1440px] mx-auto">
         
-        <h1 className="font-cartoon text-6xl md:text-8xl text-black tracking-widest mb-12 drop-shadow-[4px_4px_0_var(--color-electric-blue)]">
+        <h1 className="font-cartoon text-6xl md:text-8xl text-black tracking-widest mb-6 drop-shadow-[4px_4px_0_var(--color-electric-blue)]">
           YOUR STASH
         </h1>
+
+        {/* Free Shipping Progress Bar */}
+        {cart.length > 0 && threshold > 0 && (
+          <div className="mb-10 p-4 bg-white border-[4px] border-black shadow-[4px_4px_0_#111]">
+            <h3 className="font-black text-xl mb-2 text-center uppercase">
+              {amountNeeded > 0 
+                ? `🔥 YOU'RE ONLY ₹${amountNeeded} AWAY FROM FREE SHIPPING! 🔥`
+                : `✨ YOU UNLOCKED FREE SHIPPING! ✨`
+              }
+            </h3>
+            <div className="w-full h-4 bg-gray-200 border-[2px] border-black overflow-hidden relative">
+              <div 
+                className="h-full bg-[var(--color-electric-blue)] transition-all duration-500 ease-out"
+                style={{ width: `${progress}%` }}
+              ></div>
+              {/* Halftone pattern overlay */}
+              <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'radial-gradient(circle, #000 2px, transparent 2.5px)', backgroundSize: '8px 8px' }}></div>
+            </div>
+          </div>
+        )}
 
         {cart.length === 0 ? (
           <div className="w-full py-32 flex flex-col items-center justify-center border-[6px] border-dashed border-black bg-white">

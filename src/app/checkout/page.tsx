@@ -9,6 +9,7 @@ export default function CheckoutPage() {
   const cartItems = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
   const [mounted, setMounted] = useState(false);
+  const [settings, setSettings] = useState<any>(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -22,10 +23,23 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     setMounted(true);
+    fetch('/api/settings').then(r => r.json()).then(data => {
+      if (!data.error) setSettings(data);
+    });
   }, []);
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = cartItems.length > 0 ? 850 : 0; // Flat ₹850 shipping
+  
+  let shipping = 0;
+  if (settings) {
+    const threshold = settings.free_shipping_threshold || 0;
+    if (cartItems.length > 0) {
+      shipping = (threshold > 0 && subtotal >= threshold) ? 0 : (settings.shipping_cost || 0);
+    }
+  } else {
+    shipping = cartItems.length > 0 ? 850 : 0;
+  }
+  
   const total = subtotal + shipping;
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -32,6 +32,8 @@ export interface StoreSettings {
   contact_email: string;
   currency: string;
   maintenance_mode: boolean;
+  free_shipping_threshold: number;
+  shipping_cost: number;
 }
 
 export async function getProducts() {

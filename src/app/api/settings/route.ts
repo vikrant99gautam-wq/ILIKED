@@ -7,21 +7,38 @@ export async function GET() {
     .select('*')
     .single();
 
-  // If table exists but is empty, return a default object
+  const defaultSettings = {
+    store_name: 'I LIKED',
+    contact_email: 'hello@iliked.com',
+    currency: 'INR',
+    maintenance_mode: false,
+    free_shipping_threshold: 2000,
+    shipping_cost: 850
+  };
+
+  // If table exists but is empty
   if (error && error.code === 'PGRST116') {
-    return NextResponse.json({
-      store_name: 'I LIKED',
-      contact_email: 'hello@iliked.com',
-      currency: 'USD',
-      maintenance_mode: false
-    });
+    return NextResponse.json(defaultSettings);
   }
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(data);
+  // Inject defaults for new columns if they are null/undefined
+  const finalData = {
+    ...defaultSettings,
+    ...data
+  };
+  // Ensure we don't override 0 values with defaults using fallback, but if they are literally missing from schema they might be undefined
+  if (data.free_shipping_threshold === undefined || data.free_shipping_threshold === null) {
+    finalData.free_shipping_threshold = defaultSettings.free_shipping_threshold;
+  }
+  if (data.shipping_cost === undefined || data.shipping_cost === null) {
+    finalData.shipping_cost = defaultSettings.shipping_cost;
+  }
+
+  return NextResponse.json(finalData);
 }
 
 export async function PUT(request: Request) {

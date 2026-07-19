@@ -107,6 +107,38 @@ export default function AdminSettingsPage() {
               </select>
             </div>
 
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="flex-1">
+                <label className="block font-black mb-2 text-xl">SHIPPING COST</label>
+                <div className="flex relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-gray-500 text-lg">₹</span>
+                  <input 
+                    type="number" 
+                    value={settings.shipping_cost || 0} 
+                    onChange={e => setSettings({...settings, shipping_cost: Number(e.target.value)})}
+                    className="w-full border-[3px] border-black p-3 pl-8 font-bold text-lg focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
+                    required
+                  />
+                </div>
+                <p className="text-gray-500 mt-1 font-bold text-sm">Default shipping fee per order.</p>
+              </div>
+
+              <div className="flex-1">
+                <label className="block font-black mb-2 text-xl">FREE SHIPPING THRESHOLD</label>
+                <div className="flex relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-gray-500 text-lg">₹</span>
+                  <input 
+                    type="number" 
+                    value={settings.free_shipping_threshold || 0} 
+                    onChange={e => setSettings({...settings, free_shipping_threshold: Number(e.target.value)})}
+                    className="w-full border-[3px] border-black p-3 pl-8 font-bold text-lg focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
+                    required
+                  />
+                </div>
+                <p className="text-gray-500 mt-1 font-bold text-sm">Amount needed for free shipping (0 to disable).</p>
+              </div>
+            </div>
+
             <div className="border-[3px] border-black p-4 bg-gray-50 mt-4 flex items-center justify-between">
               <div>
                 <label className="block font-black text-xl">MAINTENANCE MODE</label>
