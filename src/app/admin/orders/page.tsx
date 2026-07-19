@@ -13,9 +13,19 @@ export default function AdminOrdersPage() {
 
   const fetchOrders = async () => {
     setIsLoading(true);
-    const res = await fetch("/api/orders");
-    const data = await res.json();
-    setOrders(data || []);
+    try {
+      const res = await fetch("/api/orders");
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setOrders(data);
+      } else {
+        console.error("Failed to fetch orders:", data);
+        setOrders([]);
+      }
+    } catch (err) {
+      console.error("Network error:", err);
+      setOrders([]);
+    }
     setIsLoading(false);
   };
 
