@@ -90,7 +90,7 @@ export default function ShopGrid() {
           
           {/* Sidebar Filters */}
           <div className={`
-            fixed inset-0 z-[110] bg-white lg:static lg:bg-transparent lg:w-[280px] shrink-0 flex flex-col gap-8 transition-all overflow-y-auto lg:overflow-visible p-6 lg:p-0 pt-20 lg:pt-0
+            fixed inset-0 z-[110] bg-white lg:sticky lg:top-[100px] lg:z-0 lg:h-[calc(100vh-120px)] lg:bg-transparent lg:w-[280px] shrink-0 flex flex-col gap-8 transition-all overflow-y-auto p-6 lg:p-0 pt-20 lg:pt-0
             ${isMobileFiltersOpen ? "block" : "hidden lg:flex"}
           `}>
             
