@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 const CHECKOUT_ITEMS = [
   { id: 1, name: "STAY FRESH TEE", price: 3825, size: "L", quantity: 1, image: "/images/primary-model.png" },
-  { id: 2, name: "UTILITY CARGO", price: 7225, size: "32", quantity: 1, image: "/images/gallery-1.png" },
+  { id: 2, name: "VIBE CHECK HOODIE", price: 7225, size: "XL", quantity: 2, image: "/images/model-anim-2.png" },
 ];
 
 export default function CheckoutPage() {

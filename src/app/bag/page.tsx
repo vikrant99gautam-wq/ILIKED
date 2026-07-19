@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 const INITIAL_CART = [
-  { id: 1, name: "STAY FRESH TEE", price: 45, size: "L", color: "WHITE", quantity: 1, image: "/images/primary-model.png", bgColor: "bg-[#E5F1F9]" },
-  { id: 2, name: "VIBE CHECK HOODIE", price: 85, size: "XL", color: "BLACK", quantity: 2, image: "/images/model-anim-2.png", bgColor: "bg-[var(--color-coral-red)]" },
+  { id: 1, name: "STAY FRESH TEE", price: 3825, size: "L", color: "WHITE", quantity: 1, image: "/images/primary-model.png", bgColor: "bg-[#E5F1F9]" },
+  { id: 2, name: "VIBE CHECK HOODIE", price: 7225, size: "XL", color: "BLACK", quantity: 2, image: "/images/model-anim-2.png", bgColor: "bg-[var(--color-coral-red)]" },
 ];
 
 export default function BagPage() {
@@ -26,7 +26,7 @@ export default function BagPage() {
   };
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = cart.length > 0 ? 15 : 0;
+  const shipping = cart.length > 0 ? 850 : 0;
   const total = subtotal + shipping;
 
   return (
