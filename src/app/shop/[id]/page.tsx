@@ -63,9 +63,9 @@ export default function ProductDetailsPage() {
       <div className="flex flex-col lg:flex-row w-full relative lg:min-h-[calc(100vh-76px)]">
         
         {/* Left Side: Command Center (Flows Naturally) */}
-        <div className="w-full lg:w-[45%] p-6 md:p-8 lg:p-12 lg:pt-16 flex flex-col justify-center bg-white border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black relative z-20">
+        <div className="w-full lg:w-[45%] p-6 md:p-8 lg:p-8 lg:pt-8 flex flex-col justify-center bg-white border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black relative z-20 overflow-y-auto max-h-[calc(100vh-76px)]">
           
-          <h1 className="font-cartoon text-5xl md:text-7xl lg:text-7xl text-black tracking-widest leading-[0.8] mb-4 drop-shadow-[4px_4px_0_var(--color-electric-blue)] uppercase">
+          <h1 className="font-cartoon text-5xl md:text-6xl lg:text-6xl text-black tracking-widest leading-[0.85] mb-4 drop-shadow-[4px_4px_0_var(--color-electric-blue)] uppercase">
             {product.name}
           </h1>
 
@@ -74,8 +74,8 @@ export default function ProductDetailsPage() {
           </div>
 
           {/* Size Selector */}
-          <div className="mt-2 mb-8">
-            <div className="flex items-center justify-between mb-4">
+          <div className="mt-2 mb-6">
+            <div className="flex items-center justify-between mb-3">
               <h3 className="font-black tracking-[0.2em] text-gray-500 text-sm">SELECT SIZE</h3>
               <button 
                 onClick={() => setIsSizeGuideOpen(true)} 
