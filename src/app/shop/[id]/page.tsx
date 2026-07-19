@@ -93,19 +93,23 @@ export default function ProductDetailsPage() {
               </button>
             </div>
             <div className="flex flex-wrap gap-3">
-              {product.sizes?.map((size: string) => {
-                const inStock = product.stock > 0;
+              {product.sizes?.map((sizeData: string) => {
+                const parts = sizeData.split(':');
+                const sizeName = parts[0];
+                const sizeStock = parts.length > 1 ? parseInt(parts[1]) : 1;
+                const inStock = sizeStock > 0;
+                
                 return (
                   <button 
-                    key={size}
+                    key={sizeName}
                     disabled={!inStock}
-                    onClick={() => setSelectedSize(size)}
+                    onClick={() => setSelectedSize(sizeName)}
                     className={`relative w-14 h-14 border-[3px] border-black font-cartoon text-2xl flex items-center justify-center transition-transform
                       ${!inStock ? "bg-gray-200 text-gray-400 cursor-not-allowed" : 
-                        selectedSize === size ? "bg-black text-white shadow-[4px_4px_0_var(--color-coral-red)] scale-110" : "bg-white text-black hover:bg-gray-100 hover:-translate-y-1 shadow-[4px_4px_0_#111]"}
+                        selectedSize === sizeName ? "bg-black text-white shadow-[4px_4px_0_var(--color-coral-red)] scale-110" : "bg-white text-black hover:bg-gray-100 hover:-translate-y-1 shadow-[4px_4px_0_#111]"}
                     `}
                   >
-                    {size}
+                    {sizeName}
                     {/* Out of stock strike */}
                     {!inStock && (
                       <span className="absolute inset-0 font-black text-[var(--color-coral-red)] text-4xl leading-none flex items-center justify-center pointer-events-none opacity-80">X</span>

@@ -10,6 +10,7 @@ export default function AdminProductsPage() {
   // Form State
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Partial<Product>>({});
+  const [sizeInventory, setSizeInventory] = useState<{size: string, stock: number}[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -26,6 +27,10 @@ export default function AdminProductsPage() {
   };
 
   const handleSave = async () => {
+    // Calculate total stock from sizeInventory
+    const totalStock = sizeInventory.reduce((acc, curr) => acc + curr.stock, 0);
+    const newSizes = sizeInventory.map(s => `${s.size}:${s.stock}`);
+
     if (currentProduct.id) {
       // Update
       await fetch(`/api/products/${currentProduct.id}`, {
@@ -33,7 +38,8 @@ export default function AdminProductsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...currentProduct,
-          sizes: typeof currentProduct.sizes === 'string' ? (currentProduct.sizes as string).split(',').map(s => s.trim()) : currentProduct.sizes
+          stock: totalStock,
+          sizes: newSizes
         }),
       });
     } else {
@@ -43,7 +49,8 @@ export default function AdminProductsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...currentProduct,
-          sizes: typeof currentProduct.sizes === 'string' ? (currentProduct.sizes as string).split(',').map(s => s.trim()) : (currentProduct.sizes || ["M", "L"]),
+          stock: totalStock,
+          sizes: newSizes
         }),
       });
     }
@@ -99,7 +106,11 @@ export default function AdminProductsPage() {
       <div className="flex justify-between items-end mb-8 border-b-[4px] border-black pb-4">
         <h1 className="font-cartoon text-5xl">MANAGE PRODUCTS</h1>
         <button 
-          onClick={() => { setCurrentProduct({}); setIsEditing(true); }}
+          onClick={() => { 
+            setCurrentProduct({}); 
+            setSizeInventory([{size: "S", stock: 1}, {size: "M", stock: 1}, {size: "L", stock: 1}]);
+            setIsEditing(true); 
+          }}
           className="cartoon-btn px-6 py-2 bg-black text-white font-black tracking-widest"
         >
           + ADD NEW
@@ -136,7 +147,16 @@ export default function AdminProductsPage() {
                     </span>
                   </td>
                   <td className="p-4 flex gap-2">
-                    <button onClick={() => { setCurrentProduct(p); setIsEditing(true); }} className="px-4 py-2 border-[2px] border-black bg-[#FFD700] hover:bg-black hover:text-white font-black text-sm">EDIT</button>
+                    <button onClick={() => { 
+                      setCurrentProduct(p); 
+                      // Parse existing sizes "S:5" to {size: "S", stock: 5}
+                      const parsed = (p.sizes || []).map((s: string) => {
+                        const parts = s.split(':');
+                        return parts.length === 2 ? { size: parts[0], stock: parseInt(parts[1]) } : { size: s, stock: 1 };
+                      });
+                      setSizeInventory(parsed);
+                      setIsEditing(true); 
+                    }} className="px-4 py-2 border-[2px] border-black bg-[#FFD700] hover:bg-black hover:text-white font-black text-sm">EDIT</button>
                     <button onClick={() => handleDelete(p.id)} className="px-4 py-2 border-[2px] border-black bg-[var(--color-coral-red)] text-white hover:bg-black font-black text-sm">DEL</button>
                   </td>
                 </tr>
@@ -160,7 +180,15 @@ export default function AdminProductsPage() {
                     STOCK: {p.stock}
                   </span>
                   <div className="flex gap-2">
-                    <button onClick={() => { setCurrentProduct(p); setIsEditing(true); }} className="px-4 py-2 border-[2px] border-black bg-[#FFD700] font-black text-sm">EDIT</button>
+                    <button onClick={() => { 
+                      setCurrentProduct(p); 
+                      const parsed = (p.sizes || []).map((s: string) => {
+                        const parts = s.split(':');
+                        return parts.length === 2 ? { size: parts[0], stock: parseInt(parts[1]) } : { size: s, stock: 1 };
+                      });
+                      setSizeInventory(parsed);
+                      setIsEditing(true); 
+                    }} className="px-4 py-2 border-[2px] border-black bg-[#FFD700] font-black text-sm">EDIT</button>
                     <button onClick={() => handleDelete(p.id)} className="px-4 py-2 border-[2px] border-black bg-[var(--color-coral-red)] text-white font-black text-sm">DEL</button>
                   </div>
                 </div>
@@ -211,24 +239,62 @@ export default function AdminProductsPage() {
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block font-black mb-1">STOCK</label>
+                  <label className="block font-black mb-1">TOTAL STOCK (Auto-calculated)</label>
                   <input 
                     type="number" 
-                    value={currentProduct.stock || 0} 
-                    onChange={e => setCurrentProduct({...currentProduct, stock: Number(e.target.value)})}
-                    className="w-full border-[3px] border-black p-2 font-bold"
+                    value={sizeInventory.reduce((acc, curr) => acc + curr.stock, 0)} 
+                    disabled
+                    className="w-full border-[3px] border-black p-2 font-bold bg-gray-200 cursor-not-allowed text-gray-500"
                   />
                 </div>
               </div>
               <div>
-                <label className="block font-black mb-1">SIZES (Comma separated)</label>
-                <input 
-                  type="text" 
-                  value={Array.isArray(currentProduct.sizes) ? currentProduct.sizes.join(', ') : (currentProduct.sizes || 'S, M, L, XL')} 
-                  onChange={e => setCurrentProduct({...currentProduct, sizes: e.target.value as any})}
-                  className="w-full border-[3px] border-black p-2 font-bold"
-                  placeholder="S, M, L, XL"
-                />
+                <label className="block font-black mb-1 flex items-center justify-between">
+                  <span>SIZE & INVENTORY MANAGER</span>
+                  <button 
+                    onClick={() => setSizeInventory([...sizeInventory, {size: "NEW", stock: 0}])}
+                    className="px-2 py-1 bg-black text-white text-xs border-[2px] border-black hover:bg-[var(--color-electric-blue)]"
+                  >
+                    + ADD SIZE
+                  </button>
+                </label>
+                <div className="flex flex-col gap-2 p-4 border-[3px] border-black bg-gray-50">
+                  {sizeInventory.map((item, idx) => (
+                    <div key={idx} className="flex gap-2 items-center">
+                      <input 
+                        type="text" 
+                        value={item.size}
+                        onChange={(e) => {
+                          const newInv = [...sizeInventory];
+                          newInv[idx].size = e.target.value.toUpperCase();
+                          setSizeInventory(newInv);
+                        }}
+                        className="w-24 border-[2px] border-black p-1 font-bold text-center uppercase"
+                        placeholder="S, M, L..."
+                      />
+                      <span className="font-black">QTY:</span>
+                      <input 
+                        type="number" 
+                        value={item.stock}
+                        onChange={(e) => {
+                          const newInv = [...sizeInventory];
+                          newInv[idx].stock = Number(e.target.value);
+                          setSizeInventory(newInv);
+                        }}
+                        className="w-20 border-[2px] border-black p-1 font-bold text-center"
+                      />
+                      <button 
+                        onClick={() => setSizeInventory(sizeInventory.filter((_, i) => i !== idx))}
+                        className="ml-auto px-2 py-1 bg-[var(--color-coral-red)] text-white font-black text-xs border-[2px] border-black hover:bg-black"
+                      >
+                        REMOVE
+                      </button>
+                    </div>
+                  ))}
+                  {sizeInventory.length === 0 && (
+                    <div className="text-gray-500 font-bold italic">No sizes added. Click + ADD SIZE to start.</div>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block font-black mb-1">IMAGES (Add multiple)</label>
