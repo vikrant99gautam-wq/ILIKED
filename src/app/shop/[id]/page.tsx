@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
 
-import { useCartStore } from "@/lib/store";
+import { useCartStore, useWishlistStore } from "@/lib/store";
 
 export default function ProductDetailsPage() {
   const params = useParams();
@@ -16,6 +16,9 @@ export default function ProductDetailsPage() {
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const addToCart = useCartStore(state => state.addToCart);
+  
+  const toggleLike = useWishlistStore(state => state.toggleLike);
+  const isLiked = useWishlistStore(state => state.isLiked);
 
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
 
@@ -51,7 +54,7 @@ export default function ProductDetailsPage() {
           if (!allProductsData.error && Array.isArray(allProductsData)) {
             const variants = allProductsData.filter((p: any) => p.name === productData.name);
             setColorVariants(variants);
-            setRelatedProducts(allProductsData.filter((p: any) => p.name !== productData.name).slice(0, 3));
+            setRelatedProducts(allProductsData.filter((p: any) => p.name !== productData.name).slice(0, 4));
           }
         }
       }).catch(() => setProduct(null));
@@ -78,9 +81,19 @@ export default function ProductDetailsPage() {
         {/* Left Side: Command Center (Flows Naturally) */}
         <div className="w-full lg:w-[45%] p-6 md:p-8 lg:p-8 lg:pt-8 flex flex-col justify-start bg-white border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black relative z-20 overflow-y-auto">
           
-          <h1 className="font-cartoon text-5xl md:text-6xl lg:text-6xl text-black tracking-widest leading-[0.85] mb-4 drop-shadow-[4px_4px_0_var(--color-electric-blue)] uppercase">
-            {product.name}
-          </h1>
+          <div className="flex justify-between items-start mb-4 gap-4">
+            <h1 className="font-cartoon text-5xl md:text-6xl lg:text-6xl text-black tracking-widest leading-[0.85] drop-shadow-[4px_4px_0_var(--color-electric-blue)] uppercase">
+              {product.name}
+            </h1>
+            <button 
+              onClick={() => toggleLike({ id: product.id, name: product.name, price: product.price, image: product.image?.split(',')[0].trim() })}
+              className={`shrink-0 w-12 h-12 border-[3px] border-black rounded-full flex items-center justify-center transition-transform hover:scale-110 shadow-[4px_4px_0_#111] ${isLiked(product.id) ? 'bg-[#FFD700] text-black' : 'bg-white text-black'}`}
+            >
+              <svg className="w-6 h-6" fill={isLiked(product.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+          </div>
 
           <div className="mb-2">
              <span className="font-sans font-black text-black text-2xl tracking-wide">₹{Number(product.price).toFixed(2)}</span>
@@ -334,7 +347,7 @@ export default function ProductDetailsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {relatedProducts.map((relProduct) => (
               <motion.div
                 initial={{ opacity: 0, y: 50 }}

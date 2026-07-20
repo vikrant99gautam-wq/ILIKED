@@ -96,19 +96,48 @@ export default function CheckoutPage() {
     }
   }, [formData.zip]);
 
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{code: string, discount: number} | null>(null);
+  const [promoError, setPromoError] = useState("");
+
+  const handleApplyPromo = () => {
+    setPromoError("");
+    if (!promoCodeInput.trim()) return;
+    
+    if (!settings?.promo_codes) {
+      setPromoError("Invalid code.");
+      return;
+    }
+    try {
+      const promos = JSON.parse(settings.promo_codes);
+      const found = promos.find((p: any) => p.code.toUpperCase() === promoCodeInput.trim().toUpperCase());
+      if (found) {
+        setAppliedPromo(found);
+      } else {
+        setPromoError("Invalid code.");
+        setAppliedPromo(null);
+      }
+    } catch(e) {
+      setPromoError("Promo system offline.");
+    }
+  };
+
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const discountAmount = appliedPromo ? Math.floor((subtotal * appliedPromo.discount) / 100) : 0;
+  const discountedSubtotal = subtotal - discountAmount;
   
   let shipping = 0;
   if (settings) {
-    const threshold = settings.free_shipping_threshold || 0;
-    if (cartItems.length > 0) {
-      shipping = (threshold > 0 && subtotal >= threshold) ? 0 : (settings.shipping_cost || 0);
+    if (settings.free_shipping_threshold > 0 && discountedSubtotal >= settings.free_shipping_threshold) {
+      shipping = 0;
+    } else {
+      shipping = settings.shipping_cost || 0;
     }
   } else {
     shipping = cartItems.length > 0 ? 850 : 0;
   }
   
-  const total = subtotal + shipping;
+  const total = discountedSubtotal + shipping;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,6 +148,14 @@ export default function CheckoutPage() {
       // to avoid breaking the Supabase table schema if columns don't exist.
       const itemsWithShipping = [
         ...cartItems,
+        ...(appliedPromo ? [{
+          id: `PROMO-${appliedPromo.code}`,
+          name: `Discount (${appliedPromo.code})`,
+          size: "-",
+          price: -discountAmount,
+          quantity: 1,
+          image: ""
+        }] : []),
         {
           id: "SHIPPING-INFO",
           name: "Delivery Details",
@@ -312,12 +349,52 @@ export default function CheckoutPage() {
               ))}
             </div>
 
+            {/* Promo Code */}
+            <div className="mb-8 border-b-[3px] border-dashed border-black pb-8">
+              <label className="font-bold text-sm tracking-widest uppercase mb-2 block">PROMO CODE</label>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  value={promoCodeInput}
+                  onChange={(e) => setPromoCodeInput(e.target.value.toUpperCase())}
+                  disabled={!!appliedPromo}
+                  placeholder="GOT A CODE?"
+                  className="flex-1 p-3 border-[3px] border-black font-bold outline-none focus:ring-4 focus:ring-[#FFD700] uppercase"
+                />
+                {!appliedPromo ? (
+                  <button 
+                    type="button"
+                    onClick={handleApplyPromo}
+                    className="px-6 border-[3px] border-black bg-black text-white font-black tracking-widest hover:bg-[var(--color-electric-blue)] transition-colors"
+                  >
+                    APPLY
+                  </button>
+                ) : (
+                  <button 
+                    type="button"
+                    onClick={() => { setAppliedPromo(null); setPromoCodeInput(""); setPromoError(""); }}
+                    className="px-6 border-[3px] border-black bg-red-500 text-white font-black tracking-widest hover:bg-black transition-colors"
+                  >
+                    REMOVE
+                  </button>
+                )}
+              </div>
+              {promoError && <p className="text-red-600 font-bold text-sm mt-2 uppercase">{promoError}</p>}
+              {appliedPromo && <p className="text-[#19B85A] font-bold text-sm mt-2 uppercase">Code {appliedPromo.code} applied! (-{appliedPromo.discount}%)</p>}
+            </div>
+
             {/* Totals */}
             <div className="space-y-2 text-lg">
               <div className="flex justify-between">
                 <span className="text-gray-500 font-bold tracking-widest text-sm">SUBTOTAL</span>
                 <span className="font-black">₹{subtotal}</span>
               </div>
+              {appliedPromo && (
+                <div className="flex justify-between text-[#19B85A]">
+                  <span className="font-bold tracking-widest text-sm">DISCOUNT ({appliedPromo.code})</span>
+                  <span className="font-black">-₹{discountAmount}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-gray-500 font-bold tracking-widest text-sm">SHIPPING</span>
                 <span className="font-black">₹{shipping}</span>

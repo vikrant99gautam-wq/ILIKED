@@ -13,7 +13,8 @@ export async function GET() {
     currency: 'INR',
     maintenance_mode: false,
     free_shipping_threshold: 2000,
-    shipping_cost: 850
+    shipping_cost: 850,
+    promo_codes: '[]'
   };
 
   // If table exists but is empty
@@ -36,6 +37,9 @@ export async function GET() {
   }
   if (data.shipping_cost === undefined || data.shipping_cost === null) {
     finalData.shipping_cost = defaultSettings.shipping_cost;
+  }
+  if (data.promo_codes === undefined || data.promo_codes === null) {
+    finalData.promo_codes = defaultSettings.promo_codes;
   }
 
   return NextResponse.json(finalData);

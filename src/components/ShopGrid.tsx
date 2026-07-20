@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import FOMOBar from "@/components/FOMOBar";
+import { useWishlistStore } from "@/lib/store";
 
 const CATEGORIES = ["NORMAL TEES", "OVERSIZED TEES", "OPTIC WASH TEES"];
 const SIZES = ["S", "M", "L", "XL", "ONE SIZE"];
@@ -20,6 +21,9 @@ export default function ShopGrid() {
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("NEWEST");
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  
+  const toggleLike = useWishlistStore((state) => state.toggleLike);
+  const isLiked = useWishlistStore((state) => state.isLiked);
 
   useEffect(() => {
     fetch('/api/products')
@@ -205,6 +209,24 @@ export default function ShopGrid() {
                     >
                       {/* Product Image Area */}
                       <div className={`relative w-full aspect-[4/5] ${product.bgColor} border-[4px] border-black shadow-inner mb-6 overflow-hidden flex items-center justify-center`}>
+                        {/* Wishlist Heart */}
+                        <button 
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            toggleLike({ 
+                              id: product.id, 
+                              name: product.name, 
+                              price: product.price, 
+                              image: product.image?.split(',')[0].trim() 
+                            }); 
+                          }}
+                          className={`absolute top-4 right-4 z-20 w-12 h-12 border-[3px] border-black flex items-center justify-center transition-transform hover:scale-110 shadow-[4px_4px_0_#111] ${isLiked(product.id) ? 'bg-[#FFD700] text-black' : 'bg-white text-black'}`}
+                        >
+                          <svg className="w-6 h-6" fill={isLiked(product.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
+                        </button>
+
                         {/* Halftone dots overlay */}
                         <div 
                           className="absolute inset-0 opacity-[0.15] mix-blend-overlay pointer-events-none"

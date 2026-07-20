@@ -141,6 +141,20 @@ export default function AdminSettingsPage() {
               </div>
             </div>
 
+            <div className="border-[3px] border-black p-4 bg-gray-50 mt-4">
+              <label className="block font-black text-xl mb-2">PROMO CODES (JSON)</label>
+              <p className="text-gray-600 font-bold text-sm mb-4">
+                Define promo codes as a JSON array. Example:<br/>
+                <code>{`[{"code": "WELCOME10", "discount": 10}]`}</code> (Discount is in percentage %)
+              </p>
+              <textarea 
+                value={settings.promo_codes || "[]"}
+                onChange={e => setSettings({...settings, promo_codes: e.target.value})}
+                className="w-full border-[3px] border-black p-3 font-mono text-sm focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
+                rows={4}
+              />
+            </div>
+
             <div className="border-[3px] border-black p-4 bg-gray-50 mt-4 flex items-center justify-between">
               <div>
                 <label className="block font-black text-xl">MAINTENANCE MODE</label>

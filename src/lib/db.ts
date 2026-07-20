@@ -34,6 +34,7 @@ export interface StoreSettings {
   maintenance_mode: boolean;
   free_shipping_threshold: number;
   shipping_cost: number;
+  promo_codes?: string; // JSON string representing array of {code: string, discount: number}
 }
 
 export async function getProducts() {

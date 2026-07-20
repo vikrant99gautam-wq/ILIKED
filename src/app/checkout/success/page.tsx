@@ -80,8 +80,8 @@ function SuccessContent() {
         <div className="border-b-[3px] border-dashed border-black w-full my-6"></div>
 
         {/* ITEMS LIST */}
-        <div className="font-mono text-base md:text-lg w-full font-bold mb-6">
-          <div className="flex justify-between text-gray-500 text-sm mb-6 border-b-[2px] border-black pb-2">
+        <div className="font-mono text-lg md:text-xl w-full font-bold mb-6">
+          <div className="flex justify-between text-gray-500 text-base mb-6 border-b-[2px] border-black pb-2">
             <span className="w-1/2">ITEM</span>
             <span className="w-1/4 text-center">QTY</span>
             <span className="w-1/4 text-right">TOTAL</span>
@@ -90,22 +90,25 @@ function SuccessContent() {
           <div className="space-y-6">
             {order.items.map((item: any, i: number) => {
               if (item.id === "SHIPPING-INFO") return null;
+              const isPromo = item.id.startsWith("PROMO-");
               return (
-                <div key={i} className="flex justify-between items-center">
-                  <div className="w-1/2 pr-2 flex items-center gap-3">
-                    {item.image && (
-                      <img src={item.image} alt={item.name} className="w-16 h-16 border-[2px] border-black object-contain bg-white shrink-0 shadow-[2px_2px_0_#111]" />
+                <div key={i} className={`flex justify-between items-center ${isPromo ? 'text-[#19B85A]' : ''}`}>
+                  <div className="w-1/2 pr-2 flex items-center gap-4">
+                    {item.image ? (
+                      <img src={item.image} alt={item.name} className="w-20 h-20 border-[3px] border-black object-contain bg-white shrink-0 shadow-[3px_3px_0_#111]" />
+                    ) : (
+                      !isPromo && <div className="w-20 h-20 border-[3px] border-black bg-gray-200 shrink-0 shadow-[3px_3px_0_#111]"></div>
                     )}
                     <div>
-                      <p className="leading-tight font-black">{item.name}</p>
-                      <p className="text-gray-500 text-sm mt-1">SIZE: {item.size}</p>
+                      <p className="leading-tight font-black text-xl">{item.name}</p>
+                      {!isPromo && <p className="text-gray-500 text-sm mt-1">SIZE: {item.size}</p>}
                     </div>
                   </div>
                   <div className="w-1/4 text-center">
                     <p>{item.quantity}</p>
                   </div>
                   <div className="w-1/4 text-right">
-                    <p>₹{item.price * item.quantity}</p>
+                    <p className="font-black">{isPromo ? `₹${item.price}` : `₹${item.price * item.quantity}`}</p>
                   </div>
                 </div>
               );

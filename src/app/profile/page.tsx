@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import type { Session, User } from "@supabase/supabase-js";
+import { useWishlistStore } from "@/lib/store";
+import Link from "next/link";
 
 export default function ProfilePage() {
   const [session, setSession] = useState<Session | null>(null);
@@ -156,8 +158,11 @@ function AuthUI() {
 function Dashboard({ user }: { user: User }) {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'orders' | 'addresses' | 'account'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'likes' | 'addresses' | 'account'>('orders');
   const [expandedOrders, setExpandedOrders] = useState<Record<string, boolean>>({});
+
+  const wishlistItems = useWishlistStore(state => state.items);
+  const toggleLike = useWishlistStore(state => state.toggleLike);
 
   const [addressForm, setAddressForm] = useState({
     firstName: '',
@@ -224,6 +229,12 @@ function Dashboard({ user }: { user: User }) {
           MY ORDERS
         </button>
         <button 
+           onClick={() => setActiveTab('likes')}
+           className={`text-left font-cartoon text-3xl px-6 py-4 border-[4px] border-black transition-all shadow-[6px_6px_0_#111] hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0_#111] ${activeTab === 'likes' ? 'bg-black text-white' : 'bg-white text-black hover:bg-[var(--color-electric-blue)] hover:text-white'}`}
+        >
+          MY LIKES ❤️
+        </button>
+        <button 
            onClick={() => setActiveTab('addresses')}
            className={`text-left font-cartoon text-3xl px-6 py-4 border-[4px] border-black transition-all shadow-[6px_6px_0_#111] hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0_#111] ${activeTab === 'addresses' ? 'bg-black text-white' : 'bg-white text-black hover:bg-[var(--color-electric-blue)] hover:text-white'}`}
         >
@@ -242,7 +253,7 @@ function Dashboard({ user }: { user: User }) {
         {/* Header */}
         <div className="bg-black text-white p-6 border-b-[4px] border-black">
           <h2 className="font-cartoon text-4xl tracking-widest uppercase">
-            {activeTab === 'orders' ? 'MY ORDERS' : activeTab === 'addresses' ? 'SAVED ADDRESS' : 'ACCOUNT SETTINGS'}
+            {activeTab === 'orders' ? 'MY ORDERS' : activeTab === 'likes' ? 'MY LIKES' : activeTab === 'addresses' ? 'SAVED ADDRESS' : 'ACCOUNT SETTINGS'}
           </h2>
         </div>
 
@@ -335,16 +346,21 @@ function Dashboard({ user }: { user: User }) {
                                       </div>
                                     );
                                   }
+                                  const isPromo = item.id.startsWith("PROMO-");
                                   return (
-                                    <div key={index} className="flex justify-between items-center font-bold font-mono text-sm md:text-base border-b border-black/10 pb-4">
+                                    <div key={index} className={`flex justify-between items-center font-bold font-mono text-sm md:text-base border-b border-black/10 pb-4 ${isPromo ? 'text-[#19B85A]' : ''}`}>
                                       <div className="flex items-center gap-4">
-                                        {item.image && <img src={item.image} alt={item.name} className="w-16 h-16 md:w-20 md:h-20 border-[3px] border-black object-contain bg-white shrink-0 shadow-[3px_3px_0_#111]" />}
+                                        {item.image ? (
+                                          <img src={item.image} alt={item.name} className="w-16 h-16 md:w-20 md:h-20 border-[3px] border-black object-contain bg-white shrink-0 shadow-[3px_3px_0_#111]" />
+                                        ) : (
+                                          !isPromo && <div className="w-16 h-16 md:w-20 md:h-20 border-[3px] border-black bg-gray-200 shrink-0 shadow-[3px_3px_0_#111]"></div>
+                                        )}
                                         <div>
                                           <p className="text-lg md:text-xl font-black">{item.name}</p>
-                                          <p className="text-gray-500 text-sm">SIZE: {item.size} | QTY: {item.quantity}</p>
+                                          {!isPromo && <p className="text-gray-500 text-sm">SIZE: {item.size} | QTY: {item.quantity}</p>}
                                         </div>
                                       </div>
-                                      <p className="text-lg md:text-xl">₹{item.price * item.quantity}</p>
+                                      <p className="text-lg md:text-xl font-black">{isPromo ? `₹${item.price}` : `₹${item.price * item.quantity}`}</p>
                                     </div>
                                   );
                                 })}
@@ -361,6 +377,48 @@ function Dashboard({ user }: { user: User }) {
                       </motion.div>
                     ))}
                   </AnimatePresence>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ADDRESSES TAB */}
+          {/* LIKES TAB */}
+          {activeTab === 'likes' && (
+            <div>
+              {wishlistItems.length === 0 ? (
+                <div className="w-full py-20 flex flex-col items-center justify-center border-[4px] border-dashed border-black bg-[#fcfaf5]">
+                  <h2 className="font-cartoon text-4xl mb-2 text-center">NO LIKES YET!</h2>
+                  <p className="font-black tracking-widest uppercase text-center">Go heart some fresh drops.</p>
+                  <Link href="/shop">
+                    <button className="mt-6 px-6 py-3 bg-black text-white font-black tracking-widest border-[3px] border-black hover:bg-[var(--color-electric-blue)] shadow-[4px_4px_0_#FFD700] transition-all hover:translate-y-1 hover:shadow-[2px_2px_0_#FFD700]">
+                      SHOP NOW
+                    </button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {wishlistItems.map((item) => (
+                    <div key={item.id} className="bg-white border-[4px] border-black p-4 flex flex-col relative group">
+                      <button 
+                        onClick={() => toggleLike(item)}
+                        className="absolute top-2 right-2 w-10 h-10 border-[2px] border-black bg-[#FFD700] rounded-full flex items-center justify-center z-10 hover:scale-110 transition-transform"
+                      >
+                        <svg className="w-5 h-5 text-black" fill="currentColor" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                      </button>
+                      <Link href={`/shop/${item.id}`} className="block relative w-full aspect-[4/5] border-[3px] border-black mb-4 bg-[#F4F4F0] overflow-hidden flex items-center justify-center">
+                        <img src={item.image} alt={item.name} className="w-[115%] h-[115%] object-contain group-hover:scale-105 transition-transform drop-shadow-[4px_4px_0_#111]" />
+                      </Link>
+                      <div className="flex-1 flex flex-col justify-between">
+                        <Link href={`/shop/${item.id}`}>
+                          <h3 className="font-cartoon text-2xl group-hover:text-[var(--color-electric-blue)] transition-colors">{item.name}</h3>
+                        </Link>
+                        <span className="font-black text-xl mt-2 block">₹{item.price}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
