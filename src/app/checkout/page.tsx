@@ -46,6 +46,24 @@ export default function CheckoutPage() {
       }
     });
 
+    const savedAddress = localStorage.getItem('iliked_saved_address');
+    if (savedAddress) {
+      try {
+        const parsed = JSON.parse(savedAddress);
+        setFormData(prev => ({
+          ...prev,
+          firstName: parsed.firstName || prev.firstName,
+          lastName: parsed.lastName || prev.lastName,
+          phone: parsed.phone || prev.phone,
+          address: parsed.address || prev.address,
+          city: parsed.city || prev.city,
+          district: parsed.district || prev.district,
+          state: parsed.state || prev.state,
+          zip: parsed.zip || prev.zip,
+        }));
+      } catch(e) {}
+    }
+
     return () => subscription.unsubscribe();
   }, []);
 

@@ -156,9 +156,28 @@ function AuthUI() {
 function Dashboard({ user }: { user: User }) {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'orders' | 'addresses' | 'account'>('orders');
+
+  const [addressForm, setAddressForm] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    address: '',
+    city: '',
+    district: '',
+    state: '',
+    zip: ''
+  });
+  const [saveMessage, setSaveMessage] = useState('');
 
   useEffect(() => {
     fetchOrders();
+    const saved = localStorage.getItem('iliked_saved_address');
+    if (saved) {
+      try {
+        setAddressForm(JSON.parse(saved));
+      } catch(e) {}
+    }
   }, [user]);
 
   const fetchOrders = async () => {
@@ -179,106 +198,236 @@ function Dashboard({ user }: { user: User }) {
     await supabase.auth.signOut();
   };
 
+  const handleSaveAddress = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('iliked_saved_address', JSON.stringify(addressForm));
+    setSaveMessage('ADDRESS SAVED SECURELY!');
+    setTimeout(() => setSaveMessage(''), 3000);
+  };
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAddressForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   return (
-    <div>
-      <div className="flex flex-col md:flex-row justify-between md:items-end mb-12 gap-6">
-        <div>
-          <h1 className="font-cartoon text-6xl md:text-8xl text-black tracking-widest drop-shadow-[4px_4px_0_var(--color-electric-blue)]">
-            YOUR STASH
-          </h1>
-          <p className="font-black tracking-widest uppercase mt-4 text-sm text-gray-500 bg-white border-[3px] border-black px-4 py-2 shadow-[4px_4px_0_#111] inline-block">
-            LOGGED IN AS: {user.email}
-          </p>
-        </div>
+    <div className="flex flex-col md:flex-row gap-8 lg:gap-12 w-full">
+      {/* Sidebar Navigation */}
+      <div className="w-full md:w-64 lg:w-72 shrink-0 flex flex-col gap-4">
+        <h1 className="font-cartoon text-5xl md:text-6xl text-black tracking-widest drop-shadow-[2px_2px_0_var(--color-electric-blue)] mb-4">
+          YOUR STASH
+        </h1>
         <button 
-          onClick={handleLogout}
-          className="cartoon-btn px-6 py-3 bg-[var(--color-coral-red)] text-white font-cartoon text-xl tracking-widest border-[4px] border-black hover:bg-black shadow-[4px_4px_0_#111] transition-colors"
+           onClick={() => setActiveTab('orders')}
+           className={`text-left font-cartoon text-3xl px-6 py-4 border-[4px] border-black transition-all shadow-[6px_6px_0_#111] hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0_#111] ${activeTab === 'orders' ? 'bg-black text-white' : 'bg-white text-black hover:bg-[var(--color-electric-blue)] hover:text-white'}`}
         >
-          LOGOUT
+          MY ORDERS
+        </button>
+        <button 
+           onClick={() => setActiveTab('addresses')}
+           className={`text-left font-cartoon text-3xl px-6 py-4 border-[4px] border-black transition-all shadow-[6px_6px_0_#111] hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0_#111] ${activeTab === 'addresses' ? 'bg-black text-white' : 'bg-white text-black hover:bg-[var(--color-electric-blue)] hover:text-white'}`}
+        >
+          ADDRESSES
+        </button>
+        <button 
+           onClick={() => setActiveTab('account')}
+           className={`text-left font-cartoon text-3xl px-6 py-4 border-[4px] border-black transition-all shadow-[6px_6px_0_#111] hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0_#111] ${activeTab === 'account' ? 'bg-black text-white' : 'bg-white text-black hover:bg-[var(--color-electric-blue)] hover:text-white'}`}
+        >
+          ACCOUNT
         </button>
       </div>
 
-      {loading ? (
-        <div className="w-full py-20 flex justify-center">
-          <span className="font-cartoon text-3xl animate-pulse">LOADING STASH...</span>
+      {/* Main Content Area */}
+      <div className="flex-1 bg-white border-[4px] border-black shadow-[12px_12px_0_#111] min-h-[600px] flex flex-col">
+        {/* Header */}
+        <div className="bg-black text-white p-6 border-b-[4px] border-black">
+          <h2 className="font-cartoon text-4xl tracking-widest uppercase">
+            {activeTab === 'orders' ? 'MY ORDERS' : activeTab === 'addresses' ? 'SAVED ADDRESS' : 'ACCOUNT SETTINGS'}
+          </h2>
         </div>
-      ) : orders.length === 0 ? (
-        <div className="w-full py-20 flex flex-col items-center justify-center border-[4px] border-dashed border-black bg-white">
-          <h2 className="font-cartoon text-4xl mb-2">NO ORDERS FOUND!</h2>
-          <p className="font-black tracking-widest uppercase">Looks like you haven't copped anything yet.</p>
-        </div>
-      ) : (
-        <div className="space-y-12">
-          <AnimatePresence>
-            {orders.map((order, i) => (
-              <motion.div 
-                key={order.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-[#fcfaf5] p-6 md:p-8 shadow-[10px_10px_0_#111] border-[4px] border-black relative"
-                style={{
-                  backgroundImage: 'radial-gradient(circle at 50% 50%, transparent 20%, rgba(0,0,0,0.05) 100%), url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.15%22/%3E%3C/svg%3E")',
-                }}
-              >
-                {/* Tape */}
-                <div className="absolute -top-4 left-8 w-24 h-8 bg-white/80 border-[3px] border-black rotate-[-5deg] shadow-[2px_2px_0_#111]"></div>
-                
-                <div className="flex flex-col md:flex-row justify-between md:items-end border-b-[3px] border-dashed border-black pb-4 mb-6">
-                  <div>
-                    <h3 className="font-cartoon text-3xl md:text-4xl">ORDER #{order.id.slice(-8)}</h3>
-                    <p className="font-black tracking-widest text-gray-500 text-xs md:text-sm mt-1">{new Date(order.created_at).toLocaleString()}</p>
-                  </div>
-                  <div className="mt-4 md:mt-0">
-                    <span className={`font-black px-4 py-2 border-[3px] border-black text-sm uppercase ${order.status === 'Pending' ? 'bg-[#FFD700]' : 'bg-[#19B85A] text-white'}`}>
-                      {order.status || 'PENDING'}
-                    </span>
-                  </div>
-                </div>
 
-                <div className="space-y-4 mb-6">
-                  {order.items.map((item: any, index: number) => {
-                    if (item.id === "SHIPPING-INFO" && item.shipping_info) {
-                      const { address, city, district, state, zip, phone } = item.shipping_info;
-                      return (
-                        <div key={index} className="bg-[#FFD700] p-4 border-[3px] border-black text-sm md:text-base shadow-[4px_4px_0_#111] my-4">
-                          <p className="font-cartoon text-2xl mb-2">DELIVERY DETAILS</p>
-                          <p className="font-bold font-mono uppercase text-black">
-                            {address}, {city} <br />
-                            DISTRICT {district}, {state} - {zip} <br />
-                            PHONE: {phone}
-                          </p>
-                        </div>
-                      );
-                    }
-                    return (
-                      <div key={index} className="flex justify-between items-center font-bold font-mono text-sm md:text-base border-b border-black/10 pb-4">
-                        <div className="flex items-center gap-4">
-                          {item.image && <img src={item.image} alt={item.name} className="w-16 h-16 md:w-20 md:h-20 border-[3px] border-black object-contain bg-white shrink-0 shadow-[3px_3px_0_#111]" />}
+        {/* Content */}
+        <div className="p-6 md:p-8 flex-1">
+          {/* ORDERS TAB */}
+          {activeTab === 'orders' && (
+            <div>
+              {loading ? (
+                <div className="w-full py-20 flex justify-center">
+                  <span className="font-cartoon text-3xl animate-pulse">LOADING STASH...</span>
+                </div>
+              ) : orders.length === 0 ? (
+                <div className="w-full py-20 flex flex-col items-center justify-center border-[4px] border-dashed border-black bg-[#fcfaf5]">
+                  <h2 className="font-cartoon text-4xl mb-2 text-center">NO ORDERS FOUND!</h2>
+                  <p className="font-black tracking-widest uppercase text-center">Looks like you haven't copped anything yet.</p>
+                </div>
+              ) : (
+                <div className="space-y-12">
+                  <AnimatePresence>
+                    {orders.map((order, i) => (
+                      <motion.div 
+                        key={order.id}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="bg-[#fcfaf5] p-6 md:p-8 shadow-[8px_8px_0_#111] border-[4px] border-black relative"
+                        style={{
+                          backgroundImage: 'radial-gradient(circle at 50% 50%, transparent 20%, rgba(0,0,0,0.05) 100%), url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.15%22/%3E%3C/svg%3E")',
+                        }}
+                      >
+                        {/* Tape */}
+                        <div className="absolute -top-4 left-8 w-24 h-8 bg-white/80 border-[3px] border-black rotate-[-5deg] shadow-[2px_2px_0_#111]"></div>
+                        
+                        <div className="flex flex-col md:flex-row justify-between md:items-end border-b-[3px] border-dashed border-black pb-4 mb-6">
                           <div>
-                            <p className="text-lg md:text-xl font-black">{item.name}</p>
-                            <p className="text-gray-500 text-sm">SIZE: {item.size} | QTY: {item.quantity}</p>
+                            <h3 className="font-cartoon text-3xl md:text-4xl">ORDER #{order.id.slice(-8)}</h3>
+                            <p className="font-black tracking-widest text-gray-500 text-xs md:text-sm mt-1">{new Date(order.created_at).toLocaleString()}</p>
+                          </div>
+                          <div className="mt-4 md:mt-0">
+                            <span className={`font-black px-4 py-2 border-[3px] border-black text-sm uppercase ${order.status === 'Pending' ? 'bg-[#FFD700]' : 'bg-[#19B85A] text-white'}`}>
+                              {order.status || 'PENDING'}
+                            </span>
                           </div>
                         </div>
-                        <p className="text-lg md:text-xl">₹{item.price * item.quantity}</p>
-                      </div>
-                    );
-                  })}
-                </div>
 
-                <div className="flex flex-col md:flex-row justify-between items-center pt-4 border-t-[3px] border-black gap-4 md:gap-0">
-                  <a href={`/checkout/success?orderId=${order.id}`} className="cartoon-btn px-4 py-2 bg-[var(--color-electric-blue)] text-white font-cartoon text-xl tracking-widest border-[3px] border-black hover:bg-black transition-colors shadow-[3px_3px_0_#111]">
-                    VIEW INVOICE
-                  </a>
-                  <div className="font-mono font-black text-xl md:text-2xl">
-                    <span>TOTAL: ₹{order.total}</span>
+                        <div className="space-y-4 mb-6">
+                          {order.items.map((item: any, index: number) => {
+                            if (item.id === "SHIPPING-INFO" && item.shipping_info) {
+                              const { address, city, district, state, zip, phone } = item.shipping_info;
+                              return (
+                                <div key={index} className="bg-[#FFD700] p-4 border-[3px] border-black text-sm md:text-base shadow-[4px_4px_0_#111] my-4">
+                                  <p className="font-cartoon text-2xl mb-2">DELIVERY DETAILS</p>
+                                  <p className="font-bold font-mono uppercase text-black">
+                                    {address}, {city} <br />
+                                    DISTRICT {district}, {state} - {zip} <br />
+                                    PHONE: {phone}
+                                  </p>
+                                </div>
+                              );
+                            }
+                            return (
+                              <div key={index} className="flex justify-between items-center font-bold font-mono text-sm md:text-base border-b border-black/10 pb-4">
+                                <div className="flex items-center gap-4">
+                                  {item.image && <img src={item.image} alt={item.name} className="w-16 h-16 md:w-20 md:h-20 border-[3px] border-black object-contain bg-white shrink-0 shadow-[3px_3px_0_#111]" />}
+                                  <div>
+                                    <p className="text-lg md:text-xl font-black">{item.name}</p>
+                                    <p className="text-gray-500 text-sm">SIZE: {item.size} | QTY: {item.quantity}</p>
+                                  </div>
+                                </div>
+                                <p className="text-lg md:text-xl">₹{item.price * item.quantity}</p>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <div className="flex flex-col md:flex-row justify-between items-center pt-4 border-t-[3px] border-black gap-4 md:gap-0">
+                          <a href={`/checkout/success?orderId=${order.id}`} className="cartoon-btn px-4 py-2 bg-[var(--color-electric-blue)] text-white font-cartoon text-xl tracking-widest border-[3px] border-black hover:bg-black transition-colors shadow-[3px_3px_0_#111]">
+                            VIEW INVOICE
+                          </a>
+                          <div className="font-mono font-black text-xl md:text-2xl">
+                            <span>TOTAL: ₹{order.total}</span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ADDRESSES TAB */}
+          {activeTab === 'addresses' && (
+            <div>
+              <p className="font-black tracking-widest uppercase mb-8 text-gray-500">
+                Save your default shipping address here for faster checkouts.
+              </p>
+
+              {saveMessage && (
+                <div className="mb-6 p-4 border-[3px] border-black font-black uppercase tracking-widest bg-[#19B85A] text-white shadow-[4px_4px_0_#111]">
+                  {saveMessage}
+                </div>
+              )}
+
+              <form onSubmit={handleSaveAddress} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block font-cartoon text-2xl mb-2">FIRST NAME</label>
+                    <input required name="firstName" value={addressForm.firstName} onChange={handleAddressChange} className="w-full p-4 border-[3px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0_var(--color-electric-blue)] transition-all" />
+                  </div>
+                  <div>
+                    <label className="block font-cartoon text-2xl mb-2">LAST NAME</label>
+                    <input required name="lastName" value={addressForm.lastName} onChange={handleAddressChange} className="w-full p-4 border-[3px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0_var(--color-electric-blue)] transition-all" />
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+                
+                <div>
+                  <label className="block font-cartoon text-2xl mb-2">MOBILE NUMBER</label>
+                  <input required type="tel" name="phone" value={addressForm.phone} onChange={(e) => setAddressForm(p => ({ ...p, phone: e.target.value.replace(/\D/g, '').slice(0, 10) }))} className="w-full p-4 border-[3px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0_var(--color-electric-blue)] transition-all" />
+                </div>
+
+                <div>
+                  <label className="block font-cartoon text-2xl mb-2">STREET ADDRESS</label>
+                  <input required name="address" value={addressForm.address} onChange={handleAddressChange} className="w-full p-4 border-[3px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0_var(--color-electric-blue)] transition-all" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block font-cartoon text-2xl mb-2">ZIP CODE</label>
+                    <input required name="zip" value={addressForm.zip} onChange={handleAddressChange} className="w-full p-4 border-[3px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0_var(--color-electric-blue)] transition-all" />
+                  </div>
+                  <div>
+                    <label className="block font-cartoon text-2xl mb-2">CITY</label>
+                    <input required name="city" value={addressForm.city} onChange={handleAddressChange} className="w-full p-4 border-[3px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0_var(--color-electric-blue)] transition-all" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block font-cartoon text-2xl mb-2">DISTRICT</label>
+                    <input required name="district" value={addressForm.district} onChange={handleAddressChange} className="w-full p-4 border-[3px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0_var(--color-electric-blue)] transition-all" />
+                  </div>
+                  <div>
+                    <label className="block font-cartoon text-2xl mb-2">STATE</label>
+                    <input required name="state" value={addressForm.state} onChange={handleAddressChange} className="w-full p-4 border-[3px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[4px_4px_0_var(--color-electric-blue)] transition-all" />
+                  </div>
+                </div>
+
+                <button type="submit" className="cartoon-btn w-full px-8 py-4 bg-[var(--color-electric-blue)] text-white font-cartoon text-3xl tracking-widest border-[4px] border-black hover:bg-black transition-colors shadow-[6px_6px_0_var(--color-coral-red)] mt-4">
+                  SAVE ADDRESS
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* ACCOUNT TAB */}
+          {activeTab === 'account' && (
+            <div className="flex flex-col h-full justify-between">
+              <div>
+                <p className="font-black tracking-widest uppercase mb-8 text-gray-500">
+                  Manage your account details and authentication.
+                </p>
+                <div className="mb-10">
+                  <label className="block font-cartoon text-2xl mb-2 text-gray-400">REGISTERED EMAIL</label>
+                  <div className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold text-xl inline-block shadow-[4px_4px_0_#111]">
+                    {user.email}
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t-[4px] border-dashed border-black pt-8 mt-auto">
+                <p className="font-black tracking-widest uppercase mb-6 text-gray-500">
+                  DANGER ZONE
+                </p>
+                <button 
+                  onClick={handleLogout}
+                  className="cartoon-btn w-full md:w-auto px-8 py-4 bg-[var(--color-coral-red)] text-white font-cartoon text-3xl tracking-widest border-[4px] border-black hover:bg-black transition-colors shadow-[6px_6px_0_#111]"
+                >
+                  LOGOUT FROM DEVICE
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
