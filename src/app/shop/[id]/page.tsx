@@ -18,7 +18,9 @@ export default function ProductDetailsPage() {
   const addToCart = useCartStore(state => state.addToCart);
   
   const toggleLike = useWishlistStore(state => state.toggleLike);
-  const isLiked = useWishlistStore(state => state.isLiked);
+  const wishlistItems = useWishlistStore(state => state.items);
+  const [mounted, setMounted] = useState(false);
+  const isLiked = (id: string) => mounted ? wishlistItems.some((i) => i.id === id) : false;
 
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
 
@@ -42,6 +44,7 @@ export default function ProductDetailsPage() {
   
 
   useEffect(() => {
+    setMounted(true);
     if (params.id) {
       Promise.all([
         fetch(`/api/products/${params.id}`).then(r => r.json()),

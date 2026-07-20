@@ -23,9 +23,12 @@ export default function ShopGrid() {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   
   const toggleLike = useWishlistStore((state) => state.toggleLike);
-  const isLiked = useWishlistStore((state) => state.isLiked);
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const [mounted, setMounted] = useState(false);
+  const isLiked = (id: string) => mounted ? wishlistItems.some((i) => i.id === id) : false;
 
   useEffect(() => {
+    setMounted(true);
     fetch('/api/products')
       .then(r => r.json())
       .then(data => setProducts(data));
