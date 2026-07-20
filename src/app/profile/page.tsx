@@ -50,156 +50,43 @@ export default function ProfilePage() {
 }
 
 // -------------------------------------------------------------
-// AuthUI Component (Magic Link / OTP)
+// AuthUI Component (Magic Link)
 // -------------------------------------------------------------
 function AuthUI() {
-  const [loginMethod, setLoginMethod] = useState<'email' | 'mobile'>('email');
-  const [emailInput, setEmailInput] = useState("");
-  const [phoneInput, setPhoneInput] = useState("");
-  const [countryCode, setCountryCode] = useState("+91");
-
-  const [otp, setOtp] = useState("");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-  const [otpSent, setOtpSent] = useState(false);
-  const [phoneNum, setPhoneNum] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email) return;
     setLoading(true);
     setMessage(null);
 
-    let error;
-
-    if (loginMethod === 'email') {
-      if (!emailInput) {
-        setLoading(false);
-        return;
-      }
-      const { error: emailError } = await supabase.auth.signInWithOtp({
-        email: emailInput,
-        options: {
-          emailRedirectTo: window.location.origin + "/profile",
-        },
-      });
-      error = emailError;
-    } else {
-      if (!phoneInput) {
-        setLoading(false);
-        return;
-      }
-      const formattedPhone = `${countryCode}${phoneInput}`;
-      setPhoneNum(formattedPhone);
-
-      const { error: phoneError } = await supabase.auth.signInWithOtp({
-        phone: formattedPhone,
-      });
-      error = phoneError;
-    }
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        // Redirection handled by default or specify here if needed
+        emailRedirectTo: window.location.origin + "/profile",
+      },
+    });
 
     if (error) {
       setMessage({ type: 'error', text: error.message });
     } else {
-      if (loginMethod === 'email') {
-        setMessage({ type: 'success', text: "MAGIC LINK SENT! CHECK YOUR INBOX." });
-      } else {
-        setMessage({ type: 'success', text: "OTP SENT! CHECK YOUR SMS." });
-        setOtpSent(true);
-      }
+      setMessage({ type: 'success', text: "MAGIC LINK SENT! CHECK YOUR INBOX." });
     }
     setLoading(false);
   };
-
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!otp || !phoneNum) return;
-    setLoading(true);
-    setMessage(null);
-
-    const { error } = await supabase.auth.verifyOtp({
-      phone: phoneNum,
-      token: otp,
-      type: 'sms'
-    });
-
-    if (error) {
-      setMessage({ type: 'error', text: "INVALID OTP. TRY AGAIN." });
-    }
-    setLoading(false);
-  };
-
-  if (otpSent) {
-    return (
-      <div className="w-full max-w-xl mx-auto mt-12 bg-white border-[4px] border-black p-8 shadow-[12px_12px_0_#111]">
-        <h1 className="font-cartoon text-5xl md:text-6xl text-black tracking-widest mb-4 drop-shadow-[2px_2px_0_var(--color-electric-blue)]">
-          VERIFY OTP
-        </h1>
-        <p className="font-black tracking-widest uppercase mb-8 text-sm text-gray-500">
-          Enter the 6-digit code sent to {phoneNum}
-        </p>
-
-        {message && (
-          <div className={`mb-6 p-4 border-[3px] border-black font-black uppercase tracking-widest ${message.type === 'success' ? 'bg-[#19B85A] text-white' : 'bg-[var(--color-coral-red)] text-white'}`}>
-            {message.text}
-          </div>
-        )}
-
-        <form onSubmit={handleVerifyOtp} className="flex flex-col gap-6">
-          <input 
-            type="text" 
-            required
-            maxLength={6}
-            value={otp}
-            onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-            placeholder="000000" 
-            className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold text-center text-3xl tracking-[1em] outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
-          />
-          <button 
-            type="submit" 
-            disabled={loading || otp.length !== 6}
-            className="cartoon-btn px-8 py-4 bg-black text-white font-cartoon text-3xl tracking-widest border-[4px] border-black hover:bg-[var(--color-electric-blue)] transition-colors shadow-[6px_6px_0_var(--color-coral-red)] disabled:opacity-50 w-full"
-          >
-            {loading ? "VERIFYING..." : "LOGIN"}
-          </button>
-          
-          <button 
-            type="button"
-            onClick={() => {
-              setOtpSent(false);
-              setOtp("");
-            }}
-            className="font-black text-sm uppercase text-gray-500 hover:text-black underline mt-2"
-          >
-            Try a different number
-          </button>
-        </form>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full max-w-xl mx-auto mt-12 bg-white border-[4px] border-black p-8 shadow-[12px_12px_0_#111]">
       <h1 className="font-cartoon text-5xl md:text-6xl text-black tracking-widest mb-4 drop-shadow-[2px_2px_0_var(--color-electric-blue)]">
         LOGIN
       </h1>
-
-      <div className="flex border-[4px] border-black mb-8 bg-[#F4F4F0]">
-        <button 
-          type="button"
-          onClick={() => { setLoginMethod('email'); setMessage(null); }}
-          className={`flex-1 py-3 font-black tracking-widest text-sm md:text-base transition-colors ${loginMethod === 'email' ? 'bg-black text-white' : 'hover:bg-gray-200 text-black'}`}
-        >
-          USE EMAIL
-        </button>
-        <div className="w-[4px] bg-black"></div>
-        <button 
-          type="button"
-          onClick={() => { setLoginMethod('mobile'); setMessage(null); }}
-          className={`flex-1 py-3 font-black tracking-widest text-sm md:text-base transition-colors ${loginMethod === 'mobile' ? 'bg-[var(--color-electric-blue)] text-white' : 'hover:bg-gray-200 text-black'}`}
-        >
-          USE MOBILE
-        </button>
-      </div>
+      <p className="font-black tracking-widest uppercase mb-8 text-sm text-gray-500">
+        Enter your email. We'll send you a magic link to login instantly. No passwords needed.
+      </p>
 
       {message && (
         <div className={`mb-6 p-4 border-[3px] border-black font-black uppercase tracking-widest ${message.type === 'success' ? 'bg-[#19B85A] text-white' : 'bg-[var(--color-coral-red)] text-white'}`}>
@@ -207,55 +94,23 @@ function AuthUI() {
         </div>
       )}
 
-      {loginMethod === 'email' ? (
-        <form onSubmit={handleLogin} className="flex flex-col gap-6">
-          <input 
-            type="email" 
-            required
-            value={emailInput}
-            onChange={(e) => setEmailInput(e.target.value)}
-            placeholder="YOU@EXAMPLE.COM" 
-            className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
-          />
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="cartoon-btn px-8 py-4 bg-black text-white font-cartoon text-3xl tracking-widest border-[4px] border-black hover:bg-[var(--color-electric-blue)] transition-colors shadow-[6px_6px_0_var(--color-coral-red)] disabled:opacity-50 w-full"
-          >
-            {loading ? "SENDING..." : "SEND MAGIC LINK"}
-          </button>
-        </form>
-      ) : (
-        <form onSubmit={handleLogin} className="flex flex-col gap-6">
-          <div className="flex gap-2">
-            <select 
-              value={countryCode}
-              onChange={(e) => setCountryCode(e.target.value)}
-              className="w-1/3 p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all appearance-none cursor-pointer"
-            >
-              <option value="+91">🇮🇳 +91</option>
-              <option value="+1">🇺🇸 +1</option>
-              <option value="+44">🇬🇧 +44</option>
-              <option value="+61">🇦🇺 +61</option>
-            </select>
-            <input 
-              type="tel" 
-              required
-              value={phoneInput}
-              onChange={(e) => setPhoneInput(e.target.value.replace(/\D/g, ''))}
-              placeholder="9876543210" 
-              className="w-2/3 p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
-            />
-          </div>
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="cartoon-btn px-8 py-4 bg-black text-white font-cartoon text-3xl tracking-widest border-[4px] border-black hover:bg-[var(--color-electric-blue)] transition-colors shadow-[6px_6px_0_var(--color-coral-red)] disabled:opacity-50 w-full"
-          >
-            {loading ? "SENDING..." : "SEND OTP"}
-          </button>
-        </form>
-      )}
+      <form onSubmit={handleLogin} className="flex flex-col gap-6">
+        <input 
+          type="email" 
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="YOU@EXAMPLE.COM" 
+          className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
+        />
+        <button 
+          type="submit" 
+          disabled={loading}
+          className="cartoon-btn px-8 py-4 bg-black text-white font-cartoon text-3xl tracking-widest border-[4px] border-black hover:bg-[var(--color-electric-blue)] transition-colors shadow-[6px_6px_0_var(--color-coral-red)] disabled:opacity-50 w-full"
+        >
+          {loading ? "SENDING..." : "SEND MAGIC LINK"}
+        </button>
+      </form>
     </div>
   );
 }
