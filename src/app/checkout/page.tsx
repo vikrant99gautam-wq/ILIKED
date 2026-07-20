@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useCartStore } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -10,10 +11,12 @@ export default function CheckoutPage() {
   const clearCart = useCartStore((state) => state.clearCart);
   const [mounted, setMounted] = useState(false);
   const [settings, setSettings] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
+    phone: "",
     address: "",
     city: "",
     state: "",
@@ -26,7 +29,41 @@ export default function CheckoutPage() {
     fetch('/api/settings').then(r => r.json()).then(data => {
       if (!data.error) setSettings(data);
     });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setUser(session.user);
+        setFormData(prev => ({ ...prev, email: session.user.email || "" }));
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+      if (session?.user?.email) {
+        setFormData(prev => ({ ...prev, email: session.user.email || "" }));
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (formData.zip.length === 6) {
+      fetch(`https://api.postalpincode.in/pincode/${formData.zip}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data[0] && data[0].Status === "Success" && data[0].PostOffice) {
+            const details = data[0].PostOffice[0];
+            setFormData(prev => ({
+              ...prev,
+              city: details.District,
+              state: details.State
+            }));
+          }
+        })
+        .catch(err => console.error("Error fetching pincode details", err));
+    }
+  }, [formData.zip]);
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
@@ -50,6 +87,7 @@ export default function CheckoutPage() {
       const orderPayload = {
         customer_name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
+        phone: formData.phone,
         total: total,
         items: cartItems
       };
@@ -94,17 +132,45 @@ export default function CheckoutPage() {
           <form className="space-y-8 max-w-2xl" onSubmit={handleSubmit}>
             {/* Contact */}
             <div className="space-y-4">
-              <h3 className="font-black text-2xl border-b-[4px] border-black pb-2 inline-block">1. CONTACT</h3>
-              <div className="flex flex-col gap-2">
-                <label className="font-bold text-sm tracking-widest uppercase">Email Address</label>
-                <input 
-                  type="email" 
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  placeholder="YOU@EXAMPLE.COM" 
-                  className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
-                />
+              <div className="flex justify-between items-end border-b-[4px] border-black pb-2">
+                <h3 className="font-black text-2xl inline-block">1. CONTACT</h3>
+                {!user && (
+                  <button 
+                    type="button" 
+                    onClick={() => router.push('/profile')} 
+                    className="font-bold text-sm tracking-widest uppercase hover:text-[var(--color-electric-blue)] underline"
+                  >
+                    HAVE AN ACCOUNT? LOGIN
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex flex-col gap-2">
+                  <label className="font-bold text-sm tracking-widest uppercase">Email Address</label>
+                  <input 
+                    type="email" 
+                    required
+                    readOnly={!!user}
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    placeholder="YOU@EXAMPLE.COM" 
+                    className={`w-full p-4 border-[4px] border-black font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all ${user ? 'bg-gray-200 cursor-not-allowed' : 'bg-[#F4F4F0]'}`}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="font-bold text-sm tracking-widest uppercase">Mobile Number</label>
+                  <input 
+                    type="tel" 
+                    required
+                    pattern="[0-9]{10}"
+                    title="Please enter a valid 10-digit mobile number"
+                    maxLength={10}
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value.replace(/\D/g, '')})}
+                    placeholder="9876543210" 
+                    className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
+                  />
+                </div>
               </div>
             </div>
 
@@ -139,7 +205,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex flex-col gap-2 col-span-2 md:col-span-1">
                   <label className="font-bold text-sm tracking-widest uppercase">ZIP Code</label>
-                  <input required type="text" value={formData.zip} onChange={(e) => setFormData({...formData, zip: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
+                  <input required type="text" maxLength={6} value={formData.zip} onChange={(e) => setFormData({...formData, zip: e.target.value.replace(/\D/g, '')})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
                 </div>
               </div>
             </div>
