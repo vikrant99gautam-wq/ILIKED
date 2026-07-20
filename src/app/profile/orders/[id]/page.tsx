@@ -246,8 +246,13 @@ export default function OrderDetailsPage() {
 
           <h2 className="font-cartoon text-3xl mb-4">ITEMS</h2>
           <div className="mb-6">
-            {Array.isArray(order.items) && order.items.map((item: any, i: number) => (
-              <ReviewItem key={i} item={item} orderStatus={order.status || 'Pending'} />
+            {Array.isArray(order.items) && order.items
+              .filter((item: any) => {
+                const name = item.name?.toLowerCase() || '';
+                return !name.includes('discount') && !name.includes('delivery');
+              })
+              .map((item: any, i: number) => (
+                <ReviewItem key={i} item={item} orderStatus={order.status || 'Pending'} />
             ))}
           </div>
 
