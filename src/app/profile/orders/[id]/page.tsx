@@ -12,7 +12,8 @@ function ReviewItem({ item, orderStatus }: { item: any; orderStatus: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   
-  const canReview = orderStatus === 'Delivered' || orderStatus === 'Cancelled';
+  const isRealProduct = item.id && !item.id.toString().includes('discount') && !item.id.toString().includes('delivery') && !item.name.toLowerCase().includes('discount') && !item.name.toLowerCase().includes('delivery');
+  const canReview = isRealProduct && (orderStatus === 'Delivered' || orderStatus === 'Cancelled');
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
