@@ -98,12 +98,20 @@ export default function AdminOrdersPage() {
                     </span>
                   </td>
                   <td className="p-4">
-                    <button 
-                      onClick={() => setSelectedOrder(order)}
-                      className="px-4 py-2 border-[2px] border-black bg-[#FFD700] hover:bg-black hover:text-white font-black text-sm"
-                    >
-                      VIEW
-                    </button>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => setSelectedOrder(order)}
+                        className="px-4 py-2 border-[2px] border-black bg-[#FFD700] hover:bg-black hover:text-white font-black text-sm"
+                      >
+                        VIEW
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(order.id)}
+                        className="px-4 py-2 border-[2px] border-black bg-red-500 hover:bg-black text-white font-black text-sm"
+                      >
+                        DEL
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -125,12 +133,20 @@ export default function AdminOrdersPage() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-cartoon text-2xl">₹{order.total}</span>
-                  <button 
-                    onClick={() => setSelectedOrder(order)}
-                    className="px-4 py-2 border-[2px] border-black bg-[#FFD700] font-black text-sm"
-                  >
-                    VIEW
-                  </button>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setSelectedOrder(order)}
+                      className="px-4 py-2 border-[2px] border-black bg-[#FFD700] font-black text-sm"
+                    >
+                      VIEW
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(order.id)}
+                      className="px-4 py-2 border-[2px] border-black bg-red-500 text-white font-black text-sm"
+                    >
+                      DEL
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -153,6 +169,23 @@ export default function AdminOrdersPage() {
                 <p className="font-bold">{selectedOrder.customer_name}</p>
                 <p>{selectedOrder.email}</p>
                 <p className="mt-2 text-sm text-gray-500">Date: {new Date(selectedOrder.created_at || Date.now()).toLocaleString()}</p>
+                
+                {(() => {
+                  const shippingItem = selectedOrder.items?.find((i: any) => i.id === 'SHIPPING-INFO');
+                  if (shippingItem && shippingItem.shipping_info) {
+                    const info = shippingItem.shipping_info;
+                    return (
+                      <div className="mt-4 pt-4 border-t-[2px] border-black/20">
+                        <h4 className="font-black mb-1">SHIPPING ADDRESS</h4>
+                        <p className="font-bold">{info.phone}</p>
+                        <p className="text-sm">{info.address}</p>
+                        <p className="text-sm">{info.city}, {info.district}</p>
+                        <p className="text-sm">{info.state} - {info.zip}</p>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
               <div className="border-[3px] border-black p-4 bg-gray-50">
                 <h3 className="font-black text-xl mb-2">UPDATE STATUS</h3>

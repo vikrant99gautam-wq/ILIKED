@@ -295,6 +295,17 @@ function Dashboard({ user }: { user: User }) {
                           </div>
                           <div className="mt-4 md:mt-0 text-right">
                             <span className="font-mono font-black text-xl md:text-2xl block mb-2">TOTAL: ₹{order.total}</span>
+                            <button
+                              onClick={async () => {
+                                if (confirm("Are you sure you want to delete this order from your history?")) {
+                                  await fetch(`/api/orders/${order.id}`, { method: "DELETE" });
+                                  fetchOrders();
+                                }
+                              }}
+                              className="px-4 py-1 border-[2px] border-black bg-red-500 hover:bg-black text-white font-black text-sm transition-colors"
+                            >
+                              DELETE RECORD
+                            </button>
                           </div>
                         </div>
 
