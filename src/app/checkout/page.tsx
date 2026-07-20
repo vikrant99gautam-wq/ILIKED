@@ -97,12 +97,33 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
+      // We bundle the shipping details as a special item in the items array 
+      // to avoid breaking the Supabase table schema if columns don't exist.
+      const itemsWithShipping = [
+        ...cartItems,
+        {
+          id: "SHIPPING-INFO",
+          name: "Delivery Details",
+          size: "-",
+          price: 0,
+          quantity: 1,
+          image: "",
+          shipping_info: {
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            district: formData.district,
+            state: formData.state,
+            zip: formData.zip
+          }
+        }
+      ];
+
       const orderPayload = {
         customer_name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
-        phone: formData.phone,
         total: total,
-        items: cartItems
+        items: itemsWithShipping
       };
 
       const res = await fetch("/api/orders", {

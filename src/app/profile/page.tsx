@@ -237,18 +237,33 @@ function Dashboard({ user }: { user: User }) {
                 </div>
 
                 <div className="space-y-4 mb-6">
-                  {order.items.map((item: any, index: number) => (
-                    <div key={index} className="flex justify-between items-center font-bold font-mono text-sm md:text-base border-b border-black/10 pb-4">
-                      <div className="flex items-center gap-4">
-                        <img src={item.image} alt={item.name} className="w-12 h-12 border-[2px] border-black object-contain bg-white shrink-0" />
-                        <div>
-                          <p>{item.name}</p>
-                          <p className="text-gray-500 text-xs">SIZE: {item.size} | QTY: {item.quantity}</p>
+                  {order.items.map((item: any, index: number) => {
+                    if (item.id === "SHIPPING-INFO" && item.shipping_info) {
+                      const { address, city, district, state, zip, phone } = item.shipping_info;
+                      return (
+                        <div key={index} className="bg-[#FFD700] p-4 border-[3px] border-black text-sm md:text-base shadow-[4px_4px_0_#111] my-4">
+                          <p className="font-cartoon text-2xl mb-2">DELIVERY DETAILS</p>
+                          <p className="font-bold font-mono uppercase text-black">
+                            {address}, {city} <br />
+                            DISTRICT {district}, {state} - {zip} <br />
+                            PHONE: {phone}
+                          </p>
                         </div>
+                      );
+                    }
+                    return (
+                      <div key={index} className="flex justify-between items-center font-bold font-mono text-sm md:text-base border-b border-black/10 pb-4">
+                        <div className="flex items-center gap-4">
+                          {item.image && <img src={item.image} alt={item.name} className="w-12 h-12 border-[2px] border-black object-contain bg-white shrink-0" />}
+                          <div>
+                            <p>{item.name}</p>
+                            <p className="text-gray-500 text-xs">SIZE: {item.size} | QTY: {item.quantity}</p>
+                          </div>
+                        </div>
+                        <p>₹{item.price * item.quantity}</p>
                       </div>
-                      <p>₹{item.price * item.quantity}</p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="flex justify-end pt-4 font-mono font-black text-xl md:text-2xl border-t-[3px] border-black">

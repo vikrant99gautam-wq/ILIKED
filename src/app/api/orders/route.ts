@@ -33,10 +33,14 @@ export async function POST(request: Request) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase insert error:", error);
+      throw error;
+    }
 
     return NextResponse.json(data);
   } catch (err: any) {
+    console.error("Order placement error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
