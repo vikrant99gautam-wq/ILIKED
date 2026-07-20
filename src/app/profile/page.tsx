@@ -157,6 +157,7 @@ function Dashboard({ user }: { user: User }) {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'orders' | 'addresses' | 'account'>('orders');
+  const [expandedOrders, setExpandedOrders] = useState<Record<string, boolean>>({});
 
   const [addressForm, setAddressForm] = useState({
     firstName: '',
@@ -281,51 +282,82 @@ function Dashboard({ user }: { user: User }) {
                             <h3 className="font-cartoon text-3xl md:text-4xl">ORDER #{order.id.slice(-8)}</h3>
                             <p className="font-black tracking-widest text-gray-500 text-xs md:text-sm mt-1">{new Date(order.created_at).toLocaleString()}</p>
                           </div>
-                          <div className="mt-4 md:mt-0">
-                            <span className={`font-black px-4 py-2 border-[3px] border-black text-sm uppercase ${order.status === 'Pending' ? 'bg-[#FFD700]' : 'bg-[#19B85A] text-white'}`}>
-                              {order.status || 'PENDING'}
-                            </span>
+                          <div className="mt-4 md:mt-0 text-right">
+                            <span className="font-mono font-black text-xl md:text-2xl block mb-2">TOTAL: ₹{order.total}</span>
                           </div>
                         </div>
 
-                        <div className="space-y-4 mb-6">
-                          {order.items.map((item: any, index: number) => {
-                            if (item.id === "SHIPPING-INFO" && item.shipping_info) {
-                              const { address, city, district, state, zip, phone } = item.shipping_info;
-                              return (
-                                <div key={index} className="bg-[#FFD700] p-4 border-[3px] border-black text-sm md:text-base shadow-[4px_4px_0_#111] my-4">
-                                  <p className="font-cartoon text-2xl mb-2">DELIVERY DETAILS</p>
-                                  <p className="font-bold font-mono uppercase text-black">
-                                    {address}, {city} <br />
-                                    DISTRICT {district}, {state} - {zip} <br />
-                                    PHONE: {phone}
-                                  </p>
-                                </div>
-                              );
-                            }
+                        {/* STATUS TRACKER */}
+                        <div className="w-full flex items-center justify-between mb-6 relative px-2">
+                          <div className="absolute top-4 left-0 w-full h-[4px] bg-gray-300 -z-10"></div>
+                          <div className="absolute top-4 left-0 h-[4px] bg-black -z-10 transition-all" style={{ width: `${(['Pending', 'Processing', 'Shipped', 'Delivered'].indexOf(order.status || 'Pending') / 3) * 100}%` }}></div>
+                          {['Pending', 'Processing', 'Shipped', 'Delivered'].map((s, idx) => {
+                            const statusIndex = ['Pending', 'Processing', 'Shipped', 'Delivered'].indexOf(order.status || 'Pending');
                             return (
-                              <div key={index} className="flex justify-between items-center font-bold font-mono text-sm md:text-base border-b border-black/10 pb-4">
-                                <div className="flex items-center gap-4">
-                                  {item.image && <img src={item.image} alt={item.name} className="w-16 h-16 md:w-20 md:h-20 border-[3px] border-black object-contain bg-white shrink-0 shadow-[3px_3px_0_#111]" />}
-                                  <div>
-                                    <p className="text-lg md:text-xl font-black">{item.name}</p>
-                                    <p className="text-gray-500 text-sm">SIZE: {item.size} | QTY: {item.quantity}</p>
-                                  </div>
+                              <div key={s} className={`flex flex-col items-center gap-2 ${idx <= statusIndex ? 'text-black' : 'text-gray-400'}`}>
+                                <div className={`w-8 h-8 rounded-full border-[3px] border-black flex items-center justify-center ${idx <= statusIndex ? 'bg-[#FFD700]' : 'bg-white'}`}>
+                                  {idx <= statusIndex && <span className="w-3 h-3 bg-black rounded-full"></span>}
                                 </div>
-                                <p className="text-lg md:text-xl">₹{item.price * item.quantity}</p>
+                                <span className="font-bold text-[10px] md:text-xs uppercase tracking-widest">{s}</span>
                               </div>
                             );
                           })}
                         </div>
 
-                        <div className="flex flex-col md:flex-row justify-between items-center pt-4 border-t-[3px] border-black gap-4 md:gap-0">
-                          <a href={`/checkout/success?orderId=${order.id}`} className="cartoon-btn px-4 py-2 bg-[var(--color-electric-blue)] text-white font-cartoon text-xl tracking-widest border-[3px] border-black hover:bg-black transition-colors shadow-[3px_3px_0_#111]">
-                            VIEW INVOICE
-                          </a>
-                          <div className="font-mono font-black text-xl md:text-2xl">
-                            <span>TOTAL: ₹{order.total}</span>
-                          </div>
-                        </div>
+                        {/* TOGGLE BUTTON */}
+                        <button 
+                          onClick={() => setExpandedOrders(prev => ({ ...prev, [order.id]: !prev[order.id] }))}
+                          className="w-full py-3 border-[3px] border-black font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors mb-4"
+                        >
+                          {expandedOrders[order.id] ? 'HIDE DETAILS ▲' : 'VIEW FULL ORDER DETAILS ▼'}
+                        </button>
+
+                        <AnimatePresence>
+                          {expandedOrders[order.id] && (
+                            <motion.div 
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="space-y-4 mb-6 border-t-[3px] border-dashed border-black pt-6">
+                                {order.items.map((item: any, index: number) => {
+                                  if (item.id === "SHIPPING-INFO" && item.shipping_info) {
+                                    const { address, city, district, state, zip, phone } = item.shipping_info;
+                                    return (
+                                      <div key={index} className="bg-[#FFD700] p-4 border-[3px] border-black text-sm md:text-base shadow-[4px_4px_0_#111] my-4">
+                                        <p className="font-cartoon text-2xl mb-2">DELIVERY DETAILS</p>
+                                        <p className="font-bold font-mono uppercase text-black">
+                                          {address}, {city} <br />
+                                          DISTRICT {district}, {state} - {zip} <br />
+                                          PHONE: {phone}
+                                        </p>
+                                      </div>
+                                    );
+                                  }
+                                  return (
+                                    <div key={index} className="flex justify-between items-center font-bold font-mono text-sm md:text-base border-b border-black/10 pb-4">
+                                      <div className="flex items-center gap-4">
+                                        {item.image && <img src={item.image} alt={item.name} className="w-16 h-16 md:w-20 md:h-20 border-[3px] border-black object-contain bg-white shrink-0 shadow-[3px_3px_0_#111]" />}
+                                        <div>
+                                          <p className="text-lg md:text-xl font-black">{item.name}</p>
+                                          <p className="text-gray-500 text-sm">SIZE: {item.size} | QTY: {item.quantity}</p>
+                                        </div>
+                                      </div>
+                                      <p className="text-lg md:text-xl">₹{item.price * item.quantity}</p>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+
+                              <div className="flex justify-center pt-4">
+                                <a href={`/checkout/success?orderId=${order.id}`} className="cartoon-btn px-4 py-2 bg-[var(--color-electric-blue)] text-white font-cartoon text-xl tracking-widest border-[3px] border-black hover:bg-black transition-colors shadow-[3px_3px_0_#111]">
+                                  VIEW INVOICE
+                                </a>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </motion.div>
                     ))}
                   </AnimatePresence>
