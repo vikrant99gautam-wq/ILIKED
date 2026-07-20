@@ -97,8 +97,10 @@ export default function CheckoutPage() {
   }, [formData.zip]);
 
   const [promoCodeInput, setPromoCodeInput] = useState("");
-  const [appliedPromo, setAppliedPromo] = useState<{code: string, discount: number} | null>(null);
+  const [appliedPromo, setAppliedPromo] = useState<any | null>(null);
   const [promoError, setPromoError] = useState("");
+
+  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   const handleApplyPromo = () => {
     setPromoError("");
@@ -111,20 +113,53 @@ export default function CheckoutPage() {
     try {
       const promos = JSON.parse(settings.promo_codes);
       const found = promos.find((p: any) => p.code.toUpperCase() === promoCodeInput.trim().toUpperCase());
-      if (found) {
-        setAppliedPromo(found);
-      } else {
+      
+      if (!found) {
         setPromoError("Invalid code.");
         setAppliedPromo(null);
+        return;
       }
+      
+      if (found.active === false) {
+        setPromoError("This code is inactive.");
+        setAppliedPromo(null);
+        return;
+      }
+      
+      if (found.maxUses !== null && found.currentUses >= found.maxUses) {
+        setPromoError("This code has reached its usage limit.");
+        setAppliedPromo(null);
+        return;
+      }
+      
+      if (found.minOrderValue !== null && subtotal < found.minOrderValue) {
+        setPromoError(`Minimum order value of ₹${found.minOrderValue} required.`);
+        setAppliedPromo(null);
+        return;
+      }
+      
+      if (found.restrictedToEmail && found.restrictedToEmail.toLowerCase() !== formData.email.toLowerCase()) {
+        setPromoError("This code is not valid for your email.");
+        setAppliedPromo(null);
+        return;
+      }
+
+      setAppliedPromo(found);
     } catch(e) {
       setPromoError("Promo system offline.");
     }
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const discountAmount = appliedPromo ? Math.floor((subtotal * appliedPromo.discount) / 100) : 0;
-  const discountedSubtotal = subtotal - discountAmount;
+  let discountAmount = 0;
+  if (appliedPromo) {
+    if (appliedPromo.type === 'percentage') {
+      discountAmount = Math.floor((subtotal * appliedPromo.value) / 100);
+    } else {
+      discountAmount = appliedPromo.value;
+    }
+  }
+  
+  const discountedSubtotal = Math.max(0, subtotal - discountAmount);
   
   let shipping = 0;
   if (settings) {

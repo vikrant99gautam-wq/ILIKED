@@ -38,6 +38,29 @@ export async function POST(request: Request) {
       throw error;
     }
 
+    // Check if a promo code was used
+    const promoItem = body.items?.find((i: any) => i.id.startsWith("PROMO-"));
+    if (promoItem) {
+      const codeUsed = promoItem.id.replace("PROMO-", "");
+      // Fetch settings, update the currentUses, and save back
+      const { data: settingsData } = await supabase.from('settings').select('*').limit(1);
+      if (settingsData && settingsData.length > 0) {
+        const currentSettings = settingsData[0];
+        try {
+          const promos = JSON.parse(currentSettings.promo_codes || "[]");
+          const updatedPromos = promos.map((p: any) => {
+            if (p.code.toUpperCase() === codeUsed.toUpperCase()) {
+              return { ...p, currentUses: (p.currentUses || 0) + 1 };
+            }
+            return p;
+          });
+          await supabase.from('settings').update({ promo_codes: JSON.stringify(updatedPromos) }).eq('id', currentSettings.id);
+        } catch (e) {
+          console.error("Failed to update promo uses", e);
+        }
+      }
+    }
+
     return NextResponse.json(data);
   } catch (err: any) {
     console.error("Order placement error:", err);
