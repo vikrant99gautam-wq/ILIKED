@@ -1,30 +1,29 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import type { Session, User } from "@supabase/supabase-js";
 
 export default function ProfilePage() {
-  const [email, setEmail] = useState("");
-  const [orders, setOrders] = useState<any[]>([]);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loadingSession, setLoadingSession] = useState(true);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setLoading(true);
-    setHasSearched(true);
-    const { data, error } = await supabase
-      .from('orders')
-      .select('*')
-      .ilike('email', email)
-      .order('created_at', { ascending: false });
-      
-    if (!error && data) {
-      setOrders(data);
-    }
-    setLoading(false);
-  };
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoadingSession(false);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#F4F4F0] pt-[120px] pb-24 px-6 md:px-12 relative overflow-hidden">
@@ -36,39 +35,144 @@ export default function ProfilePage() {
       </div>
 
       <div className="max-w-[1000px] mx-auto relative z-10">
-        
-        <h1 className="font-cartoon text-6xl md:text-8xl text-black tracking-widest mb-12 drop-shadow-[4px_4px_0_var(--color-electric-blue)]">
-          YOUR ORDERS
-        </h1>
-
-        <div className="bg-white border-[4px] border-black p-6 md:p-10 shadow-[12px_12px_0_#111] mb-12">
-          <p className="font-black tracking-widest uppercase mb-6 text-sm md:text-base">Enter your email to track your past orders.</p>
-          <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
-            <input 
-              type="email" 
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="YOU@EXAMPLE.COM" 
-              className="flex-1 p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
-            />
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="cartoon-btn px-8 py-4 bg-black text-white font-cartoon text-2xl tracking-widest border-[4px] border-black hover:bg-[var(--color-electric-blue)] transition-colors shadow-[6px_6px_0_var(--color-coral-red)] disabled:opacity-50"
-            >
-              {loading ? "SEARCHING..." : "FIND STASH"}
-            </button>
-          </form>
-        </div>
-
-        {hasSearched && !loading && orders.length === 0 && (
-          <div className="w-full py-20 flex flex-col items-center justify-center border-[4px] border-dashed border-black bg-white">
-            <h2 className="font-cartoon text-4xl mb-2">NO ORDERS FOUND!</h2>
-            <p className="font-black tracking-widest uppercase">Looks like you haven't copped anything yet.</p>
+        {loadingSession ? (
+          <div className="flex justify-center py-20">
+            <span className="font-cartoon text-3xl animate-pulse">LOADING...</span>
           </div>
+        ) : !session ? (
+          <AuthUI />
+        ) : (
+          <Dashboard user={session.user} />
         )}
+      </div>
+    </main>
+  );
+}
 
+// -------------------------------------------------------------
+// AuthUI Component (Magic Link)
+// -------------------------------------------------------------
+function AuthUI() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setLoading(true);
+    setMessage(null);
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        // Redirection handled by default or specify here if needed
+        emailRedirectTo: window.location.origin + "/profile",
+      },
+    });
+
+    if (error) {
+      setMessage({ type: 'error', text: error.message });
+    } else {
+      setMessage({ type: 'success', text: "MAGIC LINK SENT! CHECK YOUR INBOX." });
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="w-full max-w-xl mx-auto mt-12 bg-white border-[4px] border-black p-8 shadow-[12px_12px_0_#111]">
+      <h1 className="font-cartoon text-5xl md:text-6xl text-black tracking-widest mb-4 drop-shadow-[2px_2px_0_var(--color-electric-blue)]">
+        LOGIN
+      </h1>
+      <p className="font-black tracking-widest uppercase mb-8 text-sm text-gray-500">
+        Enter your email. We'll send you a magic link to login instantly. No passwords needed.
+      </p>
+
+      {message && (
+        <div className={`mb-6 p-4 border-[3px] border-black font-black uppercase tracking-widest ${message.type === 'success' ? 'bg-[#19B85A] text-white' : 'bg-[var(--color-coral-red)] text-white'}`}>
+          {message.text}
+        </div>
+      )}
+
+      <form onSubmit={handleLogin} className="flex flex-col gap-6">
+        <input 
+          type="email" 
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="YOU@EXAMPLE.COM" 
+          className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
+        />
+        <button 
+          type="submit" 
+          disabled={loading}
+          className="cartoon-btn px-8 py-4 bg-black text-white font-cartoon text-3xl tracking-widest border-[4px] border-black hover:bg-[var(--color-electric-blue)] transition-colors shadow-[6px_6px_0_var(--color-coral-red)] disabled:opacity-50 w-full"
+        >
+          {loading ? "SENDING..." : "SEND MAGIC LINK"}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+// -------------------------------------------------------------
+// Dashboard Component
+// -------------------------------------------------------------
+function Dashboard({ user }: { user: User }) {
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [user]);
+
+  const fetchOrders = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .ilike('email', user.email!)
+      .order('created_at', { ascending: false });
+      
+    if (!error && data) {
+      setOrders(data);
+    }
+    setLoading(false);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  return (
+    <div>
+      <div className="flex flex-col md:flex-row justify-between md:items-end mb-12 gap-6">
+        <div>
+          <h1 className="font-cartoon text-6xl md:text-8xl text-black tracking-widest drop-shadow-[4px_4px_0_var(--color-electric-blue)]">
+            YOUR STASH
+          </h1>
+          <p className="font-black tracking-widest uppercase mt-4 text-sm text-gray-500 bg-white border-[3px] border-black px-4 py-2 shadow-[4px_4px_0_#111] inline-block">
+            LOGGED IN AS: {user.email}
+          </p>
+        </div>
+        <button 
+          onClick={handleLogout}
+          className="cartoon-btn px-6 py-3 bg-[var(--color-coral-red)] text-white font-cartoon text-xl tracking-widest border-[4px] border-black hover:bg-black shadow-[4px_4px_0_#111] transition-colors"
+        >
+          LOGOUT
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="w-full py-20 flex justify-center">
+          <span className="font-cartoon text-3xl animate-pulse">LOADING STASH...</span>
+        </div>
+      ) : orders.length === 0 ? (
+        <div className="w-full py-20 flex flex-col items-center justify-center border-[4px] border-dashed border-black bg-white">
+          <h2 className="font-cartoon text-4xl mb-2">NO ORDERS FOUND!</h2>
+          <p className="font-black tracking-widest uppercase">Looks like you haven't copped anything yet.</p>
+        </div>
+      ) : (
         <div className="space-y-12">
           <AnimatePresence>
             {orders.map((order, i) => (
@@ -119,8 +223,7 @@ export default function ProfilePage() {
             ))}
           </AnimatePresence>
         </div>
-
-      </div>
-    </main>
+      )}
+    </div>
   );
 }
