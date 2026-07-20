@@ -55,24 +55,24 @@ function SuccessContent() {
         
         {/* INVOICE HEADER */}
         <div className="text-center mb-8 mt-4 font-mono">
-          <h2 className="font-cartoon text-5xl mb-1 text-black">I LIKED</h2>
-          <p className="text-gray-600 font-bold text-sm tracking-widest uppercase mb-1">TAX INVOICE</p>
-          <p className="text-xs text-gray-500 font-bold">STORE #001 - INTERNET</p>
+          <h2 className="font-cartoon text-6xl mb-2 text-black">I LIKED</h2>
+          <p className="text-gray-600 font-black text-lg tracking-widest uppercase mb-1">TAX INVOICE</p>
+          <p className="text-sm text-gray-500 font-bold">STORE #001 - INTERNET</p>
         </div>
 
         <div className="border-b-[3px] border-dashed border-black w-full my-6"></div>
 
         {/* CUSTOMER INFO */}
-        <div className="flex flex-col md:flex-row justify-between font-mono text-sm mb-6 gap-4 font-bold">
+        <div className="flex flex-col md:flex-row justify-between font-mono text-base md:text-lg mb-6 gap-4 font-bold">
           <div>
-            <p className="text-gray-500 text-xs mb-1">BILLED TO:</p>
-            <p className="text-base">{order.customer_name}</p>
+            <p className="text-gray-500 text-sm mb-1">BILLED TO:</p>
+            <p className="text-xl md:text-2xl font-black">{order.customer_name}</p>
             <p>{order.email}</p>
           </div>
           <div className="md:text-right">
-            <p className="text-gray-500 text-xs mb-1">INVOICE NO:</p>
-            <p className="text-base">#{order.id}</p>
-            <p className="text-gray-500 text-xs mt-2 mb-1">DATE:</p>
+            <p className="text-gray-500 text-sm mb-1">INVOICE NO:</p>
+            <p className="text-xl md:text-2xl font-black">#{order.id}</p>
+            <p className="text-gray-500 text-sm mt-4 mb-1">DATE:</p>
             <p>{new Date(order.created_at).toLocaleString()}</p>
           </div>
         </div>
@@ -80,35 +80,38 @@ function SuccessContent() {
         <div className="border-b-[3px] border-dashed border-black w-full my-6"></div>
 
         {/* ITEMS LIST */}
-        <div className="font-mono text-sm w-full font-bold mb-6">
-          <div className="flex justify-between text-gray-500 text-xs mb-4">
+        <div className="font-mono text-base md:text-lg w-full font-bold mb-6">
+          <div className="flex justify-between text-gray-500 text-sm mb-6 border-b-[2px] border-black pb-2">
             <span className="w-1/2">ITEM</span>
             <span className="w-1/4 text-center">QTY</span>
             <span className="w-1/4 text-right">TOTAL</span>
           </div>
           
-          <div className="space-y-4">
-            {order.items.map((item: any, i: number) => (
-              <div key={i} className="flex justify-between items-start">
-                <div className="w-1/2 pr-2">
-                  <p className="leading-tight">{item.name}</p>
-                  <p className="text-gray-500 text-xs mt-1">SIZE: {item.size}</p>
+          <div className="space-y-6">
+            {order.items.map((item: any, i: number) => {
+              if (item.id === "SHIPPING-INFO") return null;
+              return (
+                <div key={i} className="flex justify-between items-start">
+                  <div className="w-1/2 pr-2">
+                    <p className="leading-tight font-black">{item.name}</p>
+                    <p className="text-gray-500 text-sm mt-1">SIZE: {item.size}</p>
+                  </div>
+                  <div className="w-1/4 text-center">
+                    <p>{item.quantity}</p>
+                  </div>
+                  <div className="w-1/4 text-right">
+                    <p>₹{item.price * item.quantity}</p>
+                  </div>
                 </div>
-                <div className="w-1/4 text-center">
-                  <p>{item.quantity}</p>
-                </div>
-                <div className="w-1/4 text-right">
-                  <p>₹{item.price * item.quantity}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         <div className="border-b-[3px] border-black w-full my-4"></div>
 
         {/* TOTALS */}
-        <div className="font-mono text-sm font-bold flex flex-col items-end space-y-2 mb-8">
+        <div className="font-mono text-lg md:text-xl font-bold flex flex-col items-end space-y-3 mb-10 mt-6">
           <div className="flex justify-between w-full md:w-1/2">
             <span className="text-gray-500">SUBTOTAL</span>
             <span>₹{subtotal}</span>
@@ -117,8 +120,8 @@ function SuccessContent() {
             <span className="text-gray-500">SHIPPING</span>
             <span>₹{shipping}</span>
           </div>
-          <div className="border-b-[2px] border-dashed border-gray-400 w-full md:w-1/2 my-1"></div>
-          <div className="flex justify-between w-full md:w-1/2 text-xl font-black">
+          <div className="border-b-[3px] border-dashed border-gray-400 w-full md:w-1/2 my-2"></div>
+          <div className="flex justify-between w-full md:w-1/2 text-2xl md:text-4xl font-black mt-2">
             <span>TOTAL</span>
             <span>₹{order.total}</span>
           </div>

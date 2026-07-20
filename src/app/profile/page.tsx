@@ -266,8 +266,13 @@ function Dashboard({ user }: { user: User }) {
                   })}
                 </div>
 
-                <div className="flex justify-end pt-4 font-mono font-black text-xl md:text-2xl border-t-[3px] border-black">
-                  <span>TOTAL: ₹{order.total}</span>
+                <div className="flex flex-col md:flex-row justify-between items-center pt-4 border-t-[3px] border-black gap-4 md:gap-0">
+                  <a href={`/checkout/success?orderId=${order.id}`} className="cartoon-btn px-4 py-2 bg-[var(--color-electric-blue)] text-white font-cartoon text-xl tracking-widest border-[3px] border-black hover:bg-black transition-colors shadow-[3px_3px_0_#111]">
+                    VIEW INVOICE
+                  </a>
+                  <div className="font-mono font-black text-xl md:text-2xl">
+                    <span>TOTAL: ₹{order.total}</span>
+                  </div>
                 </div>
               </motion.div>
             ))}
