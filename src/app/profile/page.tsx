@@ -50,34 +50,125 @@ export default function ProfilePage() {
 }
 
 // -------------------------------------------------------------
-// AuthUI Component (Magic Link)
+// AuthUI Component (Magic Link / OTP)
 // -------------------------------------------------------------
 function AuthUI() {
-  const [email, setEmail] = useState("");
+  const [input, setInput] = useState("");
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [otpSent, setOtpSent] = useState(false);
+  const [isPhoneAuth, setIsPhoneAuth] = useState(false);
+  const [phoneNum, setPhoneNum] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!input) return;
     setLoading(true);
     setMessage(null);
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        // Redirection handled by default or specify here if needed
-        emailRedirectTo: window.location.origin + "/profile",
-      },
-    });
+    const isEmail = input.includes('@');
+    let error;
+
+    if (isEmail) {
+      const { error: emailError } = await supabase.auth.signInWithOtp({
+        email: input,
+        options: {
+          emailRedirectTo: window.location.origin + "/profile",
+        },
+      });
+      error = emailError;
+    } else {
+      let formattedPhone = input.trim();
+      if (/^\d{10}$/.test(formattedPhone)) {
+        formattedPhone = "+91" + formattedPhone;
+      }
+      setPhoneNum(formattedPhone);
+      setIsPhoneAuth(true);
+
+      const { error: phoneError } = await supabase.auth.signInWithOtp({
+        phone: formattedPhone,
+      });
+      error = phoneError;
+    }
 
     if (error) {
       setMessage({ type: 'error', text: error.message });
+      setIsPhoneAuth(false);
     } else {
-      setMessage({ type: 'success', text: "MAGIC LINK SENT! CHECK YOUR INBOX." });
+      if (isEmail) {
+        setMessage({ type: 'success', text: "MAGIC LINK SENT! CHECK YOUR INBOX." });
+      } else {
+        setMessage({ type: 'success', text: "OTP SENT! CHECK YOUR SMS." });
+        setOtpSent(true);
+      }
     }
     setLoading(false);
   };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otp || !phoneNum) return;
+    setLoading(true);
+    setMessage(null);
+
+    const { error } = await supabase.auth.verifyOtp({
+      phone: phoneNum,
+      token: otp,
+      type: 'sms'
+    });
+
+    if (error) {
+      setMessage({ type: 'error', text: "INVALID OTP. TRY AGAIN." });
+    }
+    setLoading(false);
+  };
+
+  if (otpSent) {
+    return (
+      <div className="w-full max-w-xl mx-auto mt-12 bg-white border-[4px] border-black p-8 shadow-[12px_12px_0_#111]">
+        <h1 className="font-cartoon text-5xl md:text-6xl text-black tracking-widest mb-4 drop-shadow-[2px_2px_0_var(--color-electric-blue)]">
+          VERIFY OTP
+        </h1>
+        <p className="font-black tracking-widest uppercase mb-8 text-sm text-gray-500">
+          Enter the 6-digit code sent to {phoneNum}
+        </p>
+
+        {message && (
+          <div className={`mb-6 p-4 border-[3px] border-black font-black uppercase tracking-widest ${message.type === 'success' ? 'bg-[#19B85A] text-white' : 'bg-[var(--color-coral-red)] text-white'}`}>
+            {message.text}
+          </div>
+        )}
+
+        <form onSubmit={handleVerifyOtp} className="flex flex-col gap-6">
+          <input 
+            type="text" 
+            required
+            maxLength={6}
+            value={otp}
+            onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+            placeholder="000000" 
+            className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold text-center text-3xl tracking-[1em] outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
+          />
+          <button 
+            type="submit" 
+            disabled={loading || otp.length !== 6}
+            className="cartoon-btn px-8 py-4 bg-black text-white font-cartoon text-3xl tracking-widest border-[4px] border-black hover:bg-[var(--color-electric-blue)] transition-colors shadow-[6px_6px_0_var(--color-coral-red)] disabled:opacity-50 w-full"
+          >
+            {loading ? "VERIFYING..." : "LOGIN"}
+          </button>
+          
+          <button 
+            type="button"
+            onClick={() => setOtpSent(false)}
+            className="font-black text-sm uppercase text-gray-500 hover:text-black underline mt-2"
+          >
+            Try a different number
+          </button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-xl mx-auto mt-12 bg-white border-[4px] border-black p-8 shadow-[12px_12px_0_#111]">
@@ -85,7 +176,7 @@ function AuthUI() {
         LOGIN
       </h1>
       <p className="font-black tracking-widest uppercase mb-8 text-sm text-gray-500">
-        Enter your email. We'll send you a magic link to login instantly. No passwords needed.
+        Enter your email for a magic link, or mobile no. for an OTP SMS.
       </p>
 
       {message && (
@@ -96,11 +187,11 @@ function AuthUI() {
 
       <form onSubmit={handleLogin} className="flex flex-col gap-6">
         <input 
-          type="email" 
+          type="text" 
           required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="YOU@EXAMPLE.COM" 
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="EMAIL OR MOBILE NO." 
           className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
         />
         <button 
@@ -108,7 +199,7 @@ function AuthUI() {
           disabled={loading}
           className="cartoon-btn px-8 py-4 bg-black text-white font-cartoon text-3xl tracking-widest border-[4px] border-black hover:bg-[var(--color-electric-blue)] transition-colors shadow-[6px_6px_0_var(--color-coral-red)] disabled:opacity-50 w-full"
         >
-          {loading ? "SENDING..." : "SEND MAGIC LINK"}
+          {loading ? "SENDING..." : "SEND LINK / OTP"}
         </button>
       </form>
     </div>
