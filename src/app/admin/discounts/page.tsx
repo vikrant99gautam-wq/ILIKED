@@ -15,7 +15,7 @@ export interface AdvancedPromoCode {
 
 export default function AdminDiscountsPage() {
   const [discounts, setDiscounts] = useState<AdvancedPromoCode[]>([]);
-  const [settingsId, setSettingsId] = useState<string | null>(null);
+  const [settingsData, setSettingsData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{type: 'success'|'error', text: string} | null>(null);
@@ -31,10 +31,10 @@ export default function AdminDiscountsPage() {
     setIsLoading(true);
     const res = await fetch("/api/settings");
     const data = await res.json();
-    if (data && data.length > 0) {
-      setSettingsId(data[0].id);
+    if (data && !data.error) {
+      setSettingsData(data);
       try {
-        const parsed = JSON.parse(data[0].promo_codes || "[]");
+        const parsed = JSON.parse(data.promo_codes || "[]");
         // Migrate legacy formats if needed
         const migrated = parsed.map((p: any) => ({
           id: p.id || Date.now().toString() + Math.random().toString(36).substr(2, 5),
@@ -56,17 +56,23 @@ export default function AdminDiscountsPage() {
   };
 
   const handleSaveAll = async (newDiscounts: AdvancedPromoCode[]) => {
-    if (!settingsId) return;
+    if (!settingsData) return;
     setIsSaving(true);
     try {
+      const updatedSettings = {
+        ...settingsData,
+        promo_codes: JSON.stringify(newDiscounts)
+      };
+      
       const res = await fetch(`/api/settings`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: settingsId, promo_codes: JSON.stringify(newDiscounts) }),
+        body: JSON.stringify(updatedSettings),
       });
       if (res.ok) {
         setMessage({ type: 'success', text: "Discounts saved successfully!" });
         setDiscounts(newDiscounts);
+        setSettingsData(updatedSettings);
         setEditingId(null);
       } else {
         setMessage({ type: 'error', text: "Failed to save." });
