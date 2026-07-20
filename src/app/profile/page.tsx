@@ -254,13 +254,13 @@ function Dashboard({ user }: { user: User }) {
                     return (
                       <div key={index} className="flex justify-between items-center font-bold font-mono text-sm md:text-base border-b border-black/10 pb-4">
                         <div className="flex items-center gap-4">
-                          {item.image && <img src={item.image} alt={item.name} className="w-12 h-12 border-[2px] border-black object-contain bg-white shrink-0" />}
+                          {item.image && <img src={item.image} alt={item.name} className="w-16 h-16 md:w-20 md:h-20 border-[3px] border-black object-contain bg-white shrink-0 shadow-[3px_3px_0_#111]" />}
                           <div>
-                            <p>{item.name}</p>
-                            <p className="text-gray-500 text-xs">SIZE: {item.size} | QTY: {item.quantity}</p>
+                            <p className="text-lg md:text-xl font-black">{item.name}</p>
+                            <p className="text-gray-500 text-sm">SIZE: {item.size} | QTY: {item.quantity}</p>
                           </div>
                         </div>
-                        <p>₹{item.price * item.quantity}</p>
+                        <p className="text-lg md:text-xl">₹{item.price * item.quantity}</p>
                       </div>
                     );
                   })}

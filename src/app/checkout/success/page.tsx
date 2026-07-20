@@ -91,10 +91,15 @@ function SuccessContent() {
             {order.items.map((item: any, i: number) => {
               if (item.id === "SHIPPING-INFO") return null;
               return (
-                <div key={i} className="flex justify-between items-start">
-                  <div className="w-1/2 pr-2">
-                    <p className="leading-tight font-black">{item.name}</p>
-                    <p className="text-gray-500 text-sm mt-1">SIZE: {item.size}</p>
+                <div key={i} className="flex justify-between items-center">
+                  <div className="w-1/2 pr-2 flex items-center gap-3">
+                    {item.image && (
+                      <img src={item.image} alt={item.name} className="w-16 h-16 border-[2px] border-black object-contain bg-white shrink-0 shadow-[2px_2px_0_#111]" />
+                    )}
+                    <div>
+                      <p className="leading-tight font-black">{item.name}</p>
+                      <p className="text-gray-500 text-sm mt-1">SIZE: {item.size}</p>
+                    </div>
                   </div>
                   <div className="w-1/4 text-center">
                     <p>{item.quantity}</p>
