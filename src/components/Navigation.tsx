@@ -30,7 +30,9 @@ export default function Navigation() {
         <div className="w-full max-w-[1440px] mx-auto flex justify-between items-center text-[var(--color-primary-black)]">
           {/* Brand Logo */}
           <Link href="/" className="relative flex items-center hover:scale-105 transition-transform z-[110]" onClick={() => setIsMobileMenuOpen(false)}>
-            <img 
+            <motion.img 
+              animate={{ y: [-2, 2, -2] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               src="/images/logo.png?v=3" 
               alt="I LIKED Logo" 
               className="h-[50px] md:h-[60px] w-auto object-contain origin-left"
@@ -39,11 +41,11 @@ export default function Navigation() {
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-6 text-[14px] font-black tracking-widest text-black">
-            <Link href="/shop" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-[var(--color-coral-red)] hover:text-white transition-all uppercase">SHOP</Link>
-            <Link href="/moods" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-[#19B85A] hover:text-white transition-all uppercase">MOODS</Link>
-            <Link href="/story" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-[var(--color-electric-blue)] hover:text-white transition-all uppercase">OUR STORY</Link>
-            <Link href="/profile" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-black hover:text-white transition-all uppercase">PROFILE</Link>
-            <Link href="/bag" className="cartoon-btn px-6 py-2 bg-[var(--color-electric-blue)] text-white flex items-center gap-2 ml-4">
+            <Link href="/shop" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-[var(--color-coral-red)] hover:text-white transition-all uppercase rotate-1">SHOP</Link>
+            <Link href="/moods" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-[#19B85A] hover:text-white transition-all uppercase -rotate-2">MOODS</Link>
+            <Link href="/story" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-[var(--color-electric-blue)] hover:text-white transition-all uppercase rotate-2">OUR STORY</Link>
+            <Link href="/profile" className="bg-white border-[3px] border-black shadow-[4px_4px_0_#111] px-5 py-2 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] hover:bg-black hover:text-white transition-all uppercase -rotate-1">PROFILE</Link>
+            <Link href="/bag" className="cartoon-btn px-6 py-2 bg-[var(--color-electric-blue)] text-white flex items-center gap-2 ml-4 rotate-1 hover:-translate-y-1 hover:shadow-[6px_6px_0_#111] transition-all">
               BAG ({mounted ? cartItemCount : 0}) {mounted && cartItemCount > 0 && <span className="w-3 h-3 rounded-full bg-[var(--color-coral-red)] border-2 border-black block"></span>}
             </Link>
           </div>
