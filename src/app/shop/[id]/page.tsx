@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 import { useCartStore, useWishlistStore } from "@/lib/store";
 
@@ -25,6 +26,8 @@ export default function ProductDetailsPage() {
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   const [reviewForm, setReviewForm] = useState({ name: '', rating: 5, comment: '' });
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [canReview, setCanReview] = useState(false);
+  const [hoverRating, setHoverRating] = useState(0);
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -81,7 +84,7 @@ export default function ProductDetailsPage() {
       Promise.all([
         fetch(`/api/products/${params.id}`).then(r => r.json()),
         fetch('/api/products').then(r => r.json())
-      ]).then(([productData, allProductsData]) => {
+      ]).then(async ([productData, allProductsData]) => {
         if (productData.error) {
           setProduct(null);
         } else {
@@ -90,6 +93,24 @@ export default function ProductDetailsPage() {
             const variants = allProductsData.filter((p: any) => p.name === productData.name);
             setColorVariants(variants);
             setRelatedProducts(allProductsData.filter((p: any) => p.name !== productData.name).slice(0, 4));
+          }
+          
+          // Check if user can review
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user?.email) {
+            const { data: orders } = await supabase
+              .from('orders')
+              .select('status, items')
+              .ilike('email', user.email);
+              
+            if (orders) {
+              const hasBought = orders.some((o: any) => {
+                if (o.status !== 'Delivered' && o.status !== 'Cancelled') return false;
+                if (!Array.isArray(o.items)) return false;
+                return o.items.some((item: any) => item.id === productData.id);
+              });
+              setCanReview(hasBought);
+            }
           }
         }
       }).catch(() => setProduct(null));
@@ -329,49 +350,60 @@ export default function ProductDetailsPage() {
             {/* Write a Review */}
             <div className="bg-white border-[4px] border-black p-6 shadow-[6px_6px_0_#111]">
               <h3 className="font-cartoon text-3xl mb-4">LEAVE A REVIEW</h3>
-              <form onSubmit={handleReviewSubmit} className="space-y-4">
-                <div>
-                  <label className="block font-black text-sm mb-2">NAME</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={reviewForm.name}
-                    onChange={e => setReviewForm({...reviewForm, name: e.target.value})}
-                    className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
-                    placeholder="Your Name"
-                  />
-                </div>
-                <div>
-                  <label className="block font-black text-sm mb-2">RATING</label>
-                  <select 
-                    value={reviewForm.rating}
-                    onChange={e => setReviewForm({...reviewForm, rating: Number(e.target.value)})}
-                    className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700] bg-white"
+              {canReview ? (
+                <form onSubmit={handleReviewSubmit} className="space-y-4">
+                  <div>
+                    <label className="block font-black text-sm mb-2">NAME</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={reviewForm.name}
+                      onChange={e => setReviewForm({...reviewForm, name: e.target.value})}
+                      className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
+                      placeholder="Your Name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-black text-sm mb-2">RATING</label>
+                    <div className="flex gap-2 text-3xl text-gray-300 drop-shadow-[2px_2px_0_#111]">
+                      {[1,2,3,4,5].map(star => (
+                        <button
+                          key={star}
+                          type="button"
+                          onMouseEnter={() => setHoverRating(star)}
+                          onMouseLeave={() => setHoverRating(0)}
+                          onClick={() => setReviewForm({...reviewForm, rating: star})}
+                          className={`transition-colors ${(hoverRating || reviewForm.rating) >= star ? 'text-[#FFD700]' : 'text-gray-300'}`}
+                        >
+                          ★
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block font-black text-sm mb-2">COMMENT</label>
+                    <textarea 
+                      required
+                      rows={3}
+                      value={reviewForm.comment}
+                      onChange={e => setReviewForm({...reviewForm, comment: e.target.value})}
+                      className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700] resize-none"
+                      placeholder="What do you think about this piece?"
+                    ></textarea>
+                  </div>
+                  <button 
+                    type="submit" 
+                    disabled={isSubmittingReview}
+                    className="w-full bg-[#FFD700] text-black border-[4px] border-black py-3 font-cartoon text-2xl hover:bg-black hover:text-white transition-colors"
                   >
-                    {[5,4,3,2,1].map(num => (
-                      <option key={num} value={num}>{num} Stars</option>
-                    ))}
-                  </select>
+                    {isSubmittingReview ? "SUBMITTING..." : "SUBMIT REVIEW"}
+                  </button>
+                </form>
+              ) : (
+                <div className="border-[3px] border-dashed border-black p-4 bg-gray-50 text-center">
+                  <p className="font-black text-gray-600 uppercase">You must purchase and receive this item before leaving a review.</p>
                 </div>
-                <div>
-                  <label className="block font-black text-sm mb-2">COMMENT</label>
-                  <textarea 
-                    required
-                    rows={3}
-                    value={reviewForm.comment}
-                    onChange={e => setReviewForm({...reviewForm, comment: e.target.value})}
-                    className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700] resize-none"
-                    placeholder="What do you think about this piece?"
-                  ></textarea>
-                </div>
-                <button 
-                  type="submit" 
-                  disabled={isSubmittingReview}
-                  className="w-full bg-[#FFD700] text-black border-[4px] border-black py-3 font-cartoon text-2xl hover:bg-black hover:text-white transition-colors"
-                >
-                  {isSubmittingReview ? "SUBMITTING..." : "SUBMIT REVIEW"}
-                </button>
-              </form>
+              )}
             </div>
           </div>
 
