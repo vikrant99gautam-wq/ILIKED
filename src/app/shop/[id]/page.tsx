@@ -23,6 +23,8 @@ export default function ProductDetailsPage() {
   const isLiked = (id: string) => mounted ? wishlistItems.some((i) => i.id === id) : false;
 
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  const [reviewForm, setReviewForm] = useState({ name: '', rating: 5, comment: '' });
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -42,6 +44,36 @@ export default function ProductDetailsPage() {
     setTimeout(() => setShowToast(false), 3000);
   };
   
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewForm.name || !reviewForm.comment) {
+      alert("Name and comment are required!");
+      return;
+    }
+    setIsSubmittingReview(true);
+    try {
+      const currentReviews = Array.isArray(product.reviews) ? product.reviews : [];
+      const newReview = { ...reviewForm, date: new Date().toISOString() };
+      const updatedReviews = [...currentReviews, newReview];
+      
+      const res = await fetch(`/api/products/${product.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews: updatedReviews })
+      });
+      
+      if (res.ok) {
+        setProduct({ ...product, reviews: updatedReviews });
+        setReviewForm({ name: '', rating: 5, comment: '' });
+        alert("Review added successfully!");
+      } else {
+        alert("Failed to submit review.");
+      }
+    } catch (e) {
+      alert("Error submitting review.");
+    }
+    setIsSubmittingReview(false);
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -103,11 +135,22 @@ export default function ProductDetailsPage() {
           </div>
 
           {/* Reviews Summary */}
-          <div className="flex items-center gap-2 mb-6">
+          <div className="flex items-center gap-2 mb-6 cursor-pointer" onClick={() => document.getElementById('reviews-section')?.scrollIntoView({behavior: 'smooth'})}>
             <div className="flex text-[#FFD700] text-xl drop-shadow-[2px_2px_0_#111]">
-              ★★★★★
+              {Array.isArray(product.reviews) && product.reviews.length > 0 ? (
+                <>
+                  {'★'.repeat(Math.round(product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / product.reviews.length))}
+                  {'☆'.repeat(5 - Math.round(product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / product.reviews.length))}
+                </>
+              ) : (
+                '★★★★★'
+              )}
             </div>
-            <span className="font-black text-xs md:text-sm tracking-widest">(4.9/5 FROM 24 REVIEWS)</span>
+            <span className="font-black text-xs md:text-sm tracking-widest uppercase hover:underline">
+              {Array.isArray(product.reviews) && product.reviews.length > 0 
+                ? `(${(product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / product.reviews.length).toFixed(1)}/5 FROM ${product.reviews.length} REVIEWS)`
+                : '(BE THE FIRST TO REVIEW)'}
+            </span>
           </div>
 
           {/* Color Selector */}
@@ -255,6 +298,81 @@ export default function ProductDetailsPage() {
                 </AnimatePresence>
               </div>
             ))}
+          </div>
+
+          {/* REVIEWS SECTION */}
+          <div id="reviews-section" className="mt-4 pt-8 border-t-[8px] border-black pb-8">
+            <h2 className="font-cartoon text-4xl mb-6">REVIEWS</h2>
+            
+            {/* Reviews List */}
+            <div className="space-y-4 mb-8">
+              {Array.isArray(product.reviews) && product.reviews.length > 0 ? (
+                product.reviews.map((review: any, idx: number) => (
+                  <div key={idx} className="bg-gray-50 border-[3px] border-black p-4 shadow-[4px_4px_0_#111]">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="font-black text-lg">{review.name}</div>
+                      <div className="text-[#FFD700] text-sm">
+                        {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                      </div>
+                    </div>
+                    <p className="font-bold text-gray-700 text-sm leading-relaxed">{review.comment}</p>
+                    <p className="text-xs font-bold text-gray-400 mt-2">{new Date(review.date).toLocaleDateString()}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="border-[3px] border-dashed border-black p-6 text-center">
+                  <p className="font-black uppercase text-gray-500">No reviews yet. Be the first to drop some heat! 🔥</p>
+                </div>
+              )}
+            </div>
+
+            {/* Write a Review */}
+            <div className="bg-white border-[4px] border-black p-6 shadow-[6px_6px_0_#111]">
+              <h3 className="font-cartoon text-3xl mb-4">LEAVE A REVIEW</h3>
+              <form onSubmit={handleReviewSubmit} className="space-y-4">
+                <div>
+                  <label className="block font-black text-sm mb-2">NAME</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={reviewForm.name}
+                    onChange={e => setReviewForm({...reviewForm, name: e.target.value})}
+                    className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
+                    placeholder="Your Name"
+                  />
+                </div>
+                <div>
+                  <label className="block font-black text-sm mb-2">RATING</label>
+                  <select 
+                    value={reviewForm.rating}
+                    onChange={e => setReviewForm({...reviewForm, rating: Number(e.target.value)})}
+                    className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700] bg-white"
+                  >
+                    {[5,4,3,2,1].map(num => (
+                      <option key={num} value={num}>{num} Stars</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-black text-sm mb-2">COMMENT</label>
+                  <textarea 
+                    required
+                    rows={3}
+                    value={reviewForm.comment}
+                    onChange={e => setReviewForm({...reviewForm, comment: e.target.value})}
+                    className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700] resize-none"
+                    placeholder="What do you think about this piece?"
+                  ></textarea>
+                </div>
+                <button 
+                  type="submit" 
+                  disabled={isSubmittingReview}
+                  className="w-full bg-[#FFD700] text-black border-[4px] border-black py-3 font-cartoon text-2xl hover:bg-black hover:text-white transition-colors"
+                >
+                  {isSubmittingReview ? "SUBMITTING..." : "SUBMIT REVIEW"}
+                </button>
+              </form>
+            </div>
           </div>
 
         </div>
