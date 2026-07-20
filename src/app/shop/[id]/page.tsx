@@ -73,7 +73,7 @@ export default function ProductDetailsPage() {
     <main className="min-h-screen bg-[#F4F4F0] pt-[76px]">
       
       {/* Split Screen Container */}
-      <div className="flex flex-col-reverse lg:flex-row w-full relative lg:h-[calc(100vh-76px)]">
+      <div className="flex flex-col-reverse lg:flex-row w-full max-w-[1600px] mx-auto relative lg:h-[calc(100vh-76px)]">
         
         {/* Left Side: Command Center (Flows Naturally) */}
         <div className="w-full lg:w-[45%] p-6 md:p-8 lg:p-8 lg:pt-8 flex flex-col justify-start bg-white border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black relative z-20 overflow-y-auto">
@@ -340,30 +340,29 @@ export default function ProductDetailsPage() {
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -8 }}
                 onClick={() => window.location.href = `/shop/${relProduct.id}`}
                 key={relProduct.id}
-                className="group relative bg-white border-[4px] border-black shadow-[8px_8px_0_#111] hover:shadow-[12px_12px_0_#111] transition-all flex flex-col cursor-pointer duration-300"
+                className="cartoon-card relative bg-white bg-paper-noise p-4 pb-6 flex flex-col cursor-pointer group"
               >
                 {/* Product Image Area */}
-                <div className={`relative w-full aspect-[4/5] ${relProduct.bgColor} border-b-[4px] border-black overflow-hidden flex items-center justify-center`}>
+                <div className={`relative w-full aspect-[4/5] ${relProduct.bgColor} border-[4px] border-black shadow-inner mb-6 overflow-hidden flex items-center justify-center`}>
                   {/* Halftone dots */}
                   <div className="absolute inset-0 opacity-[0.15] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #000 2px, transparent 2.5px)', backgroundSize: '12px 12px' }}></div>
                   
                   {/* Primary Image */}
-                  <img src={relProduct.image ? relProduct.image.split(',')[0].trim() : ''} alt={relProduct.name} className="absolute w-full h-full object-contain drop-shadow-[6px_6px_0_#111] scale-[1.3] group-hover:scale-[1.4] group-hover:opacity-0 transition-all duration-500 z-10" />
+                  <img src={relProduct.image ? relProduct.image.split(',')[0].trim() : ''} alt={relProduct.name} className="absolute w-[115%] h-[115%] object-contain drop-shadow-[6px_6px_0_#111] group-hover:scale-[1.05] group-hover:opacity-0 transition-all duration-500 z-10" />
 
                   {/* Hover Image */}
-                  <img src={relProduct.hoverImage} alt={`${relProduct.name} alternate`} className="absolute w-full h-full object-contain drop-shadow-[6px_6px_0_#111] opacity-0 scale-[1.15] group-hover:scale-[1.4] group-hover:opacity-100 transition-all duration-500 z-10" />
+                  <img src={relProduct.hoverImage} alt={`${relProduct.name} alternate`} className="absolute w-[115%] h-[115%] object-contain drop-shadow-[6px_6px_0_#111] opacity-0 group-hover:scale-[1.05] group-hover:opacity-100 transition-all duration-500 z-10" />
                 </div>
 
                 {/* Product Info Area */}
-                <div className="p-5 bg-white relative">
-                  <h3 className="font-cartoon text-2xl text-black tracking-wide leading-tight group-hover:text-[var(--color-electric-blue)] transition-colors">
+                <div className="flex flex-col w-full group-hover:translate-x-1 transition-transform duration-300 relative">
+                  <h3 className="font-cartoon text-2xl text-black tracking-wide leading-tight group-hover:text-[var(--color-electric-blue)] transition-colors mb-3">
                     {relProduct.name}
                   </h3>
                   
-                  <div className="absolute -top-5 right-4 bg-[#FFD700] border-[3px] border-black px-4 py-1 rotate-[5deg] group-hover:rotate-[-5deg] group-hover:scale-110 transition-transform shadow-[4px_4px_0_#111]">
+                  <div className="absolute -top-12 right-0 bg-[#FFD700] border-[3px] border-black px-4 py-1 rotate-[5deg] group-hover:rotate-[-5deg] group-hover:scale-110 transition-transform shadow-[4px_4px_0_#111]">
                     <span className="font-black text-black text-lg">₹{relProduct.price}</span>
                   </div>
                 </div>

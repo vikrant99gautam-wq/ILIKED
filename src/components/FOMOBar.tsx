@@ -12,9 +12,9 @@ export default function FOMOBar({ stockLeft, maxStock = 20 }: { stockLeft: numbe
     <div className="w-full mt-4 flex flex-col gap-1.5 relative z-20">
       <div className="flex justify-between items-end">
         <motion.span 
-          className="font-black text-[10px] tracking-widest uppercase bg-black text-white px-2 py-0.5 border-2 border-black shadow-[2px_2px_0_#111]"
-          animate={isCritical ? { scale: [1, 1.05, 1], rotate: [0, -2, 2, 0] } : {}}
-          transition={isCritical ? { repeat: Infinity, duration: 0.4 } : {}}
+          className={`font-black tracking-widest uppercase bg-black text-white px-3 py-1 border-[3px] border-black shadow-[3px_3px_0_#111] inline-block ${isCritical ? 'text-[12px] rotate-[-4deg]' : 'text-[10px] rotate-[2deg]'}`}
+          animate={isCritical ? { scale: [1, 1.08, 1], rotate: [-4, -6, -2, -4] } : {}}
+          transition={isCritical ? { repeat: Infinity, duration: 0.8, ease: "easeInOut" } : {}}
           style={isCritical ? { backgroundColor: 'var(--color-coral-red)' } : {}}
         >
           {isCritical ? `ONLY ${stockLeft} LEFT G!` : "SELLING FAST"}
