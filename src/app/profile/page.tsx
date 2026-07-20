@@ -293,19 +293,27 @@ function Dashboard({ user }: { user: User }) {
                             <h3 className="font-cartoon text-3xl md:text-4xl">ORDER #{order.id.slice(-8)}</h3>
                             <p className="font-black tracking-widest text-gray-500 text-xs md:text-sm mt-1">{new Date(order.created_at).toLocaleString()}</p>
                           </div>
-                          <div className="mt-4 md:mt-0 text-right">
+                          <div className="mt-4 md:mt-0 text-right flex flex-col md:items-end gap-2">
                             <span className="font-mono font-black text-xl md:text-2xl block mb-2">TOTAL: ₹{order.total}</span>
-                            <button
-                              onClick={async () => {
-                                if (confirm("Are you sure you want to delete this order from your history?")) {
-                                  await fetch(`/api/orders/${order.id}`, { method: "DELETE" });
-                                  fetchOrders();
-                                }
-                              }}
-                              className="px-4 py-1 border-[2px] border-black bg-red-500 hover:bg-black text-white font-black text-sm transition-colors"
-                            >
-                              DELETE RECORD
-                            </button>
+                            <div className="flex gap-2">
+                              <Link
+                                href={`/profile/orders/${order.id}`}
+                                className="px-4 py-1 border-[2px] border-black bg-[var(--color-electric-blue)] hover:bg-black text-white font-black text-sm transition-colors text-center"
+                              >
+                                VIEW DETAILS
+                              </Link>
+                              <button
+                                onClick={async () => {
+                                  if (confirm("Are you sure you want to delete this order from your history?")) {
+                                    await fetch(`/api/orders/${order.id}`, { method: "DELETE" });
+                                    fetchOrders();
+                                  }
+                                }}
+                                className="px-4 py-1 border-[2px] border-black bg-red-500 hover:bg-black text-white font-black text-sm transition-colors"
+                              >
+                                DELETE RECORD
+                              </button>
+                            </div>
                           </div>
                         </div>
 
