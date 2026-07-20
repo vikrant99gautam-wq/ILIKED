@@ -12,6 +12,7 @@ export default function CheckoutPage() {
   const [mounted, setMounted] = useState(false);
   const [settings, setSettings] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
+  const [cityOptions, setCityOptions] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,6 +20,7 @@ export default function CheckoutPage() {
     phone: "",
     address: "",
     city: "",
+    district: "",
     state: "",
     zip: "",
   });
@@ -53,15 +55,26 @@ export default function CheckoutPage() {
         .then(res => res.json())
         .then(data => {
           if (data && data[0] && data[0].Status === "Success" && data[0].PostOffice) {
-            const details = data[0].PostOffice[0];
+            const postOffices = data[0].PostOffice;
+            const uniqueCities = Array.from(new Set(postOffices.map((po: any) => po.Name))) as string[];
+            setCityOptions(uniqueCities);
+            
             setFormData(prev => ({
               ...prev,
-              city: details.District,
-              state: details.State
+              district: postOffices[0].District,
+              state: postOffices[0].State,
+              city: uniqueCities[0] || ""
             }));
+          } else {
+            setCityOptions([]);
           }
         })
-        .catch(err => console.error("Error fetching pincode details", err));
+        .catch(err => {
+          console.error("Error fetching pincode details", err);
+          setCityOptions([]);
+        });
+    } else {
+      setCityOptions([]);
     }
   }, [formData.zip]);
 
@@ -194,17 +207,34 @@ export default function CheckoutPage() {
                 <input required type="text" value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                <div className="flex flex-col gap-2 md:col-span-1">
-                  <label className="font-bold text-sm tracking-widest uppercase">City</label>
-                  <input required type="text" value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex flex-col gap-2">
+                  <label className="font-bold text-sm tracking-widest uppercase">City / Locality</label>
+                  {cityOptions.length > 0 ? (
+                    <select 
+                      required
+                      value={formData.city} 
+                      onChange={(e) => setFormData({...formData, city: e.target.value})} 
+                      className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all appearance-none cursor-pointer"
+                    >
+                      {cityOptions.map(city => <option key={city} value={city}>{city}</option>)}
+                    </select>
+                  ) : (
+                    <input required type="text" value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
+                  )}
                 </div>
-                <div className="flex flex-col gap-2 md:col-span-1">
+                <div className="flex flex-col gap-2">
+                  <label className="font-bold text-sm tracking-widest uppercase">District</label>
+                  <input required type="text" value={formData.district} onChange={(e) => setFormData({...formData, district: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex flex-col gap-2">
                   <label className="font-bold text-sm tracking-widest uppercase">State/Prov</label>
                   <input required type="text" value={formData.state} onChange={(e) => setFormData({...formData, state: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
                 </div>
-                <div className="flex flex-col gap-2 col-span-2 md:col-span-1">
-                  <label className="font-bold text-sm tracking-widest uppercase">ZIP Code</label>
+                <div className="flex flex-col gap-2">
+                  <label className="font-bold text-sm tracking-widest uppercase">ZIP Code (Enter to auto-fill)</label>
                   <input required type="text" maxLength={6} value={formData.zip} onChange={(e) => setFormData({...formData, zip: e.target.value.replace(/\D/g, '')})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
                 </div>
               </div>
