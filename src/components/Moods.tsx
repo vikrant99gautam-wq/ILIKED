@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 
-const Polaroid = ({ color, rotate, tapeRotate, delay, label }: { color: string, rotate: string, tapeRotate: string, delay: number, label: string }) => {
+const Polaroid = ({ color, rotate, tapeRotate, delay, label, isComingSoon }: { color: string, rotate: string, tapeRotate: string, delay: number, label: string, isComingSoon?: boolean }) => {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 100, rotate: 0 }}
@@ -22,6 +22,14 @@ const Polaroid = ({ color, rotate, tapeRotate, delay, label }: { color: string, 
         <svg className="w-1/3 h-1/3 text-black opacity-20 relative z-10" viewBox="0 0 24 24" fill="currentColor">
           <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
         </svg>
+
+        {isComingSoon && (
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
+            <div className="bg-[#111] border-[3px] border-white px-4 py-2 rotate-[-8deg] shadow-[4px_4px_0_#fff]">
+              <span className="font-cartoon text-xl text-white tracking-widest uppercase">DROPPING SOON</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Label */}
@@ -58,9 +66,9 @@ export default function Moods() {
       {/* Massive Background Text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0">
          <span 
-           className="font-cartoon text-[40vw] text-black whitespace-nowrap tracking-widest rotate-[-6deg] opacity-[0.07]"
+           className="font-cartoon text-[35vw] text-black whitespace-nowrap tracking-widest rotate-[-6deg] opacity-[0.05]"
          >
-           VIBES
+           COLLECTIONS
          </span>
       </div>
 
@@ -73,10 +81,10 @@ export default function Moods() {
           <motion.h2 
             animate={{ y: [-3, 3, -3] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="font-cartoon text-7xl md:text-9xl text-white tracking-widest drop-shadow-[8px_8px_0_#111] rotate-[-2deg]" 
+            className="font-cartoon text-6xl md:text-8xl text-white tracking-widest drop-shadow-[8px_8px_0_#111] rotate-[-2deg]" 
             style={{ WebkitTextStroke: '4px #111' }}
           >
-            OUR MOODS
+            COLLECTIONS
           </motion.h2>
           
           <div className="mt-6 bg-white border-[3px] border-black px-6 py-2 shadow-[4px_4px_0_#111] rotate-[1deg] inline-block">
@@ -86,20 +94,19 @@ export default function Moods() {
 
         {/* Scattered Polaroids Layout */}
         <div className="flex flex-wrap justify-center items-center gap-12 md:gap-x-16 md:gap-y-24 max-w-[1200px]">
-          <Polaroid color="bg-[var(--color-coral-red)]" rotate="rotate-[-8deg]" tapeRotate="rotate-[-5deg]" delay={0.1} label="STREET" />
-          <Polaroid color="bg-[#FFD700]" rotate="rotate-[12deg]" tapeRotate="rotate-[3deg]" delay={0.2} label="STUDIO" />
-          <Polaroid color="bg-[#246BFD]" rotate="rotate-[-15deg]" tapeRotate="rotate-[-10deg]" delay={0.3} label="LIFESTYLE" />
-          <Polaroid color="bg-[#FF9800]" rotate="rotate-[6deg]" tapeRotate="rotate-[8deg]" delay={0.4} label="ARCHIVE" />
-          <Polaroid color="bg-[#E91E63]" rotate="rotate-[-10deg]" tapeRotate="rotate-[2deg]" delay={0.5} label="DROPS" />
+          <Polaroid color="bg-[var(--color-coral-red)]" rotate="rotate-[-8deg]" tapeRotate="rotate-[-5deg]" delay={0.1} label="NORMAL TEES" isComingSoon={true} />
+          <Polaroid color="bg-[#FFD700]" rotate="rotate-[12deg]" tapeRotate="rotate-[3deg]" delay={0.2} label="OVERSIZED TEES" />
+          <Polaroid color="bg-[#246BFD]" rotate="rotate-[-15deg]" tapeRotate="rotate-[-10deg]" delay={0.3} label="OPTIC WASH TEES" isComingSoon={true} />
         </div>
         
         {/* View Lookbook Button */}
         <motion.button 
           whileHover={{ scale: 1.05, rotate: -2 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => window.location.href = '/collections'}
           className="mt-32 cartoon-btn px-10 py-5 bg-white text-black text-xl font-black tracking-widest border-[4px] border-black shadow-[8px_8px_0_#111] group"
         >
-          VIEW FULL LOOKBOOK 
+          VIEW ALL COLLECTIONS 
           <span className="inline-block ml-4 text-[var(--color-coral-red)] group-hover:translate-x-2 transition-transform">★</span>
         </motion.button>
         

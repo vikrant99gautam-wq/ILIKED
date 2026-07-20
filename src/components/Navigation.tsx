@@ -42,7 +42,7 @@ export default function Navigation() {
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-6 text-[14px] font-black tracking-widest text-black">
             <Link href="/shop" className="cartoon-btn bg-white px-5 py-2 hover:bg-[var(--color-coral-red)] hover:text-white uppercase rotate-[1deg]">SHOP</Link>
-            <Link href="/moods" className="cartoon-btn bg-white px-5 py-2 hover:bg-[#19B85A] hover:text-white uppercase -rotate-[2deg]">MOODS</Link>
+            <Link href="/collections" className="cartoon-btn bg-white px-5 py-2 hover:bg-[#19B85A] hover:text-white uppercase -rotate-[2deg]">COLLECTIONS</Link>
             <Link href="/story" className="cartoon-btn bg-white px-5 py-2 hover:bg-[var(--color-electric-blue)] hover:text-white uppercase rotate-[2deg]">OUR STORY</Link>
             <Link href="/profile" className="cartoon-btn bg-white px-5 py-2 hover:bg-black hover:text-white uppercase -rotate-[1deg]">PROFILE</Link>
             <Link href="/bag" className="cartoon-btn px-6 py-2 bg-[var(--color-electric-blue)] text-white flex items-center gap-2 ml-4 rotate-[1deg]">
@@ -80,8 +80,8 @@ export default function Navigation() {
           <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-[var(--color-coral-red)] hover:text-white transition-colors">
             SHOP
           </Link>
-          <Link href="/moods" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-[#19B85A] hover:text-white transition-colors">
-            MOODS
+          <Link href="/collections" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-[#19B85A] hover:text-white transition-colors">
+            COLLECTIONS
           </Link>
           <Link href="/story" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-white border-[4px] border-black shadow-[6px_6px_0_#111] py-4 text-3xl font-cartoon tracking-widest hover:bg-[var(--color-electric-blue)] hover:text-white transition-colors">
             OUR STORY

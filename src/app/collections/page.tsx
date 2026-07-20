@@ -1,11 +1,11 @@
 import MoodsGallery from "@/components/MoodsGallery";
 
 export const metadata = {
-  title: "Moods & Archive | I LIKED",
-  description: "Explore the culture, style, and archive of I LIKED.",
+  title: "Collections & Archive | I LIKED",
+  description: "Explore the collections and archive of I LIKED.",
 };
 
-export default function MoodsPage() {
+export default function CollectionsPage() {
   return (
     <main className="min-h-screen">
       <MoodsGallery />

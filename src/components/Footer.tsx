@@ -59,7 +59,7 @@ export default function Footer() {
            <div className="flex flex-col gap-6 items-start">
               <h4 className="font-black text-gray-500 tracking-[0.2em] text-xs">MENU</h4>
               <Link href="/shop" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[#FFD700] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] rotate-[-2deg] hover:rotate-[-4deg]">SHOP</Link>
-              <Link href="/moods" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[var(--color-coral-red)] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] rotate-[3deg] hover:rotate-[1deg]">MOODS</Link>
+              <Link href="/collections" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[var(--color-coral-red)] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] rotate-[3deg] hover:rotate-[1deg]">COLLECTIONS</Link>
               <Link href="/story" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[#19B85A] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] rotate-[-1deg] hover:rotate-[-3deg]">OUR STORY</Link>
            </div>
 

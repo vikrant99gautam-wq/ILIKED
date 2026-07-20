@@ -2,15 +2,10 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-const MOODS_DATA = [
-  { id: 1, image: "/images/model-anim-1.png", label: "STREET VIBE", rotate: "rotate-[-3deg]", color: "bg-[#FFD700]" },
-  { id: 2, image: "/images/primary-model.png", label: "STUDIO DROP", rotate: "rotate-[2deg]", color: "bg-[#E5F1F9]" },
-  { id: 3, image: "/images/model-anim-2.png", label: "ARCHIVE", rotate: "rotate-[-4deg]", color: "bg-[var(--color-coral-red)]" },
-  { id: 4, image: "/images/model-anim-3.png", label: "LIFESTYLE", rotate: "rotate-[5deg]", color: "bg-[#19B85A]" },
-  { id: 5, image: "/images/secondary-model.png", label: "CLASSICS", rotate: "rotate-[-2deg]", color: "bg-[#E5F1F9]" },
-  { id: 6, image: "/images/primary-model.png", label: "NEW GEN", rotate: "rotate-[3deg]", color: "bg-[var(--color-electric-blue)]" },
-  { id: 7, image: "/images/model-anim-1.png", label: "RAW", rotate: "rotate-[-5deg]", color: "bg-[#FFD700]" },
-  { id: 8, image: "/images/model-anim-2.png", label: "CULTURE", rotate: "rotate-[4deg]", color: "bg-[var(--color-coral-red)]" },
+const COLLECTIONS_DATA = [
+  { id: 1, image: "/images/model-anim-1.png", label: "NORMAL TEES", rotate: "rotate-[-3deg]", color: "bg-[var(--color-coral-red)]", isComingSoon: true },
+  { id: 2, image: "/images/primary-model.png", label: "OVERSIZED TEES", rotate: "rotate-[2deg]", color: "bg-[#FFD700]" },
+  { id: 3, image: "/images/model-anim-2.png", label: "OPTIC WASH TEES", rotate: "rotate-[-4deg]", color: "bg-[var(--color-electric-blue)]", isComingSoon: true },
 ];
 
 export default function MoodsGallery() {
@@ -19,8 +14,8 @@ export default function MoodsGallery() {
       
       {/* Background Graphic */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none z-0 opacity-10">
-        <h1 className="font-cartoon text-[20vw] leading-none text-black tracking-widest text-center whitespace-nowrap rotate-[-5deg]">
-          ARCHIVE
+        <h1 className="font-cartoon text-[15vw] leading-none text-black tracking-widest text-center whitespace-nowrap rotate-[-5deg]">
+          COLLECTIONS
         </h1>
       </div>
 
@@ -29,16 +24,16 @@ export default function MoodsGallery() {
         {/* Header */}
         <div className="mb-16 text-center">
           <h2 className="font-cartoon text-6xl md:text-8xl text-black tracking-widest drop-shadow-[4px_4px_0_var(--color-electric-blue)]">
-            THE ARCHIVE
+            COLLECTIONS
           </h2>
           <p className="font-black text-black text-lg tracking-widest uppercase mt-4">
-            Visuals, culture, and raw streetwear.
+            Shop by Category.
           </p>
         </div>
 
         {/* Clean Structured Grid with slight rotations */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-16">
-          {MOODS_DATA.map((item, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-10 gap-y-16 justify-center">
+          {COLLECTIONS_DATA.map((item, index) => (
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -59,11 +54,17 @@ export default function MoodsGallery() {
                   className="absolute w-full h-full object-contain drop-shadow-[4px_4px_0_#111] scale-[1.2] group-hover:scale-[1.3] transition-transform duration-500"
                 />
                 
-                {/* Shop Overlay */}
+                {/* Overlay */}
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <Link href="/shop" className="bg-[#FFD700] border-[3px] border-black px-6 py-2 rotate-[-5deg] shadow-[4px_4px_0_#111]">
-                    <span className="font-black text-black uppercase tracking-widest">Shop Look ↗</span>
-                  </Link>
+                  {item.isComingSoon ? (
+                    <div className="bg-[#111] border-[3px] border-white px-6 py-2 rotate-[-5deg] shadow-[4px_4px_0_#fff]">
+                      <span className="font-cartoon text-xl text-white tracking-widest uppercase">DROPPING SOON</span>
+                    </div>
+                  ) : (
+                    <Link href="/shop" className="bg-[#FFD700] border-[3px] border-black px-6 py-2 rotate-[-5deg] shadow-[4px_4px_0_#111]">
+                      <span className="font-black text-black uppercase tracking-widest">Shop Collection ↗</span>
+                    </Link>
+                  )}
                 </div>
               </div>
 
