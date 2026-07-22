@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { supabase } from "@/lib/supabase";
 
+import { sendOrderConfirmationEmail } from "@/lib/email";
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -63,6 +65,9 @@ export async function POST(req: Request) {
       console.error("Supabase Order Creation Error:", error);
       return NextResponse.json({ error: "Failed to create order in database" }, { status: 500 });
     }
+
+    // Trigger email notification in the background (we don't await this to keep the API fast)
+    sendOrderConfirmationEmail(data).catch(err => console.error("Background Email Error:", err));
 
     return NextResponse.json({ success: true, orderId: data.id });
   } catch (error: any) {
