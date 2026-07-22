@@ -89,7 +89,7 @@ function SuccessContent() {
           
           <div className="space-y-6">
             {order.items.map((item: any, i: number) => {
-              if (item.id === "SHIPPING-INFO") return null;
+              if (item.id === "SHIPPING-INFO" || item.id === "PAYMENT-INFO") return null;
               const isPromo = item.id.startsWith("PROMO-");
               return (
                 <div key={i} className={`flex justify-between items-center ${isPromo ? 'text-[#19B85A]' : ''}`}>

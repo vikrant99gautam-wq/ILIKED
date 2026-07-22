@@ -214,7 +214,7 @@ export default function OrderDetailsPage() {
   }
 
   const realItems = Array.isArray(order.items) ? order.items.filter((item: any) => {
-    if (item.id === "SHIPPING-INFO") return false;
+    if (item.id === "SHIPPING-INFO" || item.id === "PAYMENT-INFO") return false;
     const name = item.name?.toLowerCase() || '';
     return !name.includes('discount') && !name.includes('delivery');
   }) : [];
