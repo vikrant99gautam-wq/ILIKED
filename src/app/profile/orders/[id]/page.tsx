@@ -200,7 +200,21 @@ export default function OrderDetailsPage() {
     );
   }
 
-  const shippingInfo = order.shipping_info ? JSON.parse(order.shipping_info) : null;
+  let shippingInfo = null;
+  if (order.shipping_info) {
+    try {
+      shippingInfo = JSON.parse(order.shipping_info);
+    } catch(e) {}
+  } 
+  if (!shippingInfo && Array.isArray(order.items)) {
+    const shippingItem = order.items.find((item: any) => item.id === "SHIPPING-INFO");
+    if (shippingItem && shippingItem.shipping_info) {
+      shippingInfo = shippingItem.shipping_info;
+    }
+  }
+
+  const promoItems = Array.isArray(order.items) ? order.items.filter((item: any) => item.id.toString().startsWith("PROMO-") || item.name?.toLowerCase().includes("discount")) : [];
+  const deliveryItems = Array.isArray(order.items) ? order.items.filter((item: any) => item.name?.toLowerCase().includes("delivery")) : [];
 
   return (
     <div className="min-h-screen bg-[#F4F4F0] pt-[120px] pb-20 px-4 md:px-8">
@@ -237,7 +251,7 @@ export default function OrderDetailsPage() {
                 <p className="font-mono text-sm font-bold uppercase leading-relaxed">
                   {shippingInfo.firstName} {shippingInfo.lastName}<br />
                   {shippingInfo.address}<br />
-                  {shippingInfo.city}, {shippingInfo.state} {shippingInfo.zipCode}<br />
+                  {shippingInfo.city}, {shippingInfo.state} {shippingInfo.zipCode || shippingInfo.zip}<br />
                   PHONE: {shippingInfo.phone}
                 </p>
               </div>
@@ -248,6 +262,7 @@ export default function OrderDetailsPage() {
           <div className="mb-6">
             {Array.isArray(order.items) && order.items
               .filter((item: any) => {
+                if (item.id === "SHIPPING-INFO") return false;
                 const name = item.name?.toLowerCase() || '';
                 return !name.includes('discount') && !name.includes('delivery');
               })
@@ -256,11 +271,31 @@ export default function OrderDetailsPage() {
             ))}
           </div>
 
-          <div className="border-t-[4px] border-black pt-6 flex justify-between items-end">
-            <div className="font-black text-gray-500 uppercase text-sm">TOTAL AMOUNT PAID</div>
-            <div className="font-mono font-black text-3xl md:text-4xl text-black">
-              ₹{order.total}
+          <div className="border-t-[4px] border-black pt-6 flex flex-col gap-4">
+            {promoItems.map((promo: any, idx: number) => (
+              <div key={idx} className="flex justify-between items-center text-[#19B85A] font-mono font-bold">
+                <span className="uppercase text-sm">{promo.name}</span>
+                <span className="text-xl">₹{promo.price}</span>
+              </div>
+            ))}
+            {deliveryItems.map((delivery: any, idx: number) => (
+              <div key={idx} className="flex justify-between items-center text-gray-500 font-mono font-bold">
+                <span className="uppercase text-sm">{delivery.name}</span>
+                <span className="text-xl">₹{delivery.price}</span>
+              </div>
+            ))}
+            <div className="flex justify-between items-end mt-2 pt-4 border-t-[2px] border-dashed border-gray-300">
+              <div className="font-black text-black uppercase text-sm">TOTAL AMOUNT PAID</div>
+              <div className="font-mono font-black text-3xl md:text-4xl text-black">
+                ₹{order.total}
+              </div>
             </div>
+          </div>
+          
+          <div className="mt-8 flex justify-center">
+            <a href={`/checkout/success?orderId=${order.id}`} className="cartoon-btn px-6 py-3 bg-[var(--color-electric-blue)] text-white font-cartoon text-2xl tracking-widest border-[4px] border-black hover:bg-black transition-colors shadow-[4px_4px_0_#111]">
+              VIEW INVOICE
+            </a>
           </div>
         </div>
       </div>
