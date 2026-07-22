@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useCartStore } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
+import Script from "next/script";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -179,8 +180,6 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
-      // We bundle the shipping details as a special item in the items array 
-      // to avoid breaking the Supabase table schema if columns don't exist.
       const itemsWithShipping = [
         ...cartItems,
         ...(appliedPromo ? [{
@@ -216,20 +215,68 @@ export default function CheckoutPage() {
         items: itemsWithShipping
       };
 
-      const res = await fetch("/api/orders", {
+      // 1. Create Razorpay Order
+      const rzpRes = await fetch("/api/razorpay/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderPayload)
+        body: JSON.stringify({ amount: total })
       });
+      const rzpData = await rzpRes.json();
 
-      if (res.ok) {
-        const orderData = await res.json();
-        clearCart();
-        router.push(`/checkout/success?orderId=${orderData.id}`);
-      } else {
-        alert("Something went wrong!");
+      if (!rzpRes.ok) {
+        alert("Failed to initialize payment");
         setIsSubmitting(false);
+        return;
       }
+
+      // 2. Open Razorpay Checkout Modal
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_dummy_key_here",
+        amount: rzpData.amount,
+        currency: rzpData.currency,
+        name: "I LIKED",
+        description: "Streetwear Purchase",
+        order_id: rzpData.id,
+        handler: async function (response: any) {
+          // 3. Verify Payment & Create Order
+          const verifyRes = await fetch("/api/razorpay/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id || rzpData.id,
+              razorpay_payment_id: response.razorpay_payment_id || "mock_payment_123",
+              razorpay_signature: response.razorpay_signature || "mock_sig",
+              orderPayload
+            })
+          });
+
+          const verifyData = await verifyRes.json();
+          if (verifyRes.ok && verifyData.success) {
+            clearCart();
+            router.push(`/checkout/success?orderId=${verifyData.orderId}`);
+          } else {
+            alert("Payment Verification Failed!");
+            setIsSubmitting(false);
+          }
+        },
+        prefill: {
+          name: orderPayload.customer_name,
+          email: orderPayload.email,
+          contact: formData.phone
+        },
+        theme: {
+          color: "#000000"
+        }
+      };
+
+      // @ts-ignore
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response: any) {
+        alert("Payment Failed: " + response.error.description);
+        setIsSubmitting(false);
+      });
+      rzp.open();
+
     } catch (err) {
       alert("Error placing order.");
       setIsSubmitting(false);
@@ -242,6 +289,7 @@ export default function CheckoutPage() {
 
   return (
     <main className="min-h-screen bg-white pt-[76px]">
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       <div className="flex flex-col lg:flex-row w-full min-h-[calc(100vh-76px)]">
         
         {/* Left Side: The Details */}
