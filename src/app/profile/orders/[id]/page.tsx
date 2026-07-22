@@ -213,6 +213,8 @@ export default function OrderDetailsPage() {
     }
   }
 
+  const paymentItem = Array.isArray(order.items) ? order.items.find((item: any) => item.id === "PAYMENT-INFO") : null;
+
   const realItems = Array.isArray(order.items) ? order.items.filter((item: any) => {
     if (item.id === "SHIPPING-INFO" || item.id === "PAYMENT-INFO") return false;
     const name = item.name?.toLowerCase() || '';
@@ -246,7 +248,7 @@ export default function OrderDetailsPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div className="bg-[#fcfaf5] border-[3px] border-dashed border-black p-4">
               <h3 className="font-cartoon text-2xl mb-2">STATUS</h3>
               <div className="inline-block px-3 py-1 border-[2px] border-black font-black uppercase text-sm bg-white">
@@ -262,6 +264,16 @@ export default function OrderDetailsPage() {
                   {shippingInfo.address}<br />
                   {shippingInfo.city}, {shippingInfo.state} {shippingInfo.zipCode || shippingInfo.zip}<br />
                   PHONE: {shippingInfo.phone}
+                </p>
+              </div>
+            )}
+
+            {paymentItem && (
+              <div className="bg-[#fcfaf5] border-[3px] border-dashed border-black p-4">
+                <h3 className="font-cartoon text-2xl mb-2">PAYMENT</h3>
+                <p className="font-mono text-sm font-bold uppercase leading-relaxed text-gray-700">
+                  METHOD: <span className="text-black bg-[#FFD700] px-1">{paymentItem.name}</span><br />
+                  ID: <span className="text-black bg-gray-200 px-1">{paymentItem.payment_id || 'N/A'}</span>
                 </p>
               </div>
             )}
