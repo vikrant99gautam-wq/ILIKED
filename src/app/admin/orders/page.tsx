@@ -186,6 +186,21 @@ export default function AdminOrdersPage() {
                   }
                   return null;
                 })()}
+
+                {(() => {
+                  const paymentItem = selectedOrder.items?.find((i: any) => i.id === 'PAYMENT-INFO');
+                  if (paymentItem) {
+                    return (
+                      <div className="mt-4 pt-4 border-t-[2px] border-black/20">
+                        <h4 className="font-black mb-1">PAYMENT DETAILS</h4>
+                        <p className="text-sm font-bold text-gray-700">Gateway: <span className="text-black">{paymentItem.name}</span></p>
+                        <p className="text-sm font-bold text-gray-700">Payment ID: <span className="text-black font-mono bg-gray-200 px-1">{paymentItem.payment_id}</span></p>
+                        <p className="text-sm font-bold text-gray-700">Order ID: <span className="text-black font-mono bg-gray-200 px-1">{paymentItem.razorpay_order_id}</span></p>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
               <div className="border-[3px] border-black p-4 bg-gray-50">
                 <h3 className="font-black text-xl mb-2">UPDATE STATUS</h3>
@@ -209,7 +224,9 @@ export default function AdminOrdersPage() {
             <h3 className="font-black text-2xl mb-4">ITEMS ORDERED</h3>
             <div className="border-[3px] border-black bg-white mb-6">
               {selectedOrder.items && selectedOrder.items.length > 0 ? (
-                 selectedOrder.items.map((item, idx) => (
+                 selectedOrder.items
+                  .filter((item: any) => item.id !== 'SHIPPING-INFO' && item.id !== 'PAYMENT-INFO' && !String(item.id).startsWith('PROMO-'))
+                  .map((item: any, idx: number) => (
                   <div key={idx} className="flex justify-between items-center p-4 border-b-[2px] border-black last:border-0">
                     <div className="flex items-center gap-4">
                       {item.image && <img src={item.image} className="w-12 h-12 object-contain border-[2px] border-black" alt={item.name} />}

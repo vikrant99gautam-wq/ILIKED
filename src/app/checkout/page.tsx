@@ -14,6 +14,7 @@ export default function CheckoutPage() {
   const [settings, setSettings] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
   const [cityOptions, setCityOptions] = useState<string[]>([]);
+  const [paymentPopup, setPaymentPopup] = useState<{show: boolean, type: 'success' | 'error', message: string} | null>(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -224,7 +225,7 @@ export default function CheckoutPage() {
       const rzpData = await rzpRes.json();
 
       if (!rzpRes.ok) {
-        alert("Failed to initialize payment");
+        setPaymentPopup({ show: true, type: 'error', message: rzpData.error || "Failed to initialize payment" });
         setIsSubmitting(false);
         return;
       }
@@ -252,10 +253,13 @@ export default function CheckoutPage() {
 
           const verifyData = await verifyRes.json();
           if (verifyRes.ok && verifyData.success) {
+            setPaymentPopup({ show: true, type: 'success', message: "Payment Successful! Redirecting..." });
             clearCart();
-            router.push(`/checkout/success?orderId=${verifyData.orderId}`);
+            setTimeout(() => {
+              router.push(`/checkout/success?orderId=${verifyData.orderId}`);
+            }, 2000);
           } else {
-            alert("Payment Verification Failed!");
+            setPaymentPopup({ show: true, type: 'error', message: "Payment Verification Failed!" });
             setIsSubmitting(false);
           }
         },
@@ -272,13 +276,13 @@ export default function CheckoutPage() {
       // @ts-ignore
       const rzp = new window.Razorpay(options);
       rzp.on('payment.failed', function (response: any) {
-        alert("Payment Failed: " + response.error.description);
+        setPaymentPopup({ show: true, type: 'error', message: response.error.description || "Payment Failed" });
         setIsSubmitting(false);
       });
       rzp.open();
 
     } catch (err) {
-      alert("Error placing order.");
+      setPaymentPopup({ show: true, type: 'error', message: "Error placing order." });
       setIsSubmitting(false);
     }
   };
@@ -504,6 +508,46 @@ export default function CheckoutPage() {
           
         </div>
       </div>
+
+      {/* Payment Popup Modal */}
+      {paymentPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <motion.div 
+            initial={{ scale: 0.9, y: 20, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            className={`w-full max-w-md bg-white border-[4px] border-black p-8 relative shadow-[8px_8px_0_#111] flex flex-col items-center text-center`}
+          >
+            {paymentPopup.type === 'success' ? (
+              <>
+                <div className="w-20 h-20 bg-[#19B85A] border-[3px] border-black rounded-full flex items-center justify-center mb-6">
+                  <svg className="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                <h2 className="text-3xl font-cartoon tracking-widest text-black mb-2 uppercase">Payment Successful</h2>
+                <p className="text-black font-bold mb-6 uppercase">{paymentPopup.message}</p>
+                <div className="w-8 h-8 border-4 border-black border-t-[#19B85A] rounded-full animate-spin"></div>
+              </>
+            ) : (
+              <>
+                <div className="w-20 h-20 bg-[var(--color-coral-red)] border-[3px] border-black rounded-full flex items-center justify-center mb-6">
+                  <svg className="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </div>
+                <h2 className="text-3xl font-cartoon tracking-widest text-black mb-2 uppercase">Payment Failed</h2>
+                <p className="text-gray-600 font-bold mb-8 uppercase text-sm">{paymentPopup.message}</p>
+                <button 
+                  onClick={() => setPaymentPopup(null)}
+                  className="w-full bg-black text-white border-[3px] border-black py-4 font-black tracking-widest hover:bg-[var(--color-coral-red)] hover:text-black transition-colors"
+                >
+                  TRY AGAIN
+                </button>
+              </>
+            )}
+          </motion.div>
+        </div>
+      )}
     </main>
   );
 }

@@ -28,6 +28,21 @@ export async function POST(req: Request) {
       console.warn("Skipping Razorpay signature verification (Mock Order or Dummy Keys).");
     }
 
+    // Append Payment Info to items array to avoid database schema changes
+    const itemsWithPayment = [
+      ...(orderPayload.items || []),
+      {
+        id: "PAYMENT-INFO",
+        name: "Razorpay Payment",
+        size: "-",
+        price: 0,
+        quantity: 1,
+        image: "",
+        payment_id: razorpay_payment_id || "mock_payment_123",
+        razorpay_order_id: razorpay_order_id || "mock_order_123"
+      }
+    ];
+
     // Payment is verified, create the order in Supabase
     // To keep it simple, we reuse the logic from /api/orders here or just insert directly.
     const { data, error } = await supabase
@@ -37,7 +52,7 @@ export async function POST(req: Request) {
           customer_name: orderPayload.customer_name,
           email: orderPayload.email,
           total: orderPayload.total,
-          items: orderPayload.items,
+          items: itemsWithPayment,
           status: "Pending",
         }
       ])
