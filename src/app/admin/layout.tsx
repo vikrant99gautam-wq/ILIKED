@@ -11,6 +11,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin", label: "Dashboard", color: "hover:bg-[var(--color-electric-blue)]" },
     { href: "/admin/products", label: "Products", color: "hover:bg-[var(--color-coral-red)]" },
     { href: "/admin/orders", label: "Orders", color: "hover:bg-[#FFD700]" },
+    { href: "/admin/reviews", label: "Reviews", color: "hover:bg-[#FF8C00]" },
     { href: "/admin/discounts", label: "Discounts", color: "hover:bg-[#19B85A]" },
     { href: "/admin/settings", label: "Settings", color: "hover:bg-black" },
   ];
