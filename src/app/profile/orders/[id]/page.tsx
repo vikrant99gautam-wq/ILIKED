@@ -213,8 +213,17 @@ export default function OrderDetailsPage() {
     }
   }
 
+  const realItems = Array.isArray(order.items) ? order.items.filter((item: any) => {
+    if (item.id === "SHIPPING-INFO") return false;
+    const name = item.name?.toLowerCase() || '';
+    return !name.includes('discount') && !name.includes('delivery');
+  }) : [];
+
   const promoItems = Array.isArray(order.items) ? order.items.filter((item: any) => item.id.toString().startsWith("PROMO-") || item.name?.toLowerCase().includes("discount")) : [];
-  const deliveryItems = Array.isArray(order.items) ? order.items.filter((item: any) => item.name?.toLowerCase().includes("delivery")) : [];
+  
+  const subtotal = realItems.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
+  const discountTotal = promoItems.reduce((sum: number, item: any) => sum + Math.abs(item.price), 0);
+  const calculatedDelivery = Math.max(0, order.total - (subtotal - discountTotal));
 
   return (
     <div className="min-h-screen bg-[#F4F4F0] pt-[120px] pb-20 px-4 md:px-8">
@@ -260,13 +269,7 @@ export default function OrderDetailsPage() {
 
           <h2 className="font-cartoon text-3xl mb-4">ITEMS</h2>
           <div className="mb-6">
-            {Array.isArray(order.items) && order.items
-              .filter((item: any) => {
-                if (item.id === "SHIPPING-INFO") return false;
-                const name = item.name?.toLowerCase() || '';
-                return !name.includes('discount') && !name.includes('delivery');
-              })
-              .map((item: any, i: number) => (
+            {realItems.map((item: any, i: number) => (
                 <ReviewItem key={i} item={item} orderStatus={order.status || 'Pending'} />
             ))}
           </div>
@@ -278,12 +281,12 @@ export default function OrderDetailsPage() {
                 <span className="text-xl">₹{promo.price}</span>
               </div>
             ))}
-            {deliveryItems.map((delivery: any, idx: number) => (
-              <div key={idx} className="flex justify-between items-center text-gray-500 font-mono font-bold">
-                <span className="uppercase text-sm">{delivery.name}</span>
-                <span className="text-xl">₹{delivery.price}</span>
+            {calculatedDelivery > 0 && (
+              <div className="flex justify-between items-center text-gray-500 font-mono font-bold">
+                <span className="uppercase text-sm">DELIVERY CHARGE</span>
+                <span className="text-xl">₹{calculatedDelivery}</span>
               </div>
-            ))}
+            )}
             <div className="flex justify-between items-end mt-2 pt-4 border-t-[2px] border-dashed border-gray-300">
               <div className="font-black text-black uppercase text-sm">TOTAL AMOUNT PAID</div>
               <div className="font-mono font-black text-3xl md:text-4xl text-black">
