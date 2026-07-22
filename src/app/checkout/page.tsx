@@ -15,6 +15,7 @@ export default function CheckoutPage() {
   const [user, setUser] = useState<any>(null);
   const [cityOptions, setCityOptions] = useState<string[]>([]);
   const [paymentPopup, setPaymentPopup] = useState<{show: boolean, type: 'success' | 'error', message: string} | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<'ONLINE' | 'COD'>('ONLINE');
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -216,6 +217,29 @@ export default function CheckoutPage() {
         items: itemsWithShipping
       };
 
+      if (paymentMethod === 'COD') {
+        // Handle COD flow directly
+        const res = await fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderPayload)
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setPaymentPopup({ show: true, type: 'success', message: "Order placed successfully! Redirecting..." });
+          clearCart();
+          setTimeout(() => {
+            router.push(`/checkout/success?orderId=${data.id}`);
+          }, 2000);
+        } else {
+          setPaymentPopup({ show: true, type: 'error', message: "Failed to place COD order." });
+          setIsSubmitting(false);
+        }
+        return;
+      }
+
+      // Handle ONLINE (Razorpay) flow
       // 1. Create Razorpay Order
       const rzpRes = await fetch("/api/razorpay/create", {
         method: "POST",
@@ -493,7 +517,36 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <div className="relative z-10 mt-6">
+          <div className="relative z-10 mt-6 space-y-4">
+            {/* Payment Method Selection */}
+            <div className="border-[3px] border-black bg-white p-4">
+              <h3 className="font-black text-lg mb-3 tracking-widest">PAYMENT METHOD</h3>
+              <div className="space-y-2">
+                <label className={`flex items-center p-3 border-[2px] cursor-pointer transition-colors ${paymentMethod === 'ONLINE' ? 'border-black bg-gray-100' : 'border-gray-300 hover:border-black'}`}>
+                  <input 
+                    type="radio" 
+                    name="paymentMethod" 
+                    value="ONLINE" 
+                    checked={paymentMethod === 'ONLINE'}
+                    onChange={() => setPaymentMethod('ONLINE')}
+                    className="w-5 h-5 accent-black mr-3"
+                  />
+                  <span className="font-bold">Online Payment (Cards / UPI)</span>
+                </label>
+                <label className={`flex items-center p-3 border-[2px] cursor-pointer transition-colors ${paymentMethod === 'COD' ? 'border-black bg-gray-100' : 'border-gray-300 hover:border-black'}`}>
+                  <input 
+                    type="radio" 
+                    name="paymentMethod" 
+                    value="COD" 
+                    checked={paymentMethod === 'COD'}
+                    onChange={() => setPaymentMethod('COD')}
+                    className="w-5 h-5 accent-black mr-3"
+                  />
+                  <span className="font-bold">Cash on Delivery (COD)</span>
+                </label>
+              </div>
+            </div>
+
             <button 
               onClick={() => document.getElementById('hiddenSubmit')?.click()}
               disabled={isSubmitting}

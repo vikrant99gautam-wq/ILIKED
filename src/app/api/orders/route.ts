@@ -23,8 +23,24 @@ export async function POST(request: Request) {
     // Auto-generate ID or use Supabase UUID if you prefer, but we'll use Date.now() for consistency with products
     const newId = Date.now().toString();
     
+    // Append Payment Info for COD
+    const itemsWithPayment = [
+      ...(body.items || []),
+      {
+        id: "PAYMENT-INFO",
+        name: "Cash on Delivery (COD)",
+        size: "-",
+        price: 0,
+        quantity: 1,
+        image: "",
+        payment_id: "COD",
+        razorpay_order_id: "N/A"
+      }
+    ];
+
     const newOrder = {
       ...body,
+      items: itemsWithPayment,
       id: newId,
       status: 'Pending',
     };
@@ -62,6 +78,11 @@ export async function POST(request: Request) {
         }
       }
     }
+
+    // Trigger email notification in the background (we don't await this to keep the API fast)
+    // We import dynamically to avoid top-level issues if needed, but top level is fine here.
+    const { sendOrderConfirmationEmail } = await import('@/lib/email');
+    sendOrderConfirmationEmail(data).catch(err => console.error("Background Email Error:", err));
 
     return NextResponse.json(data);
   } catch (err: any) {
