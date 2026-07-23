@@ -83,10 +83,8 @@ export const sendOrderConfirmationEmail = async (order: any) => {
     `;
 
     // Send email using Resend
-    // By default, Resend domains are sandbox, so you can only send to your verified email
-    // Or you can use onboarding@resend.dev as the from address during testing
     const data = await resend.emails.send({
-      from: 'I LIKED <onboarding@resend.dev>',
+      from: 'I LIKED <orders@iliked.in>',
       to: [order.email],
       subject: `Order Confirmed: #${order.id.slice(-6)} - I LIKED`,
       html: htmlContent,
