@@ -49,7 +49,9 @@ export const sendOrderConfirmationEmail = async (order: any) => {
         <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
           <!-- Header -->
           <div style="text-align: center; margin-bottom: 40px;">
-            <h1 style="font-size: 40px; font-weight: 900; margin: 0; letter-spacing: 2px;">I LIKED</h1>
+            <a href="https://iliked.in" style="text-decoration: none; color: inherit;">
+              <h1 style="font-size: 40px; font-weight: 900; margin: 0; letter-spacing: 2px;">I LIKED</h1>
+            </a>
             <p style="font-weight: bold; text-transform: uppercase; margin-top: 10px; background-color: #000; color: #fff; display: inline-block; padding: 5px 15px;">Order Confirmed</p>
           </div>
 

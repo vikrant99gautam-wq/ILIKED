@@ -10,6 +10,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://iliked.in'),
   title: "I LIKED | Wear what you like.",
   description: "Modern oversized streetwear clothing brand.",
 };
