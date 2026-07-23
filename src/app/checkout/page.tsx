@@ -13,6 +13,7 @@ export default function CheckoutPage() {
   const [mounted, setMounted] = useState(false);
   const [settings, setSettings] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
+  const [loadingSession, setLoadingSession] = useState(true);
   const [cityOptions, setCityOptions] = useState<string[]>([]);
   const [paymentPopup, setPaymentPopup] = useState<{show: boolean, type: 'success' | 'error', message: string} | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<'ONLINE' | 'COD'>('ONLINE');
@@ -40,6 +41,7 @@ export default function CheckoutPage() {
         setUser(session.user);
         setFormData(prev => ({ ...prev, email: session.user.email || "" }));
       }
+      setLoadingSession(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -311,8 +313,26 @@ export default function CheckoutPage() {
     }
   };
 
-  if (!mounted) {
-    return <main className="min-h-screen bg-white pt-[76px]"></main>;
+  if (!mounted || loadingSession) {
+    return (
+       <main className="min-h-screen bg-white pt-[76px] flex items-center justify-center">
+         <span className="font-cartoon text-4xl animate-pulse">LOADING...</span>
+       </main>
+    );
+  }
+
+  if (!user) {
+    return (
+       <main className="min-h-screen bg-[#F4F4F0] pt-[76px] flex items-center justify-center p-4">
+         <div className="bg-white border-[4px] border-black shadow-[12px_12px_0_#111] p-12 text-center max-w-lg w-full">
+           <h1 className="font-cartoon text-5xl mb-4 uppercase text-[var(--color-coral-red)]">Hold Up!</h1>
+           <p className="font-black text-gray-500 uppercase tracking-widest mb-8">You need to login to your stash before you can cop this drip.</p>
+           <button onClick={() => router.push('/profile')} className="w-full bg-[#FFD700] text-black border-[4px] border-black py-4 font-cartoon text-3xl tracking-widest shadow-[6px_6px_0_#111] hover:bg-black hover:text-[#FFD700] transition-colors">
+             LOGIN NOW
+           </button>
+         </div>
+       </main>
+    );
   }
 
   return (
@@ -334,15 +354,6 @@ export default function CheckoutPage() {
             <div className="space-y-4">
               <div className="flex justify-between items-end border-b-[4px] border-black pb-2">
                 <h3 className="font-black text-2xl inline-block">1. CONTACT</h3>
-                {!user && (
-                  <button 
-                    type="button" 
-                    onClick={() => router.push('/profile')} 
-                    className="font-bold text-sm tracking-widest uppercase hover:text-[var(--color-electric-blue)] underline"
-                  >
-                    HAVE AN ACCOUNT? LOGIN
-                  </button>
-                )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
@@ -350,11 +361,10 @@ export default function CheckoutPage() {
                   <input 
                     type="email" 
                     required
-                    readOnly={!!user}
+                    readOnly
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
                     placeholder="YOU@EXAMPLE.COM" 
-                    className={`w-full p-4 border-[4px] border-black font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all ${user ? 'bg-gray-200 cursor-not-allowed' : 'bg-[#F4F4F0]'}`}
+                    className="w-full p-4 border-[4px] border-black font-bold outline-none bg-gray-200 cursor-not-allowed transition-all"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
