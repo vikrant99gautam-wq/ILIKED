@@ -15,15 +15,20 @@ export const metadata: Metadata = {
   description: "Modern oversized streetwear clothing brand.",
 };
 
-export default function RootLayout({
+import { supabase } from "@/lib/supabase";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch maintenance mode state
+  const { data: settings } = await supabase.from('settings').select('maintenance_mode').single();
+  const isMaintenanceMode = settings?.maintenance_mode || false;
   return (
     <html lang="en">
       <body className={`${outfit.variable} antialiased font-sans`}>
-        <LayoutWrapper>
+        <LayoutWrapper isMaintenanceMode={isMaintenanceMode}>
           {children}
         </LayoutWrapper>
       </body>
