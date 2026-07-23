@@ -82,7 +82,11 @@ export async function POST(request: Request) {
     // Trigger email notification in the background (we don't await this to keep the API fast)
     // We import dynamically to avoid top-level issues if needed, but top level is fine here.
     const { sendOrderConfirmationEmail } = await import('@/lib/email');
-    sendOrderConfirmationEmail(data).catch(err => console.error("Background Email Error:", err));
+    try {
+      await sendOrderConfirmationEmail(data);
+    } catch (err) {
+      console.error("Email Error:", err);
+    }
 
     return NextResponse.json(data);
   } catch (err: any) {
