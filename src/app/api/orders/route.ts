@@ -79,6 +79,21 @@ export async function POST(request: Request) {
       }
     }
 
+    // Deduct Inventory
+    for (const item of body.items || []) {
+      if (item.id && !item.id.startsWith("PROMO-") && !item.id.startsWith("SHIPPING-") && !item.id.startsWith("PAYMENT-")) {
+        try {
+          const { data: product } = await supabase.from("products").select("stock").eq("id", item.id).single();
+          if (product && typeof product.stock === 'number') {
+            const newStock = Math.max(0, product.stock - (item.quantity || 1));
+            await supabase.from("products").update({ stock: newStock }).eq("id", item.id);
+          }
+        } catch (e) {
+          console.error("Failed to deduct inventory for item:", item.id, e);
+        }
+      }
+    }
+
     // Trigger email notification in the background (we don't await this to keep the API fast)
     // We import dynamically to avoid top-level issues if needed, but top level is fine here.
     const { sendOrderConfirmationEmail } = await import('@/lib/email');
