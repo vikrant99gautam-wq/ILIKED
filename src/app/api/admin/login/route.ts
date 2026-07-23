@@ -13,7 +13,6 @@ export async function POST(req: Request) {
       response.cookies.set('admin_auth', 'true', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 7, // 1 week
         path: '/',
       });
       return response;

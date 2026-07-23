@@ -72,10 +72,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
 
-        <div className="p-4 border-t-[4px] border-black">
+        <div className="p-4 border-t-[4px] border-black space-y-2">
           <Link href="/" className="w-full cartoon-btn py-3 bg-black text-white text-center block text-sm">
             BACK TO STORE
           </Link>
+          <a href="/api/admin/logout" className="w-full cartoon-btn py-3 bg-red-500 text-white text-center block text-sm border-[2px] border-black font-black uppercase hover:bg-black hover:text-red-500">
+            LOG OUT
+          </a>
         </div>
       </aside>
 
