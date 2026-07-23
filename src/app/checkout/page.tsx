@@ -278,6 +278,11 @@ export default function CheckoutPage() {
         },
         theme: {
           color: "#000000"
+        },
+        modal: {
+          ondismiss: function() {
+            setIsSubmitting(false);
+          }
         }
       };
 
