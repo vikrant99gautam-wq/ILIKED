@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -12,8 +13,21 @@ export default function LayoutWrapper({
 }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
+  const [maintenance, setMaintenance] = useState(isMaintenanceMode);
 
-  if (isMaintenanceMode && !isAdmin) {
+  useEffect(() => {
+    // Always fetch fresh settings on client to bypass Next.js static cache
+    fetch('/api/settings', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        if (data && typeof data.maintenance_mode === 'boolean') {
+          setMaintenance(data.maintenance_mode);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  if (maintenance && !isAdmin) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 text-center border-[8px] border-[#FFD700]">
         <h1 className="text-6xl md:text-8xl font-black uppercase tracking-widest font-cartoon text-[#FFD700] mb-6">BRB.</h1>

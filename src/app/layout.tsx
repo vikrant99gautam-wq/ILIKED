@@ -17,6 +17,8 @@ export const metadata: Metadata = {
 
 import { supabase } from "@/lib/supabase";
 
+export const revalidate = 60; // Revalidate layout every 60 seconds
+
 export default async function RootLayout({
   children,
 }: Readonly<{
