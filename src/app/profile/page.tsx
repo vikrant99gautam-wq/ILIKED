@@ -101,7 +101,7 @@ function AuthUI() {
         LOGIN
       </h1>
       <p className="font-black tracking-widest uppercase mb-8 text-sm text-gray-500">
-        Enter your email for a magic link, or login instantly with Google.
+        Login instantly with your Google account.
       </p>
 
       {message && (
@@ -109,30 +109,6 @@ function AuthUI() {
           {message.text}
         </div>
       )}
-
-      <form onSubmit={handleLogin} className="flex flex-col gap-6">
-        <input 
-          type="email" 
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="YOU@EXAMPLE.COM" 
-          className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all"
-        />
-        <button 
-          type="submit" 
-          disabled={loading}
-          className="cartoon-btn px-8 py-4 bg-black text-white font-cartoon text-3xl tracking-widest border-[4px] border-black hover:bg-[var(--color-electric-blue)] transition-colors shadow-[6px_6px_0_var(--color-coral-red)] disabled:opacity-50 w-full"
-        >
-          {loading ? "SENDING..." : "SEND MAGIC LINK"}
-        </button>
-      </form>
-
-      <div className="mt-8 flex items-center gap-4">
-        <div className="flex-1 h-[4px] bg-black"></div>
-        <span className="font-black tracking-widest uppercase text-sm">OR</span>
-        <div className="flex-1 h-[4px] bg-black"></div>
-      </div>
 
       <button 
         type="button" 
