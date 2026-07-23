@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://iliked.in'),
   title: "I LIKED | Wear what you like.",
   description: "Modern oversized streetwear clothing brand.",
+  icons: {
+    icon: '/images/logo.png',
+    apple: '/images/logo.png',
+  }
 };
 
 import { supabase } from "@/lib/supabase";

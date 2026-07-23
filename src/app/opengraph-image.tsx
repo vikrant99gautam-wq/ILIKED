@@ -18,30 +18,12 @@ export default function Image() {
           alignItems: 'center',
           justifyContent: 'center',
           border: '40px solid black',
-          fontFamily: 'sans-serif',
         }}
       >
-        <div style={{
-          display: 'flex',
-          background: 'black',
-          color: 'white',
-          padding: '40px 100px',
-          fontWeight: 900,
-          fontSize: 160,
-          textTransform: 'uppercase',
-          letterSpacing: '-0.05em'
-        }}>
-          I LIKED
-        </div>
-        <div style={{
-          display: 'flex',
-          fontSize: 48,
-          marginTop: 60,
-          fontWeight: 900,
-          color: 'black'
-        }}>
-          WEAR WHAT YOU LIKE.
-        </div>
+        <img 
+          src="https://iliked.in/images/logo.png" 
+          style={{ width: '800px', height: '400px', objectFit: 'contain' }} 
+        />
       </div>
     ),
     { ...size }
