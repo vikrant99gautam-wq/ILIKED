@@ -1,14 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useParams } from "next/navigation";
 
-export default function PrintInvoicePage({ params }: { params: { id: string } }) {
+export default function PrintInvoicePage() {
+  const params = useParams();
+  const id = params?.id as string;
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchOrder() {
-      const { data, error } = await supabase.from('orders').select('*').eq('id', params.id).single();
+      if (!id) return;
+      const { data, error } = await supabase.from('orders').select('*').eq('id', id).single();
       if (!error && data) {
         setOrder(data);
       }
@@ -22,7 +26,7 @@ export default function PrintInvoicePage({ params }: { params: { id: string } })
       }
     }
     fetchOrder();
-  }, [params.id]);
+  }, [id]);
 
   if (loading) {
     return <div className="p-10 font-bold text-center">Loading Invoice...</div>;

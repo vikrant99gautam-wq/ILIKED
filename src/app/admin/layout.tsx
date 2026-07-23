@@ -16,6 +16,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/settings", label: "Settings", color: "hover:bg-black" },
   ];
 
+  if (pathname.includes('/print')) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="min-h-screen bg-[#F4F4F0] flex flex-col md:flex-row">
       
