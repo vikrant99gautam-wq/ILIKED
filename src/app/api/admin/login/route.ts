@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     
     // We only need a password for the custom UI to keep it simple, or username + password. 
     // Since the previous basic auth had username 'admin', let's just ask for password to make it even easier for him.
-    const expectedPwd = process.env.ADMIN_PASSWORD || 'ilikedadmin2026';
+    const expectedPwd = process.env.ADMIN_PASSWORD || 'admin@iliked2402';
     
     if (password === expectedPwd) {
       const response = NextResponse.json({ success: true });
