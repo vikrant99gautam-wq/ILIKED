@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
-  const response = NextResponse.redirect(new URL('/admin/login', process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'));
+export async function GET(req: Request) {
+  const response = NextResponse.redirect(new URL('/admin/login', req.url));
   response.cookies.delete('admin_auth');
   return response;
 }
