@@ -16,7 +16,7 @@ export default function CheckoutPage() {
   const [loadingSession, setLoadingSession] = useState(true);
   const [cityOptions, setCityOptions] = useState<string[]>([]);
   const [paymentPopup, setPaymentPopup] = useState<{show: boolean, type: 'success' | 'error', message: string} | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<'ONLINE' | 'COD'>('ONLINE');
+  const [paymentMethod, setPaymentMethod] = useState<'ONLINE' | 'PARTIAL_COD'>('ONLINE');
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -219,34 +219,15 @@ export default function CheckoutPage() {
         items: itemsWithShipping
       };
 
-      if (paymentMethod === 'COD') {
-        // Handle COD flow directly
-        const res = await fetch("/api/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(orderPayload)
-        });
+      const isPartialCod = paymentMethod === 'PARTIAL_COD';
+      const amountToPay = isPartialCod ? 149 : total;
 
-        if (res.ok) {
-          const data = await res.json();
-          setPaymentPopup({ show: true, type: 'success', message: "Order placed successfully! Redirecting..." });
-          clearCart();
-          setTimeout(() => {
-            router.push(`/checkout/success?orderId=${data.id}`);
-          }, 2000);
-        } else {
-          setPaymentPopup({ show: true, type: 'error', message: "Failed to place COD order." });
-          setIsSubmitting(false);
-        }
-        return;
-      }
-
-      // Handle ONLINE (Razorpay) flow
+      // Handle ONLINE and PARTIAL_COD (Razorpay) flow
       // 1. Create Razorpay Order
       const rzpRes = await fetch("/api/razorpay/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: total })
+        body: JSON.stringify({ amount: amountToPay })
       });
       const rzpData = await rzpRes.json();
 
@@ -273,7 +254,8 @@ export default function CheckoutPage() {
               razorpay_order_id: response.razorpay_order_id || rzpData.id,
               razorpay_payment_id: response.razorpay_payment_id || "mock_payment_123",
               razorpay_signature: response.razorpay_signature || "mock_sig",
-              orderPayload
+              orderPayload,
+              isPartialCod
             })
           });
 
@@ -524,10 +506,23 @@ export default function CheckoutPage() {
                 <span className="text-gray-500 font-bold tracking-widest text-sm">SHIPPING</span>
                 <span className="font-black">₹{shipping}</span>
               </div>
-              <div className="flex justify-between pt-4 border-t-[3px] border-dashed border-black mt-4 text-3xl text-[var(--color-coral-red)]">
-                <span className="font-cartoon tracking-widest">TOTAL</span>
-                <span className="font-black">₹{total}</span>
-              </div>
+              {paymentMethod === 'PARTIAL_COD' ? (
+                <>
+                  <div className="flex justify-between pt-4 border-t-[3px] border-dashed border-black mt-4 text-3xl text-[var(--color-coral-red)]">
+                    <span className="font-cartoon tracking-widest">ADVANCE (PAY NOW)</span>
+                    <span className="font-black">₹149</span>
+                  </div>
+                  <div className="flex justify-between mt-2 text-xl text-black">
+                    <span className="font-cartoon tracking-widest">DUE ON DELIVERY</span>
+                    <span className="font-black">₹{total - 149}</span>
+                  </div>
+                </>
+              ) : (
+                <div className="flex justify-between pt-4 border-t-[3px] border-dashed border-black mt-4 text-3xl text-[var(--color-coral-red)]">
+                  <span className="font-cartoon tracking-widest">TOTAL</span>
+                  <span className="font-black">₹{total}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -545,18 +540,21 @@ export default function CheckoutPage() {
                     onChange={() => setPaymentMethod('ONLINE')}
                     className="w-5 h-5 accent-black mr-3"
                   />
-                  <span className="font-bold">Online Payment (Cards / UPI)</span>
+                  <span className="font-bold">Pay Full Amount Online (Cards / UPI)</span>
                 </label>
-                <label className={`flex items-center p-3 border-[2px] cursor-pointer transition-colors ${paymentMethod === 'COD' ? 'border-black bg-gray-100' : 'border-gray-300 hover:border-black'}`}>
+                <label className={`flex items-center p-3 border-[2px] cursor-pointer transition-colors ${paymentMethod === 'PARTIAL_COD' ? 'border-black bg-gray-100' : 'border-gray-300 hover:border-black'}`}>
                   <input 
                     type="radio" 
                     name="paymentMethod" 
-                    value="COD" 
-                    checked={paymentMethod === 'COD'}
-                    onChange={() => setPaymentMethod('COD')}
-                    className="w-5 h-5 accent-black mr-3"
+                    value="PARTIAL_COD" 
+                    checked={paymentMethod === 'PARTIAL_COD'}
+                    onChange={() => setPaymentMethod('PARTIAL_COD')}
+                    className="w-5 h-5 accent-black mr-3 shrink-0"
                   />
-                  <span className="font-bold">Cash on Delivery (COD)</span>
+                  <div className="flex flex-col">
+                    <span className="font-bold">Partial Cash on Delivery</span>
+                    <span className="text-xs text-gray-500 font-bold uppercase mt-1">Pay ₹149 now, rest on delivery</span>
+                  </div>
                 </label>
               </div>
             </div>

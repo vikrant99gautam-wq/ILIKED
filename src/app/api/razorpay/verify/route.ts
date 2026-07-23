@@ -11,7 +11,8 @@ export async function POST(req: Request) {
       razorpay_order_id, 
       razorpay_payment_id, 
       razorpay_signature,
-      orderPayload
+      orderPayload,
+      isPartialCod
     } = body;
 
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -30,19 +31,43 @@ export async function POST(req: Request) {
       console.warn("Skipping Razorpay signature verification (Mock Order or Dummy Keys).");
     }
 
-    // Append Payment Info to items array to avoid database schema changes
-    const itemsWithPayment = [
-      ...(orderPayload.items || []),
+    // Determine payment info items
+    const paymentItems = isPartialCod ? [
       {
         id: "PAYMENT-INFO",
-        name: "Razorpay Payment",
+        name: "Partial COD (Advance Paid)",
         size: "-",
-        price: 0,
+        price: 149,
+        quantity: 1,
+        image: "",
+        payment_id: razorpay_payment_id || "mock_payment_123",
+        razorpay_order_id: razorpay_order_id || "mock_order_123"
+      },
+      {
+        id: "DUE-AMOUNT",
+        name: "Amount Due on Delivery",
+        size: "-",
+        price: Math.max(0, orderPayload.total - 149),
+        quantity: 1,
+        image: ""
+      }
+    ] : [
+      {
+        id: "PAYMENT-INFO",
+        name: "Razorpay Payment (Full)",
+        size: "-",
+        price: orderPayload.total,
         quantity: 1,
         image: "",
         payment_id: razorpay_payment_id || "mock_payment_123",
         razorpay_order_id: razorpay_order_id || "mock_order_123"
       }
+    ];
+
+    // Append Payment Info to items array to avoid database schema changes
+    const itemsWithPayment = [
+      ...(orderPayload.items || []),
+      ...paymentItems
     ];
 
     // Payment is verified, create the order in Supabase

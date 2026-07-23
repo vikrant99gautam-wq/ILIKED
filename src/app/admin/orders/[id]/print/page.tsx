@@ -70,7 +70,8 @@ export default function PrintInvoicePage() {
   }
 
   const paymentInfo = Array.isArray(order.items) ? order.items.find((item: any) => item.id === "PAYMENT-INFO") : null;
-  const isCOD = paymentInfo?.payment_id === "COD";
+  const dueItem = Array.isArray(order.items) ? order.items.find((item: any) => item.id === "DUE-AMOUNT") : null;
+  const isPartialCod = !!dueItem && dueItem.price > 0;
   
   const realItems = Array.isArray(order.items) ? order.items.filter((item: any) => 
     item.id !== "SHIPPING-INFO" && item.id !== "PAYMENT-INFO" && !String(item.id).startsWith("PROMO-")
@@ -211,8 +212,8 @@ export default function PrintInvoicePage() {
               </div>
               <div className="text-right flex flex-col items-end gap-2">
                 <div className="border border-black p-3 bg-gray-50 text-center w-64">
-                  <p className="text-lg font-bold">{isCOD ? "COD - COLLECT CASH" : "PREPAID - DO NOT COLLECT CASH"}</p>
-                  {isCOD && <p className="text-xl font-black mt-1">₹{order.total}</p>}
+                  <p className="text-lg font-bold">{isPartialCod ? "PARTIAL COD - COLLECT CASH" : "PREPAID - DO NOT COLLECT CASH"}</p>
+                  {isPartialCod && <p className="text-xl font-black mt-1">₹{dueItem.price}</p>}
                 </div>
                 {formData.trackingNumber && (
                   <div className="border border-black p-2 bg-gray-100 text-center w-64">

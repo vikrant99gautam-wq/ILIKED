@@ -194,8 +194,24 @@ export default function AdminOrdersPage() {
                       <div className="mt-4 pt-4 border-t-[2px] border-black/20">
                         <h4 className="font-black mb-1">PAYMENT DETAILS</h4>
                         <p className="text-sm font-bold text-gray-700">Gateway: <span className="text-black">{paymentItem.name}</span></p>
-                        <p className="text-sm font-bold text-gray-700">Payment ID: <span className="text-black font-mono bg-gray-200 px-1">{paymentItem.payment_id}</span></p>
-                        <p className="text-sm font-bold text-gray-700">Order ID: <span className="text-black font-mono bg-gray-200 px-1">{paymentItem.razorpay_order_id}</span></p>
+                        {paymentItem.payment_id && <p className="text-sm font-bold text-gray-700">Payment ID: <span className="text-black font-mono bg-gray-200 px-1">{paymentItem.payment_id}</span></p>}
+                        {paymentItem.razorpay_order_id && <p className="text-sm font-bold text-gray-700">Order ID: <span className="text-black font-mono bg-gray-200 px-1">{paymentItem.razorpay_order_id}</span></p>}
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
+                {(() => {
+                  const dueItem = selectedOrder.items?.find((i: any) => i.id === 'DUE-AMOUNT');
+                  if (dueItem && dueItem.price > 0) {
+                    return (
+                      <div className="mt-4 p-4 border-[3px] border-dashed border-red-500 bg-red-50">
+                        <h4 className="font-black mb-1 text-red-600 text-lg uppercase flex items-center gap-2">
+                          <span>⚠️</span> ACTION REQUIRED
+                        </h4>
+                        <p className="font-black text-black text-xl">COLLECT CASH: ₹{dueItem.price}</p>
+                        <p className="text-sm font-bold text-gray-600 uppercase mt-1">Advance of ₹149 already paid online.</p>
                       </div>
                     );
                   }
