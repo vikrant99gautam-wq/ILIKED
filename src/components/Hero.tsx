@@ -182,7 +182,7 @@ export default function Hero() {
         
         {/* Top: Big Brand Text (Horizontal) */}
         <div className="w-full flex justify-center pointer-events-auto mt-2">
-          <div className="flex items-center font-cartoon text-[14vw] text-white tracking-widest drop-shadow-[0_8px_8px_rgba(0,0,0,0.2)]" style={{ WebkitTextStroke: '2.5px #111', textShadow: '4px 4px 0 #111' }}>
+          <div className="flex items-center font-cartoon text-[12vw] text-white drop-shadow-[0_8px_8px_rgba(0,0,0,0.2)]" style={{ WebkitTextStroke: '2px #111', textShadow: '3px 3px 0 #111' }}>
             {["I", "\u00A0", "L", "I", "K", "E", "D"].map((letter, i) => (
               <motion.span 
                 key={i} 

@@ -33,7 +33,7 @@ export default async function RootLayout({
   const isMaintenanceMode = settings?.maintenance_mode || false;
   return (
     <html lang="en">
-      <body className={`${outfit.variable} antialiased font-sans`}>
+      <body className={`${outfit.variable} antialiased font-sans overflow-x-hidden max-w-[100vw]`}>
         <LayoutWrapper isMaintenanceMode={isMaintenanceMode}>
           {children}
         </LayoutWrapper>
