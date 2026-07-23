@@ -6,15 +6,20 @@ export default function CustomCursor() {
   const [mousePosition, setMousePosition] = useState({ x: -100, y: -100 });
   const [isHovering, setIsHovering] = useState(false);
 
+  const [isMobile, setIsMobile] = useState(true); // default true to prevent hydration mismatch before mount, or false, but let's use useEffect
+
   useEffect(() => {
-    // Hide default cursor
-    document.body.style.cursor = "none";
-    
     // Check if the device has a touch screen, if so we don't render custom cursor
     if (window.matchMedia("(pointer: coarse)").matches) {
+      setIsMobile(true);
       document.body.style.cursor = "auto";
       return;
+    } else {
+      setIsMobile(false);
     }
+
+    // Hide default cursor
+    document.body.style.cursor = "none";
 
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -22,7 +27,6 @@ export default function CustomCursor() {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      // Check if hovering over a clickable element
       if (
         target.tagName.toLowerCase() === 'a' || 
         target.tagName.toLowerCase() === 'button' || 
@@ -46,10 +50,7 @@ export default function CustomCursor() {
     };
   }, []);
 
-  // If it's a mobile touch device, don't show the cursor
-  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
-    return null;
-  }
+  if (isMobile) return null;
 
   return (
     <>
