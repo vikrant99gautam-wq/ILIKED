@@ -90,7 +90,7 @@ export default function Hero() {
       {/* 2. Unified Ground */}
       <div className="absolute inset-0 pointer-events-none flex justify-center items-end z-10 overflow-hidden">
         <div className="absolute bottom-[-10%] w-[120%] md:w-[800px] h-[20vh] md:h-[25vh] bg-black/15 rounded-[100%] blur-[24px] z-0"></div>
-        <div className="absolute bottom-[-10%] md:bottom-[-15%] w-[150%] md:w-[1300px] h-[25vh] md:h-[30vh] bg-[#F4F4F0] border-t-[4px] md:border-t-[6px] border-black rounded-[50%] shadow-[0_-15px_30px_rgba(0,0,0,0.1)] md:shadow-[0_-20px_50px_rgba(0,0,0,0.12)] z-10 flex items-center justify-center pb-16 md:pb-24 pointer-events-auto" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.04%22/%3E%3C/svg%3E")' }}>
+        <div className="absolute bottom-[-10%] md:bottom-[-15%] w-[150%] md:w-[1300px] h-[25vh] md:h-[30vh] bg-[#F4F4F0] border-t-[4px] md:border-t-[6px] border-black rounded-[50%] shadow-[0_-15px_30px_rgba(0,0,0,0.1)] md:shadow-[0_-20px_50px_rgba(0,0,0,0.12)] z-10 flex items-center justify-center pb-16 md:pb-24 pointer-events-auto">
           {/* Season Tag */}
           <motion.div 
             whileHover={{ rotate: -2, scale: 1.05 }}
@@ -113,7 +113,7 @@ export default function Hero() {
             className="relative w-[130%] lg:w-[680px] h-[480px] bg-[#FAFAFA] border-[6px] border-black rounded-[28px] shadow-[inset_0_4px_12px_rgba(255,255,255,1),_20px_20px_0_#111] flex flex-row items-center group cursor-pointer transition-shadow hover:shadow-[inset_0_4px_12px_rgba(255,255,255,1),_28px_28px_0_#111] ml-8"
           >
             {/* Comic Halftone Background inside card */}
-            <div className="absolute inset-0 opacity-[0.07] pointer-events-none rounded-[20px] overflow-hidden mix-blend-multiply" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.6%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.4%22/%3E%3C/svg%3E"), radial-gradient(#111 2.5px, transparent 2.5px)', backgroundSize: '100% 100%, 20px 20px' }}></div>
+            <div className="absolute inset-0 opacity-[0.07] pointer-events-none rounded-[20px] overflow-hidden mix-blend-multiply" style={{ backgroundImage: 'radial-gradient(#111 2.5px, transparent 2.5px)', backgroundSize: '20px 20px' }}></div>
             
             {/* Left Side: Action Text */}
             <div className="relative w-1/2 h-full flex flex-col items-center justify-center z-20 pl-10 md:pl-16">
@@ -203,7 +203,7 @@ export default function Hero() {
             className="w-full h-[220px] bg-[#FAFAFA] border-[4px] border-black rounded-[20px] shadow-[inset_0_2px_6px_rgba(255,255,255,1),_8px_8px_0_#111] relative flex flex-row group"
           >
             {/* Background pattern */}
-            <div className="absolute inset-0 opacity-[0.06] pointer-events-none rounded-[16px] overflow-hidden mix-blend-multiply" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.6%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.4%22/%3E%3C/svg%3E"), radial-gradient(#111 2px, transparent 2px)', backgroundSize: '100% 100%, 14px 14px' }}></div>
+            <div className="absolute inset-0 opacity-[0.06] pointer-events-none rounded-[16px] overflow-hidden mix-blend-multiply" style={{ backgroundImage: 'radial-gradient(#111 2px, transparent 2px)', backgroundSize: '14px 14px' }}></div>
             
             {/* Tag */}
             <div className="absolute -top-3 -left-2 bg-[var(--color-electric-blue)] border-[2px] border-black shadow-[3px_3px_0_#111] px-3 py-1 rotate-[-6deg] z-40">
