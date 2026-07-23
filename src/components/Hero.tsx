@@ -66,22 +66,22 @@ export default function Hero() {
         <motion.div 
           animate={{ scale: [1, 1.03, 1], rotate: [0, 5, 0] }} 
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-16 -right-16 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-[#FFD700] rounded-[45%] border-[3px] md:border-[4px] border-black/80 opacity-80 shadow-[10px_10px_30px_rgba(0,0,0,0.05)] blur-[2px]"
+          className="absolute -top-16 -right-16 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-[#FFD700] rounded-[45%] border-[3px] md:border-[4px] border-black/80 opacity-70 shadow-[10px_10px_30px_rgba(0,0,0,0.05)]"
         />
         <motion.div 
           animate={{ scale: [1, 1.05, 1], x: [0, 15, 0], y: [0, -10, 0] }} 
           transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -bottom-20 -left-10 w-[300px] h-[250px] md:w-[550px] md:h-[400px] bg-[var(--color-coral-red)] rounded-[40%] rotate-12 border-[3px] md:border-[4px] border-black/80 opacity-80 shadow-[10px_10px_30px_rgba(0,0,0,0.05)] blur-[3px]"
+          className="absolute -bottom-20 -left-10 w-[300px] h-[250px] md:w-[550px] md:h-[400px] bg-[var(--color-coral-red)] rounded-[40%] rotate-12 border-[3px] md:border-[4px] border-black/80 opacity-70 shadow-[10px_10px_30px_rgba(0,0,0,0.05)]"
         />
       </div>
 
       {/* Background Personality & Hand-drawn Elements */}
-      <FloatingStar className="bottom-[20%] left-[5%] md:left-[8%] w-6 h-6 md:w-10 md:h-10 text-[#FFD700] drop-shadow-[2px_2px_0_#111] opacity-70 blur-[1px]" delay={0} />
+      <FloatingStar className="bottom-[20%] left-[5%] md:left-[8%] w-6 h-6 md:w-10 md:h-10 text-[#FFD700] drop-shadow-[2px_2px_0_#111] opacity-70" delay={0} />
       <FloatingStar className="top-[15%] right-[10%] md:top-[25%] md:right-[15%] w-8 h-8 md:w-12 md:h-12 text-[var(--color-coral-red)] drop-shadow-[2px_2px_0_#111] opacity-80" delay={1.5} />
-      <FloatingStar className="hidden md:block top-[15%] left-[25%] w-4 h-4 md:w-6 md:h-6 text-[#19B85A] drop-shadow-[1px_1px_0_#111] opacity-60 blur-[1px]" delay={2.5} />
+      <FloatingStar className="hidden md:block top-[15%] left-[25%] w-4 h-4 md:w-6 md:h-6 text-[#19B85A] drop-shadow-[1px_1px_0_#111] opacity-60" delay={2.5} />
       
       <FloatingSquiggle className="hidden md:block top-40 right-20 w-16 h-16 md:w-24 md:h-24 text-black opacity-30" delay={1} />
-      <FloatingSquiggle className="bottom-40 left-[20%] md:left-1/3 w-12 h-12 md:w-16 md:h-16 text-[var(--color-electric-blue)] opacity-40 blur-[1px]" delay={2} />
+      <FloatingSquiggle className="bottom-40 left-[20%] md:left-1/3 w-12 h-12 md:w-16 md:h-16 text-[var(--color-electric-blue)] opacity-40" delay={2} />
       
       <FloatingArrow className="top-[25%] left-[5%] md:top-1/3 md:left-10 w-10 h-10 md:w-16 md:h-16 text-black opacity-40" delay={0.5} />
       <FloatingCircle className="bottom-1/4 right-[5%] md:right-[10%] w-12 h-12 md:w-20 md:h-20 text-[var(--color-coral-red)] opacity-40" delay={1.2} />
@@ -89,7 +89,7 @@ export default function Hero() {
 
       {/* 2. Unified Ground */}
       <div className="absolute inset-0 pointer-events-none flex justify-center items-end z-10 overflow-hidden">
-        <div className="absolute bottom-[-10%] w-[120%] md:w-[800px] h-[20vh] md:h-[25vh] bg-black/15 rounded-[100%] blur-[24px] z-0"></div>
+        <div className="absolute bottom-[-10%] w-[120%] md:w-[800px] h-[20vh] md:h-[25vh] bg-black/10 rounded-[100%] z-0"></div>
         <div className="absolute bottom-[-10%] md:bottom-[-15%] w-[150%] md:w-[1300px] h-[25vh] md:h-[30vh] bg-[#F4F4F0] border-t-[4px] md:border-t-[6px] border-black rounded-[50%] shadow-[0_-15px_30px_rgba(0,0,0,0.1)] md:shadow-[0_-20px_50px_rgba(0,0,0,0.12)] z-10 flex items-center justify-center pb-16 md:pb-24 pointer-events-auto">
           {/* Season Tag */}
           <motion.div 
