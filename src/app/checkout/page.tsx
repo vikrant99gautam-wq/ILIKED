@@ -321,6 +321,8 @@ export default function CheckoutPage() {
     );
   }
 
+  // TEMPORARILY DISABLED FOR RAZORPAY VERIFICATION
+  /*
   if (!user) {
     return (
        <main className="min-h-screen bg-[#F4F4F0] pt-[76px] flex items-center justify-center p-4">
@@ -334,6 +336,7 @@ export default function CheckoutPage() {
        </main>
     );
   }
+  */
 
   return (
     <main className="min-h-screen bg-white pt-[76px]">
@@ -361,10 +364,11 @@ export default function CheckoutPage() {
                   <input 
                     type="email" 
                     required
-                    readOnly
+                    readOnly={!!user}
                     value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
                     placeholder="YOU@EXAMPLE.COM" 
-                    className="w-full p-4 border-[4px] border-black font-bold outline-none bg-gray-200 cursor-not-allowed transition-all"
+                    className={`w-full p-4 border-[4px] border-black font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all ${user ? 'bg-gray-200 cursor-not-allowed' : 'bg-[#F4F4F0]'}`}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
