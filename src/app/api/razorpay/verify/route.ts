@@ -66,8 +66,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Failed to create order in database" }, { status: 500 });
     }
 
-    // Trigger email notification in the background (we don't await this to keep the API fast)
-    sendOrderConfirmationEmail(data).catch(err => console.error("Background Email Error:", err));
+    // AWAIT the email notification so Vercel doesn't kill the function before it sends
+    try {
+      await sendOrderConfirmationEmail(data);
+    } catch (err) {
+      console.error("Email Error:", err);
+    }
 
     return NextResponse.json({ success: true, orderId: data.id });
   } catch (error: any) {
