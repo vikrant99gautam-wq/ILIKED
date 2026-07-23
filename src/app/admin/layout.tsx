@@ -16,7 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/settings", label: "Settings", color: "hover:bg-black" },
   ];
 
-  if (pathname.includes('/print')) {
+  if (pathname.includes('/print') || pathname.includes('/login')) {
     return <>{children}</>;
   }
 
