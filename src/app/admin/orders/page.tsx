@@ -248,19 +248,29 @@ export default function AdminOrdersPage() {
               <span>₹{selectedOrder.total}</span>
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex flex-col md:flex-row gap-4 justify-between">
               <button 
                 onClick={() => handleDelete(selectedOrder.id)}
-                className="px-6 py-2 border-[3px] border-black bg-red-500 text-white font-black hover:bg-black"
+                className="px-6 py-3 border-[3px] border-black bg-red-500 text-white font-black hover:bg-black w-full md:w-auto text-center"
               >
                 DELETE ORDER
               </button>
-              <button 
-                onClick={() => setSelectedOrder(null)} 
-                className="px-8 py-2 border-[3px] border-black bg-black text-white font-black hover:bg-[var(--color-electric-blue)]"
-              >
-                CLOSE
-              </button>
+              <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                <a 
+                  href={`/admin/orders/${selectedOrder.id}/print`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-8 py-3 border-[3px] border-black bg-[#FFD700] text-black font-black hover:bg-black hover:text-white text-center flex items-center justify-center gap-2"
+                >
+                  <span className="text-xl">🖨️</span> PRINT LABEL
+                </a>
+                <button 
+                  onClick={() => setSelectedOrder(null)} 
+                  className="px-8 py-3 border-[3px] border-black bg-black text-white font-black hover:bg-[var(--color-electric-blue)] w-full md:w-auto text-center"
+                >
+                  CLOSE
+                </button>
+              </div>
             </div>
           </div>
         </div>
