@@ -72,7 +72,7 @@ export default function Footer() {
               <h4 className="font-black text-gray-500 tracking-[0.2em] text-xs">SUPPORT</h4>
               <Link href="/terms" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[#FFD700] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] rotate-[-1deg] hover:rotate-[1deg]">TERMS & CONDITIONS</Link>
               <Link href="/return-policy" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[var(--color-coral-red)] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] rotate-[2deg] hover:rotate-[-2deg]">RETURN POLICY</Link>
-              <a href="mailto:admin.iliked@gmail.com" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[var(--color-electric-blue)] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] rotate-[-3deg] hover:rotate-[3deg]">CONTACT</a>
+              <Link href="/contact" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[var(--color-electric-blue)] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] rotate-[-3deg] hover:rotate-[3deg]">CONTACT</Link>
            </div>
 
         </div>
