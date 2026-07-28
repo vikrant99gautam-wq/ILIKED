@@ -76,6 +76,7 @@ export async function POST(req: Request) {
       .from("orders")
       .insert([
         {
+          id: Date.now().toString(),
           customer_name: orderPayload.customer_name,
           email: orderPayload.email,
           total: orderPayload.total,
