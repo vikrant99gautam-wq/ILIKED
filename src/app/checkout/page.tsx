@@ -84,9 +84,9 @@ export default function CheckoutPage() {
             
             setFormData(prev => ({
               ...prev,
-              district: postOffices[0].District,
-              state: postOffices[0].State,
-              city: uniqueCities[0] || ""
+              district: prev.district || postOffices[0].District,
+              state: prev.state || postOffices[0].State,
+              city: prev.city || uniqueCities[0] || ""
             }));
           } else {
             setCityOptions([]);
