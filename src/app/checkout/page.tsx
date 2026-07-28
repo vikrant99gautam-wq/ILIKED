@@ -308,8 +308,6 @@ export default function CheckoutPage() {
     );
   }
 
-  // TEMPORARILY DISABLED FOR RAZORPAY VERIFICATION
-  /*
   if (!user) {
     return (
        <main className="min-h-screen bg-[#F4F4F0] pt-[76px] flex items-center justify-center p-4">
@@ -323,7 +321,6 @@ export default function CheckoutPage() {
        </main>
     );
   }
-  */
 
   return (
     <main className="min-h-screen bg-white pt-[76px]">
