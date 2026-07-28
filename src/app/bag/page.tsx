@@ -190,7 +190,7 @@ export default function BagPage() {
               {/* Checkout Button */}
               <Link href="/checkout" className="block w-full">
                 <button className="w-full mt-8 cartoon-btn px-8 py-5 bg-[var(--color-electric-blue)] text-white font-cartoon text-3xl tracking-widest shadow-[8px_8px_0_#111]">
-                  SECURE THE BAG
+                  PROCEED TO CHECKOUT
                 </button>
               </Link>
             </div>
