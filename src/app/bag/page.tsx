@@ -50,8 +50,8 @@ export default function BagPage() {
     <main className="min-h-screen bg-[#F4F4F0] pt-[120px] pb-24 px-6 md:px-12">
       <div className="max-w-[1440px] mx-auto">
         
-        <h1 className="font-cartoon text-6xl md:text-8xl text-black tracking-widest mb-6 drop-shadow-[4px_4px_0_var(--color-electric-blue)]">
-          YOUR STASH
+        <h1 className="font-cartoon text-5xl md:text-7xl text-black tracking-widest drop-shadow-[4px_4px_0_var(--color-electric-blue)] uppercase mb-4">
+          YOUR CART
         </h1>
 
         {/* Free Shipping Progress Bar */}
@@ -76,8 +76,8 @@ export default function BagPage() {
 
         {cart.length === 0 ? (
           <div className="w-full py-32 flex flex-col items-center justify-center border-[6px] border-dashed border-black bg-white">
-            <h2 className="font-cartoon text-5xl md:text-7xl mb-4 text-center">BAG IS EMPTY!</h2>
-            <p className="font-black tracking-widest uppercase text-xl mb-8">Go cop something.</p>
+            <h2 className="font-cartoon text-5xl tracking-widest text-black mb-4">It's Empty!</h2>
+            <p className="font-black tracking-widest uppercase text-xl mb-8">Start shopping.</p>
             <a href="/shop" className="cartoon-btn px-8 py-4 bg-[var(--color-electric-blue)] text-white font-cartoon text-2xl tracking-widest">
               BACK TO SHOP
             </a>

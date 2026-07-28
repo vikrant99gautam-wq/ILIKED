@@ -32,7 +32,7 @@ export default function ProfilePage() {
       {/* Background Graphic */}
       <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-full flex justify-center pointer-events-none z-0 opacity-5">
         <h1 className="font-cartoon text-[30vw] leading-none text-black tracking-widest text-center whitespace-nowrap rotate-[-5deg]">
-          STASH
+          PROFILE
         </h1>
       </div>
 
@@ -194,7 +194,7 @@ function Dashboard({ user }: { user: User }) {
       {/* Sidebar Navigation */}
       <div className="w-full md:w-64 lg:w-72 shrink-0 flex flex-col gap-4">
         <h1 className="font-cartoon text-5xl md:text-6xl text-black tracking-widest drop-shadow-[2px_2px_0_var(--color-electric-blue)] mb-4">
-          YOUR STASH
+          YOUR ACCOUNT
         </h1>
         <button 
            onClick={() => setActiveTab('orders')}
@@ -238,7 +238,7 @@ function Dashboard({ user }: { user: User }) {
             <div>
               {loading ? (
                 <div className="w-full py-20 flex justify-center">
-                  <span className="font-cartoon text-3xl animate-pulse">LOADING STASH...</span>
+                  <span className="font-cartoon text-3xl animate-pulse">LOADING ACCOUNT...</span>
                 </div>
               ) : orders.length === 0 ? (
                 <div className="w-full py-20 flex flex-col items-center justify-center border-[4px] border-dashed border-black bg-[#fcfaf5]">

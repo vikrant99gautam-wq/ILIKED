@@ -218,7 +218,7 @@ export default function ProductDetailsPage() {
 
           {/* Buy Button */}
           <button onClick={handleAddToCart} className="w-full cartoon-btn py-4 bg-black hover:bg-[var(--color-electric-blue)] text-white border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
-             <span className="font-cartoon text-3xl tracking-widest">ADD TO STASH</span>
+             <span className="font-cartoon text-3xl tracking-widest">ADD TO CART</span>
           </button>
 
           {/* Details / Specs */}
@@ -289,7 +289,7 @@ export default function ProductDetailsPage() {
                 ))
               ) : (
                 <div className="border-[3px] border-dashed border-black p-6 text-center">
-                  <p className="font-black uppercase text-gray-500">No reviews yet. Be the first to drop some heat! 🔥</p>
+                  <p className="font-black uppercase text-gray-500">No reviews yet. Be the first to leave a review! 🔥</p>
                 </div>
               )}
             </div>
@@ -525,7 +525,7 @@ export default function ProductDetailsPage() {
                <img src={product.image ? product.image.split(',')[0].trim() : ""} alt="Added item" className="w-full h-full object-contain scale-110" />
             </div>
             <div>
-              <h4 className="font-cartoon text-2xl text-white tracking-widest leading-none drop-shadow-[2px_2px_0_#111]">ADDED TO STASH</h4>
+              <h4 className="font-cartoon text-2xl text-white tracking-widest leading-none drop-shadow-[2px_2px_0_#111]">ADDED TO CART</h4>
               <p className="font-black text-xs text-white uppercase tracking-widest mt-1">SIZE {selectedSize}</p>
             </div>
             <button 

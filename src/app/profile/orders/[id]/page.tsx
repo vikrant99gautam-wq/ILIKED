@@ -193,7 +193,7 @@ export default function OrderDetailsPage() {
         <div className="max-w-4xl mx-auto flex flex-col items-center justify-center py-20 border-[4px] border-dashed border-black bg-white shadow-[12px_12px_0_#111]">
           <h2 className="font-cartoon text-4xl mb-4">ORDER NOT FOUND</h2>
           <Link href="/profile" className="px-6 py-3 border-[3px] border-black bg-[#FFD700] hover:bg-black hover:text-white font-black uppercase transition-colors">
-            BACK TO STASH
+            BACK TO PROFILE
           </Link>
         </div>
       </div>

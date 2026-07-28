@@ -56,7 +56,7 @@ export const sendOrderConfirmationEmail = async (order: any) => {
           </div>
 
           <p style="font-size: 18px; font-weight: bold;">Yo ${order.customer_name.split(' ')[0]},</p>
-          <p style="font-size: 16px;">Thanks for joining the cult. Your payment was successful and we're getting your drip ready to ship.</p>
+          <p style="font-size: 16px;">Thanks for joining the cult. Your payment was successful and we're getting your order ready to ship.</p>
           
           <div style="background-color: #FFD700; border: 4px solid #000; padding: 20px; margin: 30px 0; box-shadow: 6px 6px 0 #000;">
             <h2 style="margin: 0 0 15px; font-weight: 900; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;">Order Details</h2>

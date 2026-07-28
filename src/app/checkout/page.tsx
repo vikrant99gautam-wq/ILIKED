@@ -313,7 +313,7 @@ export default function CheckoutPage() {
        <main className="min-h-screen bg-[#F4F4F0] pt-[76px] flex items-center justify-center p-4">
          <div className="bg-white border-[4px] border-black shadow-[12px_12px_0_#111] p-12 text-center max-w-lg w-full">
            <h1 className="font-cartoon text-5xl mb-4 uppercase text-[var(--color-coral-red)]">Hold Up!</h1>
-           <p className="font-black text-gray-500 uppercase tracking-widest mb-8">You need to login to your stash before you can cop this drip.</p>
+           <p className="font-black text-gray-500 uppercase tracking-widest mb-8">You need to login to your account before you can place this order.</p>
            <button onClick={() => router.push('/profile')} className="w-full bg-[#FFD700] text-black border-[4px] border-black py-4 font-cartoon text-3xl tracking-widest shadow-[6px_6px_0_#111] hover:bg-black hover:text-[#FFD700] transition-colors">
              LOGIN NOW
            </button>
@@ -333,7 +333,7 @@ export default function CheckoutPage() {
             <h1 className="font-cartoon text-5xl md:text-7xl text-black tracking-widest drop-shadow-[4px_4px_0_var(--color-coral-red)] uppercase mb-4">
               THE DETAILS
             </h1>
-            <p className="font-bold text-gray-500 uppercase tracking-widest">Where do we drop the heat?</p>
+            <p className="font-bold text-gray-500 uppercase tracking-widest">Where should we deliver your order?</p>
           </div>
 
           <form className="space-y-8 max-w-2xl" onSubmit={handleSubmit}>
@@ -566,10 +566,10 @@ export default function CheckoutPage() {
               disabled={isSubmitting}
               className={`w-full bg-[#FFD700] text-black border-[4px] border-black py-6 font-cartoon text-4xl tracking-widest transition-colors duration-300 shadow-[8px_8px_0_#111] ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[var(--color-electric-blue)] hover:text-white active:translate-y-1 active:translate-x-1 active:shadow-none'}`}
             >
-              {isSubmitting ? "PROCESSING..." : "SEAL THE DEAL"}
+              {isSubmitting ? "PROCESSING..." : "PLACE ORDER"}
             </button>
             <p className="text-center text-gray-500 text-xs mt-6 font-bold tracking-widest uppercase">
-              By confirming, you agree that this drip is non-refundable.
+              By confirming, you agree that this order is non-refundable.
             </p>
           </div>
           

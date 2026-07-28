@@ -137,7 +137,7 @@ function SuccessContent() {
 
         <div className="flex flex-col items-center">
           <div className="w-full h-16 bg-black opacity-90 mb-4" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 3px, white 3px, white 6px, transparent 6px, transparent 12px, white 12px, white 15px, transparent 15px, transparent 20px)' }}></div>
-          <p className="font-black tracking-[0.2em] text-xs uppercase text-center">Your drip is secured. We'll email you the tracking details.</p>
+          <p className="font-black tracking-[0.2em] text-xs uppercase text-center">Your order is confirmed. We'll email you the tracking details.</p>
         </div>
         
         {/* Jagged Bottom Edge */}
