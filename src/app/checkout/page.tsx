@@ -14,7 +14,6 @@ export default function CheckoutPage() {
   const [settings, setSettings] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
   const [loadingSession, setLoadingSession] = useState(true);
-  const [cityOptions, setCityOptions] = useState<string[]>([]);
   const [paymentPopup, setPaymentPopup] = useState<{show: boolean, type: 'success' | 'error', message: string} | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<'ONLINE' | 'PARTIAL_COD'>('ONLINE');
   const [formData, setFormData] = useState({
@@ -72,34 +71,7 @@ export default function CheckoutPage() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    if (formData.zip.length === 6) {
-      fetch(`https://api.postalpincode.in/pincode/${formData.zip}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data[0] && data[0].Status === "Success" && data[0].PostOffice) {
-            const postOffices = data[0].PostOffice;
-            const uniqueCities = Array.from(new Set(postOffices.map((po: any) => po.Name))) as string[];
-            setCityOptions(uniqueCities);
-            
-            setFormData(prev => ({
-              ...prev,
-              district: prev.district || postOffices[0].District,
-              state: prev.state || postOffices[0].State,
-              city: prev.city || uniqueCities[0] || ""
-            }));
-          } else {
-            setCityOptions([]);
-          }
-        })
-        .catch(err => {
-          console.error("Error fetching pincode details", err);
-          setCityOptions([]);
-        });
-    } else {
-      setCityOptions([]);
-    }
-  }, [formData.zip]);
+
 
   const [promoCodeInput, setPromoCodeInput] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<any | null>(null);
@@ -395,18 +367,7 @@ export default function CheckoutPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
                   <label className="font-bold text-sm tracking-widest uppercase">City / Locality</label>
-                  {cityOptions.length > 0 ? (
-                    <select 
-                      required
-                      value={formData.city} 
-                      onChange={(e) => setFormData({...formData, city: e.target.value})} 
-                      className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all appearance-none cursor-pointer"
-                    >
-                      {cityOptions.map(city => <option key={city} value={city}>{city}</option>)}
-                    </select>
-                  ) : (
-                    <input required type="text" value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
-                  )}
+                  <input required type="text" value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="font-bold text-sm tracking-widest uppercase">District</label>
@@ -419,7 +380,7 @@ export default function CheckoutPage() {
                   <input required type="text" value={formData.state} onChange={(e) => setFormData({...formData, state: e.target.value})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="font-bold text-sm tracking-widest uppercase">ZIP Code (Enter to auto-fill)</label>
+                  <label className="font-bold text-sm tracking-widest uppercase">ZIP Code</label>
                   <input required type="text" maxLength={6} value={formData.zip} onChange={(e) => setFormData({...formData, zip: e.target.value.replace(/\D/g, '')})} className="w-full p-4 border-[4px] border-black bg-[#F4F4F0] font-bold outline-none focus:bg-white focus:shadow-[6px_6px_0_var(--color-electric-blue)] transition-all" />
                 </div>
               </div>
