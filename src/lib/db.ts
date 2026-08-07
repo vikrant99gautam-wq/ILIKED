@@ -35,6 +35,7 @@ export interface StoreSettings {
   free_shipping_threshold: number;
   shipping_cost: number;
   promo_codes?: string; // JSON string representing array of {code: string, discount: number}
+  hero_image?: string;
 }
 
 export async function getProducts() {

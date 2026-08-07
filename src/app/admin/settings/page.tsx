@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { supabase } from "@/lib/supabase";
 import { StoreSettings } from "@/lib/db";
 
 export default function AdminSettingsPage() {
@@ -13,7 +14,9 @@ export default function AdminSettingsPage() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchSettings();
@@ -51,6 +54,36 @@ export default function AdminSettingsPage() {
     setIsSaving(false);
     
     setTimeout(() => setMessage(""), 3000);
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    const file = files[0];
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+    const filePath = `hero/${fileName}`;
+
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('products')
+        .getPublicUrl(filePath);
+
+      setSettings({...settings, hero_image: data.publicUrl});
+    } catch (err: any) {
+      alert("Error uploading image: " + err.message);
+    }
+    
+    setIsUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   return (
@@ -138,6 +171,46 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <p className="text-gray-500 mt-1 font-bold text-sm">Amount needed for free shipping (0 to disable).</p>
+              </div>
+            </div>
+
+            <div className="border-[3px] border-black p-4 bg-gray-50 mt-4">
+              <label className="block font-black text-xl mb-4">HOMEPAGE HERO IMAGE</label>
+              <div className="flex flex-col md:flex-row gap-6 items-start">
+                <div className="flex-1 w-full">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploading}
+                      className="cartoon-btn px-6 py-3 bg-[var(--color-electric-blue)] text-white font-black whitespace-nowrap border-[3px] border-black hover:bg-black transition-colors"
+                    >
+                      {isUploading ? "UPLOADING..." : "UPLOAD NEW IMAGE"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSettings({...settings, hero_image: ""})}
+                      className="px-6 py-3 bg-[var(--color-coral-red)] text-white font-black whitespace-nowrap border-[3px] border-black hover:bg-black transition-colors"
+                    >
+                      CLEAR
+                    </button>
+                  </div>
+                  <p className="text-gray-500 mt-2 font-bold text-sm">Upload a PNG with a transparent background for best results. Cleared image defaults to a placeholder.</p>
+                </div>
+                <div className="shrink-0 w-48 h-48 border-[3px] border-black bg-[#E5F1FB] bg-paper-noise flex items-center justify-center relative overflow-hidden">
+                   {settings.hero_image ? (
+                     <img src={settings.hero_image} alt="Hero Preview" className="w-full h-full object-contain" />
+                   ) : (
+                     <span className="font-black text-gray-400 text-sm">DEFAULT IMAGE</span>
+                   )}
+                </div>
               </div>
             </div>
 

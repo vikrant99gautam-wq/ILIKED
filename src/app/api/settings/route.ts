@@ -16,7 +16,8 @@ export async function GET() {
     maintenance_mode: false,
     free_shipping_threshold: 2000,
     shipping_cost: 850,
-    promo_codes: '[]'
+    promo_codes: '[]',
+    hero_image: ''
   };
 
   // If table exists but is empty
@@ -42,6 +43,9 @@ export async function GET() {
   }
   if (data.promo_codes === undefined || data.promo_codes === null) {
     finalData.promo_codes = defaultSettings.promo_codes;
+  }
+  if (data.hero_image === undefined || data.hero_image === null) {
+    finalData.hero_image = defaultSettings.hero_image;
   }
 
   return NextResponse.json(finalData);
