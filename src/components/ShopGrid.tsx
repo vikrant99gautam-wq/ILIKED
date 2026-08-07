@@ -240,15 +240,17 @@ export default function ShopGrid() {
                         <img 
                           src={product.image ? product.image.split(',')[0].trim() : ''} 
                           alt={product.name}
-                          className="absolute w-[115%] h-[115%] object-contain drop-shadow-[6px_6px_0_#111] group-hover:scale-[1.05] group-hover:opacity-0 transition-all duration-500 z-10"
+                          className={`absolute w-[115%] h-[115%] object-contain drop-shadow-[6px_6px_0_#111] transition-all duration-500 z-10 ${product.hoverImage ? 'group-hover:scale-[1.05] group-hover:opacity-0' : 'group-hover:scale-[1.05]'}`}
                         />
 
                         {/* Hover Image */}
-                        <img 
-                          src={product.hoverImage} 
-                          alt={`${product.name} alternate view`}
-                          className="absolute w-[115%] h-[115%] object-contain drop-shadow-[6px_6px_0_#111] opacity-0 group-hover:scale-[1.05] group-hover:opacity-100 transition-all duration-500 z-10"
-                        />
+                        {product.hoverImage && (
+                          <img 
+                            src={product.hoverImage} 
+                            alt={`${product.name} alternate view`}
+                            className="absolute w-[115%] h-[115%] object-contain drop-shadow-[6px_6px_0_#111] opacity-0 group-hover:scale-[1.05] group-hover:opacity-100 transition-all duration-500 z-10"
+                          />
+                        )}
                       </div>
 
                       {/* Product Info Area */}
