@@ -43,6 +43,22 @@ export default function ProductDetailsPage() {
     setTimeout(() => setShowToast(false), 3000);
   };
 
+  const handleBuyNow = () => {
+    if (!selectedSize) {
+      alert("Please select a size first!");
+      return;
+    }
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      size: selectedSize,
+      quantity: 1,
+      image: product.image ? product.image.split(',')[0].trim() : "",
+    });
+    router.push('/bag');
+  };
+
   useEffect(() => {
     setMounted(true);
     if (params.id) {
@@ -85,7 +101,7 @@ export default function ProductDetailsPage() {
         <div className="w-full lg:w-[45%] p-6 md:p-8 lg:p-8 lg:pt-8 flex flex-col justify-start bg-white border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black relative z-20 overflow-y-auto">
           
           <div className="flex justify-between items-start mb-4 gap-4">
-            <h1 className="font-cartoon text-5xl md:text-6xl lg:text-6xl text-black tracking-widest leading-[0.85] drop-shadow-[4px_4px_0_var(--color-electric-blue)] uppercase">
+            <h1 className="font-cartoon text-5xl md:text-6xl lg:text-6xl text-black tracking-widest leading-[1] drop-shadow-[3px_3px_0_var(--color-electric-blue)] uppercase">
               {product.name}
             </h1>
             <button 
@@ -216,10 +232,15 @@ export default function ProductDetailsPage() {
               )}
           </div>
 
-          {/* Buy Button */}
-          <button onClick={handleAddToCart} className="w-full cartoon-btn py-4 bg-black hover:bg-[var(--color-electric-blue)] text-white border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
-             <span className="font-cartoon text-3xl tracking-widest">ADD TO CART</span>
-          </button>
+          {/* Action Buttons */}
+          <div className="flex flex-col md:flex-row gap-4 mb-4">
+            <button onClick={handleAddToCart} className="flex-1 cartoon-btn py-4 bg-white hover:bg-gray-100 text-black border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
+               <span className="font-cartoon text-2xl tracking-widest">ADD TO CART</span>
+            </button>
+            <button onClick={handleBuyNow} className="flex-1 cartoon-btn py-4 bg-[#FFD700] hover:bg-[var(--color-electric-blue)] hover:text-white text-black border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
+               <span className="font-cartoon text-2xl tracking-widest">BUY NOW</span>
+            </button>
+          </div>
 
           {/* Details / Specs */}
           <div className="mt-8 p-4 border-[3px] border-dashed border-black bg-[#F4F4F0]">
