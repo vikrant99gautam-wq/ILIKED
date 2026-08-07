@@ -10,8 +10,8 @@ export default function CurrentlyLiked() {
     fetch('/api/products')
       .then(r => r.json())
       .then(data => {
-        // Only show featured products
-        setProducts(data.filter((p: any) => p.featured).slice(0, 4));
+        // Show latest products
+        setProducts(data.reverse().slice(0, 4));
       });
   }, []);
 
@@ -52,9 +52,9 @@ export default function CurrentlyLiked() {
           className="font-cartoon text-6xl md:text-8xl text-[#FFD700] flex flex-col items-center leading-none md:leading-[0.8] mb-10 md:mb-12" 
           style={{ WebkitTextStroke: '2px #111', textShadow: '4px 4px 0 #111' }}
         >
-          <span>CURRENTLY</span>
+          <span>THE</span>
           <span className="text-white ml-8 md:ml-16 rotate-[2deg] mt-2 md:mt-0 relative">
-            LIKED<span className="text-[var(--color-coral-red)]">!</span>
+            COLLECTION<span className="text-[var(--color-coral-red)]">!</span>
             {/* Tiny underline squiggle */}
             <svg className="absolute -bottom-4 left-0 w-full h-4 opacity-80" viewBox="0 0 100 20" preserveAspectRatio="none">
               <path d="M0,10 Q25,0 50,10 T100,10" fill="none" stroke="#111" strokeWidth="4" />
@@ -66,7 +66,7 @@ export default function CurrentlyLiked() {
           onClick={() => window.location.href = '/shop'}
           className="cartoon-btn group relative inline-flex items-center justify-center bg-[#FFD700] px-8 py-3 w-full max-w-[400px]"
         >
-          <span className="font-cartoon text-black text-xl tracking-widest">VIEW ALL LIKES</span>
+          <span className="font-cartoon text-black text-xl tracking-widest">VIEW THE COLLECTION</span>
           <span className="ml-3 font-bold group-hover:translate-x-2 transition-transform">→</span>
         </button>
       </div>

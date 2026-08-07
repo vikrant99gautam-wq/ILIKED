@@ -138,7 +138,7 @@ export default function AdminProductsPage() {
               {products.map(p => (
                 <tr key={p.id} className="border-b-[2px] border-black/10 last:border-0 hover:bg-gray-50">
                   <td className="p-4">
-                    <img src={p.image} className="w-16 h-16 object-contain bg-gray-100 border-[2px] border-black" alt={p.name} />
+                    <img src={p.image?.split(',')[0]?.trim() || ''} className="w-16 h-16 object-contain bg-gray-100 border-[2px] border-black" alt={p.name} />
                   </td>
                   <td className="p-4 font-bold">{p.name}</td>
                   <td className="p-4 font-bold text-sm text-gray-600 uppercase">{p.color || '-'}</td>
@@ -171,7 +171,7 @@ export default function AdminProductsPage() {
             {products.map(p => (
               <div key={p.id} className="border-b-[4px] border-black last:border-0 p-4 flex flex-col gap-4">
                 <div className="flex gap-4 items-center">
-                  <img src={p.image} className="w-20 h-20 object-contain bg-gray-100 border-[2px] border-black shrink-0" alt={p.name} />
+                  <img src={p.image?.split(',')[0]?.trim() || ''} className="w-20 h-20 object-contain bg-gray-100 border-[2px] border-black shrink-0" alt={p.name} />
                   <div className="flex flex-col">
                     <span className="font-bold text-lg leading-tight">{p.name}</span>
                     <span className="font-bold text-sm text-gray-500 uppercase">{p.color || '-'}</span>
