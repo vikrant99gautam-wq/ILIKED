@@ -2,14 +2,14 @@ import { Metadata, ResolvingMetadata } from "next";
 import { supabase } from "@/lib/supabase";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const id = params.id;
+  const { id } = await params;
 
   const { data: product } = await supabase
     .from("products")
