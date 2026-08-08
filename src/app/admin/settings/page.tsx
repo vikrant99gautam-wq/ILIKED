@@ -59,7 +59,7 @@ export default function AdminSettingsPage() {
     setTimeout(() => setMessage(""), 3000);
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: keyof StoreSettings, ref: React.RefObject<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: keyof StoreSettings, ref: React.RefObject<HTMLInputElement | null>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
