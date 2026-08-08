@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 0; // Force dynamic to always fetch the latest hero image
+
 export default async function Home() {
   const { data: settings } = await supabase.from('settings').select('hero_image').single();
   const heroImage = settings?.hero_image || "/images/model-anim-1.png";
