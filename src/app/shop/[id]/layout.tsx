@@ -33,7 +33,7 @@ export async function generateMetadata(
       canonical: `https://iliked.in/shop/${id}`,
     },
     openGraph: {
-      type: "product",
+      type: "website",
       title: `${product.name} | I LIKED`,
       description: `₹${product.price} - Premium oversized fit. Buy now at I LIKED.`,
       images: [
