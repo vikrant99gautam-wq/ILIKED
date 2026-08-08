@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export const revalidate = 0; // Force dynamic to always fetch the latest hero image
 
 export default async function Home() {
-  const { data: settings } = await supabase.from('settings').select('hero_image').single();
+  const { data: settings } = await supabase.from('settings').select('hero_image, collection_image_1, collection_image_2, collection_image_3').single();
   const heroImage = settings?.hero_image || "/images/model-anim-1.png";
 
   return (
@@ -37,7 +37,11 @@ export default async function Home() {
       </div>
 
       <CurrentlyLiked />
-      <Moods />
+      <Moods 
+        image1={settings?.collection_image_1} 
+        image2={settings?.collection_image_2} 
+        image3={settings?.collection_image_3} 
+      />
     </main>
   );
 }

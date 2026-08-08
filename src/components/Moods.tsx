@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 
-const Polaroid = ({ color, rotate, tapeRotate, delay, label, isComingSoon }: { color: string, rotate: string, tapeRotate: string, delay: number, label: string, isComingSoon?: boolean }) => {
+const Polaroid = ({ color, rotate, tapeRotate, delay, label, isComingSoon, image }: { color: string, rotate: string, tapeRotate: string, delay: number, label: string, isComingSoon?: boolean, image?: string | null }) => {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 100, rotate: 0 }}
@@ -16,12 +16,18 @@ const Polaroid = ({ color, rotate, tapeRotate, delay, label, isComingSoon }: { c
       
       {/* Image Area */}
       <div className={`w-[220px] h-[280px] md:w-[300px] md:h-[380px] ${color} border-[3px] border-black flex items-center justify-center relative overflow-hidden group-hover:after:absolute group-hover:after:inset-0 group-hover:after:bg-black/10 transition-colors`}>
-        {/* Abstract shape to make it look less empty */}
-        <div className="absolute w-[150%] h-[150%] bg-black/5 rotate-45 translate-y-1/2"></div>
-        
-        <svg className="w-1/3 h-1/3 text-black opacity-20 relative z-10" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-        </svg>
+        {image ? (
+          <img src={image} alt={label} className="absolute inset-0 w-full h-full object-cover z-10" />
+        ) : (
+          <>
+            {/* Abstract shape to make it look less empty */}
+            <div className="absolute w-[150%] h-[150%] bg-black/5 rotate-45 translate-y-1/2 z-0"></div>
+            
+            <svg className="w-1/3 h-1/3 text-black opacity-20 relative z-10" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+            </svg>
+          </>
+        )}
 
         {isComingSoon && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
@@ -40,7 +46,7 @@ const Polaroid = ({ color, rotate, tapeRotate, delay, label, isComingSoon }: { c
   )
 }
 
-export default function Moods() {
+export default function Moods({ image1, image2, image3 }: { image1?: string | null, image2?: string | null, image3?: string | null }) {
   return (
     <section id="moods" className="relative w-full bg-[var(--color-electric-blue)] bg-paper-noise py-32 md:py-40 px-6 overflow-hidden border-t-[8px] border-black">
       
@@ -94,9 +100,9 @@ export default function Moods() {
 
         {/* Scattered Polaroids Layout */}
         <div className="flex flex-wrap justify-center items-center gap-12 md:gap-x-16 md:gap-y-24 max-w-[1200px]">
-          <Polaroid color="bg-[var(--color-coral-red)]" rotate="rotate-[-8deg]" tapeRotate="rotate-[-5deg]" delay={0.1} label="NORMAL TEES" isComingSoon={true} />
-          <Polaroid color="bg-[#FFD700]" rotate="rotate-[12deg]" tapeRotate="rotate-[3deg]" delay={0.2} label="OVERSIZED TEES" />
-          <Polaroid color="bg-[#246BFD]" rotate="rotate-[-15deg]" tapeRotate="rotate-[-10deg]" delay={0.3} label="OPTIC WASH TEES" isComingSoon={true} />
+          <Polaroid color="bg-[var(--color-coral-red)]" rotate="rotate-[-8deg]" tapeRotate="rotate-[-5deg]" delay={0.1} label="NORMAL TEES" isComingSoon={true} image={image1} />
+          <Polaroid color="bg-[#FFD700]" rotate="rotate-[12deg]" tapeRotate="rotate-[3deg]" delay={0.2} label="OVERSIZED TEES" image={image2} />
+          <Polaroid color="bg-[#246BFD]" rotate="rotate-[-15deg]" tapeRotate="rotate-[-10deg]" delay={0.3} label="OPTIC WASH TEES" isComingSoon={true} image={image3} />
         </div>
         
         {/* View Lookbook Button */}

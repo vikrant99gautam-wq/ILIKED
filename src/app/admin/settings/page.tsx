@@ -17,6 +17,9 @@ export default function AdminSettingsPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const coll1Ref = useRef<HTMLInputElement>(null);
+  const coll2Ref = useRef<HTMLInputElement>(null);
+  const coll3Ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchSettings();
@@ -56,7 +59,7 @@ export default function AdminSettingsPage() {
     setTimeout(() => setMessage(""), 3000);
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: keyof StoreSettings, ref: React.RefObject<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
@@ -64,7 +67,7 @@ export default function AdminSettingsPage() {
     const file = files[0];
     const fileExt = file.name.split('.').pop();
     const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
-    const filePath = `hero/${fileName}`;
+    const filePath = `settings/${fileName}`;
 
     try {
       const { error: uploadError } = await supabase.storage
@@ -77,13 +80,13 @@ export default function AdminSettingsPage() {
         .from('products')
         .getPublicUrl(filePath);
 
-      setSettings({...settings, hero_image: data.publicUrl});
+      setSettings({...settings, [fieldName]: data.publicUrl});
     } catch (err: any) {
       alert("Error uploading image: " + err.message);
     }
     
     setIsUploading(false);
-    if (fileInputRef.current) fileInputRef.current.value = '';
+    if (ref.current) ref.current.value = '';
   };
 
   return (
@@ -182,7 +185,7 @@ export default function AdminSettingsPage() {
                     type="file"
                     accept="image/*"
                     ref={fileInputRef}
-                    onChange={handleFileUpload}
+                    onChange={(e) => handleFileUpload(e, 'hero_image', fileInputRef)}
                     className="hidden"
                   />
                   <div className="flex gap-4">
@@ -210,6 +213,76 @@ export default function AdminSettingsPage() {
                    ) : (
                      <span className="font-black text-gray-400 text-sm">DEFAULT IMAGE</span>
                    )}
+                </div>
+              </div>
+            </div>
+
+            {/* Collection Images */}
+            <div className="border-[3px] border-black p-4 bg-gray-50 mt-4">
+              <label className="block font-black text-xl mb-4">COLLECTION IMAGES (HOMEPAGE MOODS)</label>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Collection 1 */}
+                <div className="flex flex-col gap-4">
+                  <div className="font-bold">1. NORMAL TEES</div>
+                  <div className="w-full h-48 border-[3px] border-black bg-[var(--color-coral-red)] bg-paper-noise flex items-center justify-center relative overflow-hidden">
+                    {settings.collection_image_1 ? (
+                      <img src={settings.collection_image_1} alt="Collection 1" className="w-full h-full object-contain" />
+                    ) : (
+                      <span className="font-black text-black opacity-50 text-sm">NO IMAGE</span>
+                    )}
+                  </div>
+                  <input type="file" accept="image/*" ref={coll1Ref} onChange={(e) => handleFileUpload(e, 'collection_image_1', coll1Ref)} className="hidden" />
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => coll1Ref.current?.click()} disabled={isUploading} className="flex-1 cartoon-btn px-2 py-2 bg-[var(--color-electric-blue)] text-white font-black border-[3px] border-black hover:bg-black transition-colors text-xs">
+                      UPLOAD
+                    </button>
+                    <button type="button" onClick={() => setSettings({...settings, collection_image_1: ""})} className="px-2 py-2 bg-[var(--color-coral-red)] text-white font-black border-[3px] border-black hover:bg-black transition-colors text-xs">
+                      CLEAR
+                    </button>
+                  </div>
+                </div>
+
+                {/* Collection 2 */}
+                <div className="flex flex-col gap-4">
+                  <div className="font-bold">2. OVERSIZED TEES</div>
+                  <div className="w-full h-48 border-[3px] border-black bg-[#FFD700] bg-paper-noise flex items-center justify-center relative overflow-hidden">
+                    {settings.collection_image_2 ? (
+                      <img src={settings.collection_image_2} alt="Collection 2" className="w-full h-full object-contain" />
+                    ) : (
+                      <span className="font-black text-black opacity-50 text-sm">NO IMAGE</span>
+                    )}
+                  </div>
+                  <input type="file" accept="image/*" ref={coll2Ref} onChange={(e) => handleFileUpload(e, 'collection_image_2', coll2Ref)} className="hidden" />
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => coll2Ref.current?.click()} disabled={isUploading} className="flex-1 cartoon-btn px-2 py-2 bg-[var(--color-electric-blue)] text-white font-black border-[3px] border-black hover:bg-black transition-colors text-xs">
+                      UPLOAD
+                    </button>
+                    <button type="button" onClick={() => setSettings({...settings, collection_image_2: ""})} className="px-2 py-2 bg-[var(--color-coral-red)] text-white font-black border-[3px] border-black hover:bg-black transition-colors text-xs">
+                      CLEAR
+                    </button>
+                  </div>
+                </div>
+
+                {/* Collection 3 */}
+                <div className="flex flex-col gap-4">
+                  <div className="font-bold">3. OPTIC WASH TEES</div>
+                  <div className="w-full h-48 border-[3px] border-black bg-[#246BFD] bg-paper-noise flex items-center justify-center relative overflow-hidden">
+                    {settings.collection_image_3 ? (
+                      <img src={settings.collection_image_3} alt="Collection 3" className="w-full h-full object-contain" />
+                    ) : (
+                      <span className="font-black text-black opacity-50 text-sm">NO IMAGE</span>
+                    )}
+                  </div>
+                  <input type="file" accept="image/*" ref={coll3Ref} onChange={(e) => handleFileUpload(e, 'collection_image_3', coll3Ref)} className="hidden" />
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => coll3Ref.current?.click()} disabled={isUploading} className="flex-1 cartoon-btn px-2 py-2 bg-[var(--color-electric-blue)] text-white font-black border-[3px] border-black hover:bg-black transition-colors text-xs">
+                      UPLOAD
+                    </button>
+                    <button type="button" onClick={() => setSettings({...settings, collection_image_3: ""})} className="px-2 py-2 bg-[var(--color-coral-red)] text-white font-black border-[3px] border-black hover:bg-black transition-colors text-xs">
+                      CLEAR
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -17,7 +17,10 @@ export async function GET() {
     free_shipping_threshold: 2000,
     shipping_cost: 850,
     promo_codes: '[]',
-    hero_image: ''
+    hero_image: '',
+    collection_image_1: '',
+    collection_image_2: '',
+    collection_image_3: ''
   };
 
   // If table exists but is empty
@@ -46,6 +49,15 @@ export async function GET() {
   }
   if (data.hero_image === undefined || data.hero_image === null) {
     finalData.hero_image = defaultSettings.hero_image;
+  }
+  if (data.collection_image_1 === undefined || data.collection_image_1 === null) {
+    finalData.collection_image_1 = defaultSettings.collection_image_1;
+  }
+  if (data.collection_image_2 === undefined || data.collection_image_2 === null) {
+    finalData.collection_image_2 = defaultSettings.collection_image_2;
+  }
+  if (data.collection_image_3 === undefined || data.collection_image_3 === null) {
+    finalData.collection_image_3 = defaultSettings.collection_image_3;
   }
 
   return NextResponse.json(finalData);

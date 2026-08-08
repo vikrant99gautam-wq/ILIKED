@@ -36,6 +36,9 @@ export interface StoreSettings {
   shipping_cost: number;
   promo_codes?: string; // JSON string representing array of {code: string, discount: number}
   hero_image?: string;
+  collection_image_1?: string;
+  collection_image_2?: string;
+  collection_image_3?: string;
 }
 
 export async function getProducts() {
