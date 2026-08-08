@@ -147,7 +147,7 @@ export default function AdminSettingsPage() {
 
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1">
-                <label className="block font-black mb-2 text-xl">SHIPPING COST</label>
+                <label className="block font-black mb-2 text-xl">PREPAID SHIPPING COST</label>
                 <div className="flex relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-gray-500 text-lg">₹</span>
                   <input 
@@ -158,9 +158,26 @@ export default function AdminSettingsPage() {
                     required
                   />
                 </div>
-                <p className="text-gray-500 mt-1 font-bold text-sm">Default shipping fee per order.</p>
+                <p className="text-gray-500 mt-1 font-bold text-sm">Shipping fee for prepaid orders.</p>
               </div>
 
+              <div className="flex-1">
+                <label className="block font-black mb-2 text-xl">PARTIAL COD SHIPPING COST</label>
+                <div className="flex relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-gray-500 text-lg">₹</span>
+                  <input 
+                    type="number" 
+                    value={settings.partial_cod_shipping_cost || 0} 
+                    onChange={e => setSettings({...settings, partial_cod_shipping_cost: Number(e.target.value)})}
+                    className="w-full border-[3px] border-black p-3 pl-8 font-bold text-lg focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
+                    required
+                  />
+                </div>
+                <p className="text-gray-500 mt-1 font-bold text-sm">Shipping fee for partial COD orders.</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1">
                 <label className="block font-black mb-2 text-xl">FREE SHIPPING THRESHOLD</label>
                 <div className="flex relative">

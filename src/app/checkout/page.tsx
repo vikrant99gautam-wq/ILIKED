@@ -143,10 +143,12 @@ export default function CheckoutPage() {
     if (settings.free_shipping_threshold > 0 && discountedSubtotal >= settings.free_shipping_threshold) {
       shipping = 0;
     } else {
-      shipping = settings.shipping_cost || 0;
+      shipping = paymentMethod === 'PARTIAL_COD' 
+        ? (settings.partial_cod_shipping_cost ?? 150) 
+        : (settings.shipping_cost ?? 0);
     }
   } else {
-    shipping = cartItems.length > 0 ? 850 : 0;
+    shipping = cartItems.length > 0 ? (paymentMethod === 'PARTIAL_COD' ? 150 : 850) : 0;
   }
   
   const total = discountedSubtotal + shipping;

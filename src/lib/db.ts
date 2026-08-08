@@ -34,6 +34,7 @@ export interface StoreSettings {
   maintenance_mode: boolean;
   free_shipping_threshold: number;
   shipping_cost: number;
+  partial_cod_shipping_cost?: number;
   promo_codes?: string; // JSON string representing array of {code: string, discount: number}
   hero_image?: string;
   collection_image_1?: string;

@@ -16,6 +16,7 @@ export async function GET() {
     maintenance_mode: false,
     free_shipping_threshold: 2000,
     shipping_cost: 850,
+    partial_cod_shipping_cost: 150,
     promo_codes: '[]',
     hero_image: '',
     collection_image_1: '',
@@ -43,6 +44,9 @@ export async function GET() {
   }
   if (data.shipping_cost === undefined || data.shipping_cost === null) {
     finalData.shipping_cost = defaultSettings.shipping_cost;
+  }
+  if (data.partial_cod_shipping_cost === undefined || data.partial_cod_shipping_cost === null) {
+    finalData.partial_cod_shipping_cost = defaultSettings.partial_cod_shipping_cost;
   }
   if (data.promo_codes === undefined || data.promo_codes === null) {
     finalData.promo_codes = defaultSettings.promo_codes;
