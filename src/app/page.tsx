@@ -1,6 +1,13 @@
 import Hero from "@/components/Hero";
 import CurrentlyLiked from "@/components/CurrentlyLiked";
 import Moods from "@/components/Moods";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: 'https://iliked.in',
+  },
+};
 
 export default function Home() {
   return (

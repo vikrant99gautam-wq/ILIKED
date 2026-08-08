@@ -29,7 +29,11 @@ export async function generateMetadata(
   return {
     title: `${product.name} | I LIKED`,
     description: `${product.name} - ₹${product.price}. Premium oversized streetwear from I LIKED.`,
+    alternates: {
+      canonical: `https://iliked.in/shop/${id}`,
+    },
     openGraph: {
+      type: "product",
       title: `${product.name} | I LIKED`,
       description: `₹${product.price} - Premium oversized fit. Buy now at I LIKED.`,
       images: [
@@ -50,10 +54,42 @@ export async function generateMetadata(
   };
 }
 
-export default function ProductLayout({
+export default async function ProductLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ id: string }>;
 }) {
-  return children;
+  const { id } = await params;
+  const { data: product } = await supabase.from("products").select("*").eq("id", id).single();
+
+  if (!product) return <>{children}</>;
+
+  const imageUrl = product.image ? product.image.split(',')[0].trim() : "https://iliked.in/images/logo.png";
+  
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: imageUrl,
+    description: product.description || `${product.name} - Premium oversized streetwear`,
+    offers: {
+      '@type': 'Offer',
+      price: product.price,
+      priceCurrency: 'INR',
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      url: `https://iliked.in/shop/${id}`
+    }
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }
