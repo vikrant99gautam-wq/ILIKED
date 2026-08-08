@@ -1,23 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-
-export default function ModelFlipbook() {
-  const [heroImage, setHeroImage] = useState("/images/model-anim-1.png");
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const res = await fetch("/api/settings");
-        const data = await res.json();
-        if (data && data.hero_image) {
-          setHeroImage(data.hero_image);
-        }
-      } catch (err) {
-        console.error("Failed to load hero image from settings:", err);
-      }
-    };
-    fetchSettings();
-  }, []);
+export default function ModelFlipbook({ initialHeroImage }: { initialHeroImage?: string }) {
+  const heroImage = initialHeroImage || "/images/model-anim-1.png";
 
   return (
     <div className="relative w-full h-full z-30 flex justify-center items-end pb-0 md:pb-4 overflow-visible group">

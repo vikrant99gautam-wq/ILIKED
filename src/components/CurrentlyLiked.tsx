@@ -46,10 +46,8 @@ export default function CurrentlyLiked() {
           <span className="font-sans font-black text-[var(--color-electric-blue)] tracking-[0.2em] text-sm">NOW SHOWING</span>
         </motion.div>
         
-        <motion.h2 
-          animate={{ y: [-3, 3, -3] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          className="font-cartoon text-6xl md:text-8xl text-[#FFD700] flex flex-col items-center leading-none md:leading-[0.8] mb-10 md:mb-12" 
+        <h2 
+          className="font-cartoon text-6xl md:text-8xl text-[#FFD700] flex flex-col items-center leading-none md:leading-[0.8] mb-10 md:mb-12 cursor-default hover:scale-[1.02] transition-transform duration-300" 
           style={{ WebkitTextStroke: '2px #111', textShadow: '4px 4px 0 #111' }}
         >
           <span>THE</span>
@@ -60,7 +58,7 @@ export default function CurrentlyLiked() {
               <path d="M0,10 Q25,0 50,10 T100,10" fill="none" stroke="#111" strokeWidth="4" />
             </svg>
           </span>
-        </motion.h2>
+        </h2>
         
         <button 
           onClick={() => window.location.href = '/shop'}

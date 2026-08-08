@@ -2,90 +2,76 @@
 import ModelFlipbook from "./ModelFlipbook";
 import { motion } from "framer-motion";
 
-const FloatingStar = ({ className, delay }: { className: string, delay: number }) => (
-  <motion.svg 
-    animate={{ y: [0, -20, 0], rotate: [0, 15, -15, 0], scale: [1, 1.1, 1] }}
-    transition={{ duration: 6, repeat: Infinity, delay, ease: "easeInOut" }}
+const FloatingStar = ({ className }: { className: string }) => (
+  <svg 
     viewBox="0 0 100 100" 
     className={`absolute z-10 ${className}`}
   >
     <path fill="currentColor" stroke="#111" strokeWidth="4" strokeLinejoin="round" d="M50 0 L60 40 L100 50 L60 60 L50 100 L40 60 L0 50 L40 40 Z" />
-  </motion.svg>
+  </svg>
 );
 
-const FloatingSquiggle = ({ className, delay }: { className: string, delay: number }) => (
-  <motion.svg 
-    animate={{ y: [0, 15, 0], rotate: [0, -10, 10, 0] }}
-    transition={{ duration: 8, repeat: Infinity, delay, ease: "easeInOut" }}
+const FloatingSquiggle = ({ className }: { className: string }) => (
+  <svg 
     viewBox="0 0 100 100" 
     className={`absolute z-10 ${className}`}
   >
     <path fill="transparent" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M10 50 Q 25 20, 50 50 T 90 50" />
-  </motion.svg>
+  </svg>
 );
 
-const FloatingArrow = ({ className, delay }: { className: string, delay: number }) => (
-  <motion.svg 
-    animate={{ y: [0, 10, 0], x: [0, -5, 0], rotate: [0, 5, -5, 0] }}
-    transition={{ duration: 7, repeat: Infinity, delay, ease: "easeInOut" }}
+const FloatingArrow = ({ className }: { className: string }) => (
+  <svg 
     viewBox="0 0 100 100" 
     className={`absolute z-10 ${className}`}
   >
     <path fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" d="M20 80 Q 50 50, 80 20 M60 20 L80 20 L80 40" />
-  </motion.svg>
+  </svg>
 );
 
-const FloatingCircle = ({ className, delay }: { className: string, delay: number }) => (
-  <motion.svg 
-    animate={{ y: [0, -12, 0], rotate: [0, 180, 360] }}
-    transition={{ duration: 10, repeat: Infinity, delay, ease: "linear" }}
+const FloatingCircle = ({ className }: { className: string }) => (
+  <svg 
     viewBox="0 0 100 100" 
     className={`absolute z-10 ${className}`}
   >
     <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" strokeWidth="4" strokeDasharray="10 10" />
-  </motion.svg>
+  </svg>
 );
 
-const FloatingSmile = ({ className, delay }: { className: string, delay: number }) => (
-  <motion.svg 
-    animate={{ y: [0, 10, 0], rotate: [-10, 10, -10] }}
-    transition={{ duration: 6, repeat: Infinity, delay, ease: "easeInOut" }}
+const FloatingSmile = ({ className }: { className: string }) => (
+  <svg 
     viewBox="0 0 100 100" 
     className={`absolute z-10 ${className}`}
   >
     <path fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" d="M30 40 L30 45 M70 40 L70 45 M30 70 Q 50 90, 70 70" />
-  </motion.svg>
+  </svg>
 );
 
-export default function Hero() {
+export default function Hero({ initialHeroImage }: { initialHeroImage?: string }) {
   return (
     <section className="relative w-full min-h-[100svh] bg-[#E5F1FB] flex flex-col overflow-x-hidden">
       
-      {/* 1. Original V5 Organic Cartoon Blobs (Background) - SCALED DOWN WITH DEPTH */}
+      {/* 1. Original V5 Organic Cartoon Blobs (Background) - STATIC FOR PERFORMANCE */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <motion.div 
-          animate={{ scale: [1, 1.03, 1], rotate: [0, 5, 0] }} 
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-16 -right-16 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-[#FFD700] rounded-[45%] border-[3px] md:border-[4px] border-black/80 opacity-70 shadow-[10px_10px_30px_rgba(0,0,0,0.05)]"
+        <div 
+          className="absolute -top-16 -right-16 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-[#FFD700] rounded-[45%] border-[3px] md:border-[4px] border-black/80 opacity-70 shadow-[10px_10px_30px_rgba(0,0,0,0.05)] transform rotate-3"
         />
-        <motion.div 
-          animate={{ scale: [1, 1.05, 1], x: [0, 15, 0], y: [0, -10, 0] }} 
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -bottom-20 -left-10 w-[300px] h-[250px] md:w-[550px] md:h-[400px] bg-[var(--color-coral-red)] rounded-[40%] rotate-12 border-[3px] md:border-[4px] border-black/80 opacity-70 shadow-[10px_10px_30px_rgba(0,0,0,0.05)]"
+        <div 
+          className="absolute -bottom-20 -left-10 w-[300px] h-[250px] md:w-[550px] md:h-[400px] bg-[var(--color-coral-red)] rounded-[40%] border-[3px] md:border-[4px] border-black/80 opacity-70 shadow-[10px_10px_30px_rgba(0,0,0,0.05)] transform rotate-[15deg]"
         />
       </div>
 
       {/* Background Personality & Hand-drawn Elements */}
-      <FloatingStar className="bottom-[20%] left-[5%] md:left-[8%] w-6 h-6 md:w-10 md:h-10 text-[#FFD700] drop-shadow-[2px_2px_0_#111] opacity-70" delay={0} />
-      <FloatingStar className="top-[15%] right-[10%] md:top-[25%] md:right-[15%] w-8 h-8 md:w-12 md:h-12 text-[var(--color-coral-red)] drop-shadow-[2px_2px_0_#111] opacity-80" delay={1.5} />
-      <FloatingStar className="hidden md:block top-[15%] left-[25%] w-4 h-4 md:w-6 md:h-6 text-[#19B85A] drop-shadow-[1px_1px_0_#111] opacity-60" delay={2.5} />
+      <FloatingStar className="bottom-[20%] left-[5%] md:left-[8%] w-6 h-6 md:w-10 md:h-10 text-[#FFD700] drop-shadow-[2px_2px_0_#111] opacity-70 transform rotate-12" />
+      <FloatingStar className="top-[15%] right-[10%] md:top-[25%] md:right-[15%] w-8 h-8 md:w-12 md:h-12 text-[var(--color-coral-red)] drop-shadow-[2px_2px_0_#111] opacity-80 transform -rotate-6" />
+      <FloatingStar className="hidden md:block top-[15%] left-[25%] w-4 h-4 md:w-6 md:h-6 text-[#19B85A] drop-shadow-[1px_1px_0_#111] opacity-60" />
       
-      <FloatingSquiggle className="hidden md:block top-40 right-20 w-16 h-16 md:w-24 md:h-24 text-black opacity-30" delay={1} />
-      <FloatingSquiggle className="bottom-40 left-[20%] md:left-1/3 w-12 h-12 md:w-16 md:h-16 text-[var(--color-electric-blue)] opacity-40" delay={2} />
+      <FloatingSquiggle className="hidden md:block top-40 right-20 w-16 h-16 md:w-24 md:h-24 text-black opacity-30 transform -rotate-12" />
+      <FloatingSquiggle className="bottom-40 left-[20%] md:left-1/3 w-12 h-12 md:w-16 md:h-16 text-[var(--color-electric-blue)] opacity-40 transform rotate-12" />
       
-      <FloatingArrow className="top-[25%] left-[5%] md:top-1/3 md:left-10 w-10 h-10 md:w-16 md:h-16 text-black opacity-40" delay={0.5} />
-      <FloatingCircle className="bottom-1/4 right-[5%] md:right-[10%] w-12 h-12 md:w-20 md:h-20 text-[var(--color-coral-red)] opacity-40" delay={1.2} />
-      <FloatingSmile className="top-[18%] left-[40%] md:top-20 md:left-[40%] w-10 h-10 md:w-14 md:h-14 text-black opacity-50" delay={0.8} />
+      <FloatingArrow className="top-[25%] left-[5%] md:top-1/3 md:left-10 w-10 h-10 md:w-16 md:h-16 text-black opacity-40 transform rotate-45" />
+      <FloatingCircle className="bottom-1/4 right-[5%] md:right-[10%] w-12 h-12 md:w-20 md:h-20 text-[var(--color-coral-red)] opacity-40" />
+      <FloatingSmile className="top-[18%] left-[40%] md:top-20 md:left-[40%] w-10 h-10 md:w-14 md:h-14 text-black opacity-50 transform -rotate-12" />
 
       {/* 2. Unified Ground */}
       <div className="absolute inset-0 pointer-events-none flex justify-center items-end z-10 overflow-hidden">
@@ -128,13 +114,11 @@ export default function Hero() {
 
             {/* Right Side: Model Container - Adjusted size to prevent overflow */}
             <div className="relative w-1/2 h-full flex items-end justify-center z-10 origin-bottom">
-              <motion.div 
-                animate={{ y: [-3, 3, -3] }} 
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              <div 
                 className="absolute -bottom-[2%] w-[185%] h-[140%] right-[-25%] group-hover:scale-105 transition-transform duration-500 origin-bottom"
               >
-                <ModelFlipbook />
-              </motion.div>
+                <ModelFlipbook initialHeroImage={initialHeroImage} />
+              </div>
             </div>
 
             {/* Comic Sticker */}
@@ -151,11 +135,11 @@ export default function Hero() {
           {/* Stacked Bubbly Typography */}
           <div className="flex flex-col items-stretch font-cartoon text-[clamp(100px,11vw,200px)] leading-[0.8] text-white tracking-widest drop-shadow-[0_15px_15px_rgba(0,0,0,0.15)]" style={{ WebkitTextStroke: '4px #111', textShadow: '10px 10px 0 #111' }}>
             <div className="flex justify-start">
-              <motion.span animate={{ y: [0, -8, 0], rotate: [0, -3, 0] }} transition={{ duration: 4.5, repeat: Infinity, delay: 0, ease: "easeInOut" }} className="inline-block">I</motion.span>
+              <span className="inline-block hover:scale-105 hover:-rotate-3 transition-transform cursor-default">I</span>
             </div>
             <div className="flex mt-2 md:mt-4">
               {["L", "I", "K", "E", "D"].map((letter, i) => (
-                <motion.span key={i} animate={{ y: [0, -8, 0], rotate: [0, i % 2 === 0 ? 3 : -3, 0] }} transition={{ duration: 4.5, repeat: Infinity, delay: (i + 1) * 0.15, ease: "easeInOut" }} className="inline-block">{letter}</motion.span>
+                <span key={i} className={`inline-block hover:scale-105 transition-transform cursor-default ${i % 2 === 0 ? 'hover:rotate-3' : 'hover:-rotate-3'}`}>{letter}</span>
               ))}
             </div>
           </div>
@@ -184,14 +168,9 @@ export default function Hero() {
         <div className="w-full flex justify-center pointer-events-auto mt-2">
           <div className="flex items-center font-cartoon text-[12vw] text-white drop-shadow-[0_8px_8px_rgba(0,0,0,0.2)]" style={{ WebkitTextStroke: '2px #111', textShadow: '3px 3px 0 #111' }}>
             {["I", "\u00A0", "L", "I", "K", "E", "D"].map((letter, i) => (
-              <motion.span 
-                key={i} 
-                animate={{ y: [0, -4, 0], rotate: letter === "\u00A0" ? 0 : (i % 2 === 0 ? 3 : -3) }} 
-                transition={{ duration: 4.5, repeat: Infinity, delay: i * 0.1, ease: "easeInOut" }} 
-                className="inline-block"
-              >
+              <span key={i} className="inline-block">
                 {letter}
-              </motion.span>
+              </span>
             ))}
           </div>
         </div>
@@ -223,13 +202,9 @@ export default function Hero() {
 
             {/* Right Side: Model Image - Scaled carefully for mobile */}
             <div className="w-1/2 h-full relative z-10 origin-bottom">
-               <motion.div 
-                 animate={{ y: [-1.5, 1.5, -1.5] }} 
-                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                 className="absolute -bottom-[2%] w-[180%] h-[140%] right-[-15%] origin-bottom"
-               >
-                 <ModelFlipbook />
-               </motion.div>
+               <div className="absolute -bottom-[2%] w-[180%] h-[140%] right-[-15%] origin-bottom">
+                 <ModelFlipbook initialHeroImage={initialHeroImage} />
+               </div>
             </div>
           </motion.div>
         </div>

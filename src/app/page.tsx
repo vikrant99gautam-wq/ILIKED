@@ -2,6 +2,7 @@ import Hero from "@/components/Hero";
 import CurrentlyLiked from "@/components/CurrentlyLiked";
 import Moods from "@/components/Moods";
 import { Metadata } from "next";
+import { supabase } from "@/lib/supabase";
 
 export const metadata: Metadata = {
   alternates: {
@@ -9,10 +10,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
+  const { data: settings } = await supabase.from('settings').select('hero_image').single();
+  const heroImage = settings?.hero_image || "/images/model-anim-1.png";
+
   return (
     <main className="min-h-screen overflow-hidden">
-      <Hero />
+      <Hero initialHeroImage={heroImage} />
       
       {/* Dynamic Scrolling Marquee */}
       <div className="w-full bg-[#FFD700] border-y-[4px] border-black py-3 overflow-hidden flex whitespace-nowrap relative z-30 transform -rotate-1 origin-left scale-105 my-8 shadow-[0_8px_0_#111]">
