@@ -262,9 +262,9 @@ export default function ProductDetailsPage() {
           {/* Accordions */}
           <div className="mt-8 flex flex-col gap-3 pb-8">
             {[
-              { id: 'shipping', title: 'SHIPPING & DELIVERY', content: 'Free standard shipping on all orders over ₹2000. Express delivery takes 2-3 business days. All orders are tracked.' },
+              { id: 'shipping', title: 'SHIPPING & DELIVERY', content: 'Delivery can take 8-10 days depending on your location. All orders are tracked.' },
               { id: 'care', title: 'CARE INSTRUCTIONS', content: 'Machine wash cold, inside out. Do not bleach. Tumble dry low or hang dry. Do not iron directly on the print or you will ruin it.' },
-              { id: 'returns', title: 'RETURNS & EXCHANGES', content: 'Not vibing with it? You have 7 days from delivery to return or exchange it. Items must be unworn and in original condition.' },
+              { id: 'returns', title: 'RETURNS & EXCHANGES', content: 'Not vibing with it? You have 3 days from the time it reaches you to return or exchange it. Items must be unworn. Do not remove the hangtag until you try it on and are completely satisfied.' },
             ].map((acc) => (
               <div key={acc.id} className="border-[3px] border-black bg-white shadow-[4px_4px_0_#111] overflow-hidden">
                 <button 
