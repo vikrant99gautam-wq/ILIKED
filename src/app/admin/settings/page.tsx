@@ -89,6 +89,14 @@ export default function AdminSettingsPage() {
     if (ref.current) ref.current.value = '';
   };
 
+  const parsedSizeChart = settings.size_chart_data ? JSON.parse(settings.size_chart_data) : [];
+  
+  const updateSizeChart = (index: number, field: string, value: string) => {
+    const updated = [...parsedSizeChart];
+    updated[index] = { ...updated[index], [field]: value };
+    setSettings({ ...settings, size_chart_data: JSON.stringify(updated) });
+  };
+
   return (
     <div className="max-w-3xl">
       <div className="flex justify-between items-end mb-8 border-b-[4px] border-black pb-4">
@@ -301,6 +309,40 @@ export default function AdminSettingsPage() {
                     </button>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Size Chart Editor */}
+            <div className="border-[3px] border-black p-4 bg-[#fcfaf5] mt-4 relative">
+              <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, transparent 20%, rgba(0,0,0,0.05) 100%), url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.15%22/%3E%3C/svg%3E")' }}></div>
+              <label className="block font-black text-xl mb-4 relative z-10">SIZE CHART MEASUREMENTS (INCHES)</label>
+              
+              <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {parsedSizeChart.map((sizeData: any, idx: number) => (
+                  <div key={idx} className="flex flex-col gap-2 p-3 border-[2px] border-black bg-white shadow-[2px_2px_0_#111]">
+                    <div className="font-black text-lg">SIZE: {sizeData.size}</div>
+                    <div className="flex gap-4">
+                      <div className="flex-1">
+                        <label className="text-xs font-bold text-gray-500">CHEST</label>
+                        <input 
+                          type="text" 
+                          value={sizeData.chest} 
+                          onChange={(e) => updateSizeChart(idx, 'chest', e.target.value)}
+                          className="w-full border-[2px] border-black p-2 font-bold focus:outline-none focus:ring-2 focus:ring-[#FFD700]"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs font-bold text-gray-500">LENGTH</label>
+                        <input 
+                          type="text" 
+                          value={sizeData.length} 
+                          onChange={(e) => updateSizeChart(idx, 'length', e.target.value)}
+                          className="w-full border-[2px] border-black p-2 font-bold focus:outline-none focus:ring-2 focus:ring-[#FFD700]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 

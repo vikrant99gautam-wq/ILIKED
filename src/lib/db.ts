@@ -40,6 +40,7 @@ export interface StoreSettings {
   collection_image_1?: string;
   collection_image_2?: string;
   collection_image_3?: string;
+  size_chart_data?: string; // JSON string representing array of {size: string, chest: string, length: string}
 }
 
 export async function getProducts() {

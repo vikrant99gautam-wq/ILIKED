@@ -10,6 +10,7 @@ export default function ProductDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const [product, setProduct] = useState<any>(null);
+  const [settings, setSettings] = useState<any>(null);
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [colorVariants, setColorVariants] = useState<any[]>([]);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -64,12 +65,14 @@ export default function ProductDetailsPage() {
     if (params.id) {
       Promise.all([
         fetch(`/api/products/${params.id}`).then(r => r.json()),
-        fetch('/api/products').then(r => r.json())
-      ]).then(async ([productData, allProductsData]) => {
+        fetch('/api/products').then(r => r.json()),
+        fetch('/api/settings').then(r => r.json())
+      ]).then(async ([productData, allProductsData, settingsData]) => {
         if (productData.error) {
           setProduct(null);
         } else {
           setProduct(productData);
+          if (!settingsData.error) setSettings(settingsData);
           if (!allProductsData.error && Array.isArray(allProductsData)) {
             const variants = allProductsData.filter((p: any) => p.name === productData.name);
             setColorVariants(variants);
@@ -501,26 +504,18 @@ export default function ProductDetailsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b-[2px] border-black/20">
-                      <td className="py-3 font-bold">S</td>
-                      <td className="py-3">22"</td>
-                      <td className="py-3">28"</td>
-                    </tr>
-                    <tr className="border-b-[2px] border-black/20">
-                      <td className="py-3 font-bold">M</td>
-                      <td className="py-3">24"</td>
-                      <td className="py-3">29"</td>
-                    </tr>
-                    <tr className="border-b-[2px] border-black/20">
-                      <td className="py-3 font-bold">L</td>
-                      <td className="py-3">26"</td>
-                      <td className="py-3">30"</td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 font-bold">XL</td>
-                      <td className="py-3">28"</td>
-                      <td className="py-3">31"</td>
-                    </tr>
+                    {(settings?.size_chart_data ? JSON.parse(settings.size_chart_data) : [
+                      { size: 'S', chest: '22"', length: '28"' },
+                      { size: 'M', chest: '24"', length: '29"' },
+                      { size: 'L', chest: '26"', length: '30"' },
+                      { size: 'XL', chest: '28"', length: '31"' }
+                    ]).map((row: any, i: number, arr: any[]) => (
+                      <tr key={i} className={i !== arr.length - 1 ? "border-b-[2px] border-black/20" : ""}>
+                        <td className="py-3 font-bold">{row.size}</td>
+                        <td className="py-3">{row.chest}</td>
+                        <td className="py-3">{row.length}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
 

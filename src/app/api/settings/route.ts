@@ -21,7 +21,13 @@ export async function GET() {
     hero_image: '',
     collection_image_1: '',
     collection_image_2: '',
-    collection_image_3: ''
+    collection_image_3: '',
+    size_chart_data: JSON.stringify([
+      { size: 'S', chest: '22"', length: '28"' },
+      { size: 'M', chest: '24"', length: '29"' },
+      { size: 'L', chest: '26"', length: '30"' },
+      { size: 'XL', chest: '28"', length: '31"' }
+    ]),
   };
 
   // If table exists but is empty
@@ -50,6 +56,9 @@ export async function GET() {
   }
   if (data.promo_codes === undefined || data.promo_codes === null) {
     finalData.promo_codes = defaultSettings.promo_codes;
+  }
+  if (data.size_chart_data === undefined || data.size_chart_data === null) {
+    finalData.size_chart_data = defaultSettings.size_chart_data;
   }
   if (data.hero_image === undefined || data.hero_image === null) {
     finalData.hero_image = defaultSettings.hero_image;
