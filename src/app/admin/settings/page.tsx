@@ -167,6 +167,35 @@ export default function AdminSettingsPage() {
 
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1">
+                <label className="block font-black mb-2 text-xl">WHATSAPP NUMBER</label>
+                <div className="flex relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-gray-500 text-lg">+91</span>
+                  <input 
+                    type="text" 
+                    value={settings.whatsapp_number || ""} 
+                    onChange={e => setSettings({...settings, whatsapp_number: e.target.value})}
+                    className="w-full border-[3px] border-black p-3 pl-14 font-bold text-lg focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
+                    placeholder="9876543210"
+                  />
+                </div>
+                <p className="text-gray-500 mt-1 font-bold text-sm">Leave blank to disable the chat widget.</p>
+              </div>
+
+              <div className="flex-1">
+                <label className="block font-black mb-2 text-xl">STORE BASE / ADDRESS</label>
+                <input 
+                  type="text" 
+                  value={settings.store_address || ""} 
+                  onChange={e => setSettings({...settings, store_address: e.target.value})}
+                  className="w-full border-[3px] border-black p-3 font-bold text-lg focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
+                  placeholder="Designed in Mumbai, India"
+                />
+                <p className="text-gray-500 mt-1 font-bold text-sm">Displayed in the footer to build trust.</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="flex-1">
                 <label className="block font-black mb-2 text-xl">PREPAID SHIPPING COST</label>
                 <div className="flex relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-gray-500 text-lg">₹</span>

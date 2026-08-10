@@ -28,7 +28,9 @@ export async function GET() {
       { size: 'L', chest: '26"', length: '30"' },
       { size: 'XL', chest: '28"', length: '31"' }
     ]),
-    instagram_link: 'https://instagram.com/iliked.in'
+    instagram_link: 'https://instagram.com/iliked.in',
+    whatsapp_number: '',
+    store_address: 'Designed in Mumbai, India'
   };
 
   // If table exists but is empty
@@ -75,6 +77,12 @@ export async function GET() {
   }
   if (data.instagram_link === undefined || data.instagram_link === null) {
     finalData.instagram_link = defaultSettings.instagram_link;
+  }
+  if (data.whatsapp_number === undefined || data.whatsapp_number === null) {
+    finalData.whatsapp_number = defaultSettings.whatsapp_number;
+  }
+  if (data.store_address === undefined || data.store_address === null) {
+    finalData.store_address = defaultSettings.store_address;
   }
 
   return NextResponse.json(finalData);

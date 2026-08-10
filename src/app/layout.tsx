@@ -58,6 +58,8 @@ export const metadata: Metadata = {
 
 import { supabase } from "@/lib/supabase";
 
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+
 export const revalidate = 60; // Revalidate layout every 60 seconds
 
 export default async function RootLayout({
@@ -92,6 +94,7 @@ export default async function RootLayout({
         <LayoutWrapper isMaintenanceMode={isMaintenanceMode}>
           {children}
         </LayoutWrapper>
+        <FloatingWhatsApp />
       </body>
     </html>
   );

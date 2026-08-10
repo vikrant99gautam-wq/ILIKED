@@ -42,6 +42,8 @@ export interface StoreSettings {
   collection_image_3?: string;
   size_chart_data?: string; // JSON string representing array of {size: string, chest: string, length: string}
   instagram_link?: string;
+  whatsapp_number?: string;
+  store_address?: string;
 }
 
 export async function getProducts() {

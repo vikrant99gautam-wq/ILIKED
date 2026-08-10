@@ -5,13 +5,15 @@ import { useEffect, useState } from "react";
 
 export default function Footer() {
   const [instagramLink, setInstagramLink] = useState("https://instagram.com/iliked.in");
+  const [storeAddress, setStoreAddress] = useState("Designed in Mumbai, India");
 
   useEffect(() => {
     fetch("/api/settings")
       .then(res => res.json())
       .then(data => {
-        if (data && data.instagram_link) {
-          setInstagramLink(data.instagram_link);
+        if (data) {
+          if (data.instagram_link) setInstagramLink(data.instagram_link);
+          if (data.store_address) setStoreAddress(data.store_address);
         }
       })
       .catch(err => console.error("Error fetching settings:", err));
@@ -99,8 +101,9 @@ export default function Footer() {
         </h1>
       </div>
 
-      <div className="absolute bottom-6 w-full text-center z-10">
+      <div className="absolute bottom-6 w-full text-center z-10 flex flex-col md:flex-row justify-between px-6 md:px-16 items-center gap-4">
         <p className="font-black text-gray-600 text-xs tracking-[0.3em]">© 2026 I LIKED. ALL RIGHTS RESERVED.</p>
+        <p className="font-black text-gray-600 text-xs tracking-[0.3em] uppercase">{storeAddress}</p>
       </div>
 
     </footer>

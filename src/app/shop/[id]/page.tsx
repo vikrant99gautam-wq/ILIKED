@@ -245,11 +245,29 @@ export default function ProductDetailsPage() {
             </button>
           </div>
 
+          {/* Secure Checkout Trust Badges */}
+          <div className="flex flex-col items-center justify-center p-3 border-[2px] border-black bg-white shadow-[2px_2px_0_#111] mb-4">
+            <span className="font-black text-[10px] md:text-xs tracking-widest uppercase text-gray-500 mb-2">100% SECURE PAYMENTS POWERED BY RAZORPAY</span>
+            <div className="flex gap-4 opacity-70">
+              {/* Fake Payment Icons using text/css for now, real icons later if needed */}
+              <div className="font-black text-sm px-2 border border-gray-300 rounded">UPI</div>
+              <div className="font-black text-sm px-2 border border-gray-300 rounded">VISA</div>
+              <div className="font-black text-sm px-2 border border-gray-300 rounded">MASTERCARD</div>
+              <div className="font-black text-sm px-2 border border-gray-300 rounded">RUPAY</div>
+            </div>
+          </div>
+
           {/* Details / Specs */}
           <div className="mt-8 p-4 border-[3px] border-dashed border-black bg-[#F4F4F0]">
-            <p className="font-mono text-xs md:text-sm font-bold text-black uppercase leading-relaxed">
+            <p className="font-mono text-xs md:text-sm font-bold text-black uppercase leading-relaxed mb-4">
               {product.description}
             </p>
+            <div className="border-t-[2px] border-black/20 pt-4 flex flex-wrap gap-2">
+              <span className="bg-white border-[2px] border-black px-2 py-1 font-black text-[10px] tracking-widest shadow-[2px_2px_0_#111]">100% FRENCH TERRY COTTON</span>
+              <span className="bg-white border-[2px] border-black px-2 py-1 font-black text-[10px] tracking-widest shadow-[2px_2px_0_#111]">240 GSM HEAVYWEIGHT</span>
+              <span className="bg-white border-[2px] border-black px-2 py-1 font-black text-[10px] tracking-widest shadow-[2px_2px_0_#111]">HIGH-DENSITY PRINT</span>
+              <span className="bg-white border-[2px] border-black px-2 py-1 font-black text-[10px] tracking-widest shadow-[2px_2px_0_#111]">PRE-SHRUNK</span>
+            </div>
           </div>
 
           {/* Model Info */}
