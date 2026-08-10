@@ -8,11 +8,13 @@ export default function LayoutWrapper({
   children, 
   isMaintenanceMode = false,
   instagramLink,
+  whatsappNumber,
   storeAddress
 }: { 
   children: React.ReactNode,
   isMaintenanceMode?: boolean,
   instagramLink?: string,
+  whatsappNumber?: string,
   storeAddress?: string
 }) {
   const pathname = usePathname();
@@ -46,7 +48,7 @@ export default function LayoutWrapper({
     <>
       {!isAdmin && <Navigation />}
       {children}
-      {!isAdmin && <Footer instagramLink={instagramLink} storeAddress={storeAddress} />}
+      {!isAdmin && <Footer instagramLink={instagramLink} whatsappNumber={whatsappNumber} storeAddress={storeAddress} />}
     </>
   );
 }

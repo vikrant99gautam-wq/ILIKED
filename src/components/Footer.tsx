@@ -4,9 +4,11 @@ import Link from "next/link";
 
 export default function Footer({ 
   instagramLink = "https://instagram.com/iliked.in",
+  whatsappNumber,
   storeAddress = "Designed in Mumbai, India"
 }: {
   instagramLink?: string;
+  whatsappNumber?: string;
   storeAddress?: string;
 }) {
   return (
@@ -72,6 +74,16 @@ export default function Footer({
            <div className="flex flex-col gap-6 items-start">
               <h4 className="font-black text-gray-500 tracking-[0.2em] text-xs">SOCIALS</h4>
               <a href={instagramLink} target="_blank" rel="noopener noreferrer" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[var(--color-electric-blue)] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] rotate-[2deg] hover:rotate-[4deg]">INSTAGRAM</a>
+              {whatsappNumber && (
+                <a 
+                  href={`https://wa.me/91${whatsappNumber.replace(/[^0-9]/g, "")}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="font-cartoon text-3xl md:text-5xl text-white hover:text-[#25D366] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] -rotate-[2deg] hover:-rotate-[4deg] mt-[-10px]"
+                >
+                  WHATSAPP
+                </a>
+              )}
            </div>
 
            <div className="flex flex-col gap-6 items-start">

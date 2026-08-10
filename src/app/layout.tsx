@@ -104,6 +104,7 @@ export default async function RootLayout({
         <LayoutWrapper 
           isMaintenanceMode={isMaintenanceMode} 
           instagramLink={settings?.instagram_link || "https://instagram.com/iliked.in"}
+          whatsappNumber={settings?.whatsapp_number}
           storeAddress={settings?.store_address || "Designed in Mumbai, India"}
         >
           {children}
