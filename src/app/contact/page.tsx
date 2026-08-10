@@ -1,27 +1,80 @@
-import Link from "next/link";
+import { Metadata } from "next";
+import { supabase } from "@/lib/supabase";
+import { unstable_cache } from "next/cache";
 
-export default function ContactPage() {
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description: "Get in touch with I LIKED.",
+};
+
+const getSettings = unstable_cache(
+  async () => {
+    const { data } = await supabase.from('settings').select('*').single();
+    return data || {};
+  },
+  ['global-settings'],
+  { revalidate: 60, tags: ['settings'] }
+);
+
+export default async function ContactPage() {
+  const settings = await getSettings();
+
   return (
-    <div className="w-full min-h-screen pt-40 pb-20 px-6 md:px-16 max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
-      <h1 className="font-cartoon text-5xl md:text-7xl mb-6 uppercase tracking-widest text-[#111]" style={{ textShadow: '2px 2px 0 #FFD700' }}>Contact Us</h1>
-      
-      <div className="bg-white border-[4px] border-black shadow-[8px_8px_0_#111] p-10 md:p-16 rounded-2xl w-full max-w-2xl mt-8 rotate-[-1deg]">
-        <p className="font-black text-xl md:text-2xl text-gray-700 mb-8 uppercase tracking-widest">For all inquiries, please email us at:</p>
-        
-        <a 
-          href="mailto:admin.iliked@gmail.com" 
-          className="inline-block bg-[var(--color-electric-blue)] border-[4px] border-black text-white font-cartoon text-3xl md:text-5xl py-4 px-8 shadow-[6px_6px_0_#111] hover:shadow-[2px_2px_0_#111] hover:translate-x-1 hover:translate-y-1 transition-all hover:bg-[var(--color-coral-red)] rotate-[2deg] hover:rotate-[0deg]"
-        >
-          admin.iliked@gmail.com
-        </a>
+    <main className="min-h-screen bg-[#F4F4F0] pt-[120px] pb-24 flex items-center justify-center">
+      <div className="max-w-[600px] w-full px-6 md:px-12">
+        <div className="bg-white border-[4px] lg:border-[8px] border-black p-8 md:p-16 shadow-[8px_8px_0_#111] lg:shadow-[16px_16px_0_#111] relative text-center">
+          
+          {/* Tape decorations */}
+          <div className="absolute -top-4 right-1/2 translate-x-1/2 w-24 h-8 bg-[var(--color-coral-red)]/80 backdrop-blur-sm rotate-2 z-10" style={{ mixBlendMode: 'multiply' }}></div>
+          <div className="absolute top-1/2 -left-4 w-12 h-6 bg-[var(--color-electric-blue)]/80 backdrop-blur-sm -rotate-6 z-10" style={{ mixBlendMode: 'multiply' }}></div>
+          <div className="absolute top-1/2 -right-4 w-12 h-6 bg-[#FFD700]/80 backdrop-blur-sm rotate-12 z-10" style={{ mixBlendMode: 'multiply' }}></div>
 
-        <div className="mt-12">
-          <p className="text-gray-500 font-bold mb-4">We'll get back to you within 24-48 hours.</p>
-          <Link href="/" className="inline-block font-black text-black border-b-4 border-black hover:text-[var(--color-coral-red)] hover:border-[var(--color-coral-red)] transition-colors">
-            RETURN TO STORE
-          </Link>
+          <h1 className="font-cartoon text-5xl md:text-7xl text-black tracking-widest mb-4 drop-shadow-[3px_3px_0_#19B85A] uppercase transform rotate-1">
+            CONTACT
+          </h1>
+          
+          <p className="font-mono text-sm font-bold text-gray-500 tracking-widest uppercase mb-12">Don't be shy, hit us up.</p>
+          
+          <div className="flex flex-col gap-10">
+            
+            {settings.whatsapp_number && (
+              <a 
+                href={`https://wa.me/91${settings.whatsapp_number.replace(/[^0-9]/g, "")}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group flex flex-col items-center justify-center p-6 border-[3px] border-black hover:bg-[#25D366] transition-colors cursor-pointer shadow-[4px_4px_0_#111] hover:shadow-[2px_2px_0_#111] hover:translate-x-1 hover:translate-y-1"
+              >
+                <h3 className="font-black text-xs text-gray-500 tracking-[0.2em] mb-2 group-hover:text-black">WHATSAPP US</h3>
+                <p className="font-cartoon text-3xl text-black tracking-wider group-hover:text-white drop-shadow-[1px_1px_0_#fff] group-hover:drop-shadow-[2px_2px_0_#000]">
+                  {settings.whatsapp_number}
+                </p>
+              </a>
+            )}
+
+            {settings.contact_email && (
+              <a 
+                href={`mailto:${settings.contact_email}`} 
+                className="group flex flex-col items-center justify-center p-6 border-[3px] border-black hover:bg-[var(--color-electric-blue)] transition-colors cursor-pointer shadow-[4px_4px_0_#111] hover:shadow-[2px_2px_0_#111] hover:translate-x-1 hover:translate-y-1"
+              >
+                <h3 className="font-black text-xs text-gray-500 tracking-[0.2em] mb-2 group-hover:text-black">EMAIL US</h3>
+                <p className="font-cartoon text-3xl text-black tracking-wider group-hover:text-white drop-shadow-[1px_1px_0_#fff] group-hover:drop-shadow-[2px_2px_0_#000] break-all">
+                  {settings.contact_email}
+                </p>
+              </a>
+            )}
+
+            {settings.store_address && (
+              <div className="flex flex-col items-center justify-center p-6 border-[3px] border-black bg-[#FFD700] shadow-[4px_4px_0_#111] rotate-1">
+                <h3 className="font-black text-xs text-black tracking-[0.2em] mb-2">STORE BASE</h3>
+                <p className="font-mono text-lg font-bold text-black uppercase">
+                  {settings.store_address}
+                </p>
+              </div>
+            )}
+
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
