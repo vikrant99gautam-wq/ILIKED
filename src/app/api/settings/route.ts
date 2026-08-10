@@ -28,6 +28,7 @@ export async function GET() {
       { size: 'L', chest: '26"', length: '30"' },
       { size: 'XL', chest: '28"', length: '31"' }
     ]),
+    instagram_link: 'https://instagram.com/iliked.in'
   };
 
   // If table exists but is empty
@@ -71,6 +72,9 @@ export async function GET() {
   }
   if (data.collection_image_3 === undefined || data.collection_image_3 === null) {
     finalData.collection_image_3 = defaultSettings.collection_image_3;
+  }
+  if (data.instagram_link === undefined || data.instagram_link === null) {
+    finalData.instagram_link = defaultSettings.instagram_link;
   }
 
   return NextResponse.json(finalData);

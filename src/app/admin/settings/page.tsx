@@ -153,6 +153,18 @@ export default function AdminSettingsPage() {
               </select>
             </div>
 
+            <div>
+              <label className="block font-black mb-2 text-xl">INSTAGRAM LINK</label>
+              <input 
+                type="url" 
+                value={settings.instagram_link || ""} 
+                onChange={e => setSettings({...settings, instagram_link: e.target.value})}
+                className="w-full border-[3px] border-black p-3 font-bold text-lg focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
+                placeholder="https://instagram.com/yourbrand"
+              />
+              <p className="text-gray-500 mt-1 font-bold text-sm">Used for social links in the footer.</p>
+            </div>
+
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1">
                 <label className="block font-black mb-2 text-xl">PREPAID SHIPPING COST</label>

@@ -1,8 +1,22 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Footer() {
+  const [instagramLink, setInstagramLink] = useState("https://instagram.com/iliked.in");
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.instagram_link) {
+          setInstagramLink(data.instagram_link);
+        }
+      })
+      .catch(err => console.error("Error fetching settings:", err));
+  }, []);
+
   return (
     <footer className="relative w-full bg-[#111] overflow-hidden flex flex-col items-center border-t-[8px] border-black">
       
@@ -65,7 +79,7 @@ export default function Footer() {
 
            <div className="flex flex-col gap-6 items-start">
               <h4 className="font-black text-gray-500 tracking-[0.2em] text-xs">SOCIALS</h4>
-              <a href="#" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[var(--color-electric-blue)] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] rotate-[2deg] hover:rotate-[4deg]">INSTAGRAM</a>
+              <a href={instagramLink} target="_blank" rel="noopener noreferrer" className="font-cartoon text-3xl md:text-5xl text-white hover:text-[var(--color-electric-blue)] hover:-translate-y-1 transition-all tracking-widest drop-shadow-[2px_2px_0_#000] rotate-[2deg] hover:rotate-[4deg]">INSTAGRAM</a>
            </div>
 
            <div className="flex flex-col gap-6 items-start">

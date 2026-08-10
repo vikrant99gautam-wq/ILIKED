@@ -91,13 +91,13 @@ export default function StoryPage() {
             </h2>
             <div className="space-y-6 font-bold text-lg md:text-xl leading-relaxed text-gray-800">
               <p>
-                We got tired of wearing the same boring, mass-produced basics that everyone else was wearing. The streets lacked color, personality, and that raw, unfiltered energy.
+                Let's be real. Most streetwear today is just overpriced basics with a tiny logo slapped on it. We got sick of walking down the street and seeing everyone wearing the exact same boring uniform. The culture lacked color, personality, and that raw, unfiltered energy.
               </p>
               <p className="p-6 bg-white border-[4px] border-black shadow-[6px_6px_0_#111] rotate-[1deg] text-black">
-                "We didn't start a brand to blend in. We started it because we couldn't find clothes that we actually liked."
+                "WE DIDN'T START THIS BRAND TO BLEND IN. WE BUILT IT FOR THE ONES WHO WANT TO BE NOTICED."
               </p>
               <p>
-                So, we bought a screen printer, hijacked some heavy-weight cotton blanks, and started making stuff for ourselves. When people on the street started asking where we got our fits, <span className="text-[var(--color-electric-blue)] font-black">I LIKED</span> was officially born.
+                We took matters into our own hands. Hijacked some premium heavyweight cotton blanks, cracked open a screen printer, and started making the bold, aggressive graphics we actually wanted to wear. When random people on the streets started stopping us to ask where we got our fits... <span className="text-[var(--color-electric-blue)] font-black">I LIKED</span> was officially born.
               </p>
             </div>
           </div>
