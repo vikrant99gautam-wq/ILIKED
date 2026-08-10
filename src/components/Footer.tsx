@@ -1,24 +1,14 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
-export default function Footer() {
-  const [instagramLink, setInstagramLink] = useState("https://instagram.com/iliked.in");
-  const [storeAddress, setStoreAddress] = useState("Designed in Mumbai, India");
-
-  useEffect(() => {
-    fetch("/api/settings")
-      .then(res => res.json())
-      .then(data => {
-        if (data) {
-          if (data.instagram_link) setInstagramLink(data.instagram_link);
-          if (data.store_address) setStoreAddress(data.store_address);
-        }
-      })
-      .catch(err => console.error("Error fetching settings:", err));
-  }, []);
-
+export default function Footer({ 
+  instagramLink = "https://instagram.com/iliked.in",
+  storeAddress = "Designed in Mumbai, India"
+}: {
+  instagramLink?: string;
+  storeAddress?: string;
+}) {
   return (
     <footer className="relative w-full bg-[#111] overflow-hidden flex flex-col items-center border-t-[8px] border-black">
       

@@ -1,21 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function FloatingWhatsApp() {
-  const [whatsappNumber, setWhatsappNumber] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetch("/api/settings")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && data.whatsapp_number) {
-          setWhatsappNumber(data.whatsapp_number);
-        }
-      })
-      .catch((err) => console.error("Error fetching settings:", err));
-  }, []);
-
+export default function FloatingWhatsApp({ whatsappNumber }: { whatsappNumber: string }) {
   if (!whatsappNumber) return null;
 
   const handleChat = () => {

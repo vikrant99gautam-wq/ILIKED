@@ -57,18 +57,28 @@ export const metadata: Metadata = {
 };
 
 import { supabase } from "@/lib/supabase";
+import { unstable_cache } from "next/cache";
 
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
 export const revalidate = 60; // Revalidate layout every 60 seconds
+
+const getSettings = unstable_cache(
+  async () => {
+    const { data } = await supabase.from('settings').select('*').single();
+    return data || {};
+  },
+  ['global-settings'],
+  { revalidate: 60, tags: ['settings'] }
+);
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Fetch maintenance mode state
-  const { data: settings } = await supabase.from('settings').select('maintenance_mode').single();
+  // Fetch settings once and cache it
+  const settings = await getSettings();
   const isMaintenanceMode = settings?.maintenance_mode || false;
   
   const jsonLd = {
@@ -78,7 +88,7 @@ export default async function RootLayout({
     url: 'https://iliked.in',
     logo: 'https://iliked.in/images/logo.png',
     sameAs: [
-      'https://instagram.com/iliked.in'
+      settings?.instagram_link || 'https://instagram.com/iliked.in'
     ]
   };
 
@@ -91,10 +101,16 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${outfit.variable} antialiased font-sans overflow-x-hidden max-w-[100vw]`}>
-        <LayoutWrapper isMaintenanceMode={isMaintenanceMode}>
+        <LayoutWrapper 
+          isMaintenanceMode={isMaintenanceMode} 
+          instagramLink={settings?.instagram_link || "https://instagram.com/iliked.in"}
+          storeAddress={settings?.store_address || "Designed in Mumbai, India"}
+        >
           {children}
         </LayoutWrapper>
-        <FloatingWhatsApp />
+        {settings?.whatsapp_number && (
+          <FloatingWhatsApp whatsappNumber={settings.whatsapp_number} />
+        )}
       </body>
     </html>
   );

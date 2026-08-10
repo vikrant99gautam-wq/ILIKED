@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getProducts, addProduct } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export async function GET() {
   const products = await getProducts();

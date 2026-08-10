@@ -6,10 +6,14 @@ import Footer from "@/components/Footer";
 
 export default function LayoutWrapper({ 
   children, 
-  isMaintenanceMode = false 
+  isMaintenanceMode = false,
+  instagramLink,
+  storeAddress
 }: { 
   children: React.ReactNode,
-  isMaintenanceMode?: boolean 
+  isMaintenanceMode?: boolean,
+  instagramLink?: string,
+  storeAddress?: string
 }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
@@ -42,7 +46,7 @@ export default function LayoutWrapper({
     <>
       {!isAdmin && <Navigation />}
       {children}
-      {!isAdmin && <Footer />}
+      {!isAdmin && <Footer instagramLink={instagramLink} storeAddress={storeAddress} />}
     </>
   );
 }
