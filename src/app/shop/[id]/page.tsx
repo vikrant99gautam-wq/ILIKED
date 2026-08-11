@@ -490,111 +490,115 @@ export default function ProductDetailsPage() {
       </section>
 
       {/* Dirty Napkin Size Chart Modal */}
-      <AnimatePresence>
-        {isSizeGuideOpen && mounted && createPortal(
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-            {/* Backdrop */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
-              onClick={() => setIsSizeGuideOpen(false)}
-            />
-            
-            {/* The Dirty Napkin */}
-            <motion.div 
-              initial={{ scale: 0, rotate: -20, opacity: 0 }}
-              animate={{ scale: 1, rotate: 2, opacity: 1 }}
-              exit={{ scale: 0.8, rotate: 20, opacity: 0 }}
-              transition={{ type: "spring", bounce: 0.4 }}
-              className="relative z-10 w-[95vw] md:w-[80vw] max-w-[500px] aspect-[4/5] md:aspect-square bg-[#fcfaf5] p-8 md:p-12 shadow-[15px_15px_40px_rgba(0,0,0,0.6)]"
-              style={{
-                backgroundImage: 'radial-gradient(circle at 50% 50%, transparent 20%, rgba(0,0,0,0.05) 100%), url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.15%22/%3E%3C/svg%3E")',
-                borderRadius: "2px 16px 4px 12px", // Uneven paper edges
-                border: "1px solid rgba(0,0,0,0.2)",
-              }}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isSizeGuideOpen && (
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+              {/* Backdrop */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
+                onClick={() => setIsSizeGuideOpen(false)}
+              />
+              
+              {/* The Dirty Napkin */}
+              <motion.div 
+                initial={{ scale: 0, rotate: -20, opacity: 0 }}
+                animate={{ scale: 1, rotate: 2, opacity: 1 }}
+                exit={{ scale: 0.8, rotate: 20, opacity: 0 }}
+                transition={{ type: "spring", bounce: 0.4 }}
+                className="relative z-10 w-[95vw] md:w-[80vw] max-w-[500px] aspect-[4/5] md:aspect-square bg-[#fcfaf5] p-8 md:p-12 shadow-[15px_15px_40px_rgba(0,0,0,0.6)]"
+                style={{
+                  backgroundImage: 'radial-gradient(circle at 50% 50%, transparent 20%, rgba(0,0,0,0.05) 100%), url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.15%22/%3E%3C/svg%3E")',
+                  borderRadius: "2px 16px 4px 12px", // Uneven paper edges
+                  border: "1px solid rgba(0,0,0,0.2)",
+                }}
+              >
+                {/* Close Button */}
+                <button 
+                  onClick={() => setIsSizeGuideOpen(false)} 
+                  className="absolute top-4 right-4 font-cartoon text-3xl text-black/60 hover:text-[var(--color-coral-red)] transition-colors"
+                >
+                  X
+                </button>
+                
+                {/* Fake coffee stains & dirt */}
+                <div className="absolute top-8 left-8 w-16 h-16 md:w-24 md:h-24 rounded-full border-[3px] border-[#8b5a2b] opacity-20 pointer-events-none mix-blend-multiply"></div>
+                <div className="absolute bottom-12 right-6 w-20 h-20 md:w-32 md:h-32 rounded-full border-[4px] border-[#5c3e21] opacity-10 pointer-events-none mix-blend-multiply"></div>
+                <div className="absolute top-1/2 left-1/4 w-8 h-8 bg-black opacity-5 rounded-full blur-[2px] pointer-events-none"></div>
+
+                <div className="relative z-10 h-full flex flex-col justify-center items-center text-[#1a1a1a]">
+                  <h2 className="font-cartoon text-4xl md:text-5xl mb-6 text-center transform -rotate-2 underline decoration-[3px] decoration-black/60" style={{ textDecorationSkipInk: "none" }}>
+                    SIZE CHART
+                  </h2>
+                  
+                  <table className="w-full text-center font-cartoon text-xl md:text-3xl border-collapse">
+                    <thead>
+                      <tr className="border-b-[3px] border-black/50">
+                        <th className="pb-2 font-normal">SIZE</th>
+                        <th className="pb-2 font-normal">CHEST</th>
+                        <th className="pb-2 font-normal">LENGTH</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(settings?.size_chart_data ? JSON.parse(settings.size_chart_data) : [
+                        { size: 'S', chest: '22"', length: '28"' },
+                        { size: 'M', chest: '24"', length: '29"' },
+                        { size: 'L', chest: '26"', length: '30"' },
+                        { size: 'XL', chest: '28"', length: '31"' }
+                      ]).map((row: any, i: number, arr: any[]) => (
+                        <tr key={i} className={i !== arr.length - 1 ? "border-b-[2px] border-black/20" : ""}>
+                          <td className="py-3 font-bold">{row.size}</td>
+                          <td className="py-3">{row.chest}</td>
+                          <td className="py-3">{row.length}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  <p className="font-cartoon text-lg md:text-xl text-black/70 mt-8 text-center rotate-1 leading-tight">
+                    * MEASURED IN INCHES.<br/>OVERSIZED FIT SO DON'T CRY IF IT'S BIG.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
+      {/* Custom Add to Cart Toast */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {showToast && (
+            <motion.div
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 50, scale: 0.9 }}
+              className="fixed bottom-8 right-8 z-[9999] bg-[var(--color-electric-blue)] border-[4px] border-black shadow-[6px_6px_0_#111] p-4 pr-12 flex items-center gap-4"
             >
-              {/* Close Button */}
+              <div className="w-12 h-12 bg-white border-[3px] border-black flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                 <div className="relative w-full h-full scale-110">
+                   <Image src={product.image ? product.image.split(',')[0].trim() : ""} alt="Added item" fill sizes="50px" className="object-contain" />
+                 </div>
+              </div>
+              <div>
+                <h4 className="font-cartoon text-2xl text-white tracking-widest leading-none drop-shadow-[2px_2px_0_#111]">ADDED TO CART</h4>
+                <p className="font-black text-xs text-white uppercase tracking-widest mt-1">SIZE {selectedSize}</p>
+              </div>
               <button 
-                onClick={() => setIsSizeGuideOpen(false)} 
-                className="absolute top-4 right-4 font-cartoon text-3xl text-black/60 hover:text-[var(--color-coral-red)] transition-colors"
+                onClick={() => setShowToast(false)}
+                className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center font-black text-white hover:text-black transition-colors"
               >
                 X
               </button>
-              
-              {/* Fake coffee stains & dirt */}
-              <div className="absolute top-8 left-8 w-16 h-16 md:w-24 md:h-24 rounded-full border-[3px] border-[#8b5a2b] opacity-20 pointer-events-none mix-blend-multiply"></div>
-              <div className="absolute bottom-12 right-6 w-20 h-20 md:w-32 md:h-32 rounded-full border-[4px] border-[#5c3e21] opacity-10 pointer-events-none mix-blend-multiply"></div>
-              <div className="absolute top-1/2 left-1/4 w-8 h-8 bg-black opacity-5 rounded-full blur-[2px] pointer-events-none"></div>
-
-              <div className="relative z-10 h-full flex flex-col justify-center items-center text-[#1a1a1a]">
-                <h2 className="font-cartoon text-4xl md:text-5xl mb-6 text-center transform -rotate-2 underline decoration-[3px] decoration-black/60" style={{ textDecorationSkipInk: "none" }}>
-                  SIZE CHART
-                </h2>
-                
-                <table className="w-full text-center font-cartoon text-xl md:text-3xl border-collapse">
-                  <thead>
-                    <tr className="border-b-[3px] border-black/50">
-                      <th className="pb-2 font-normal">SIZE</th>
-                      <th className="pb-2 font-normal">CHEST</th>
-                      <th className="pb-2 font-normal">LENGTH</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(settings?.size_chart_data ? JSON.parse(settings.size_chart_data) : [
-                      { size: 'S', chest: '22"', length: '28"' },
-                      { size: 'M', chest: '24"', length: '29"' },
-                      { size: 'L', chest: '26"', length: '30"' },
-                      { size: 'XL', chest: '28"', length: '31"' }
-                    ]).map((row: any, i: number, arr: any[]) => (
-                      <tr key={i} className={i !== arr.length - 1 ? "border-b-[2px] border-black/20" : ""}>
-                        <td className="py-3 font-bold">{row.size}</td>
-                        <td className="py-3">{row.chest}</td>
-                        <td className="py-3">{row.length}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                <p className="font-cartoon text-lg md:text-xl text-black/70 mt-8 text-center rotate-1 leading-tight">
-                  * MEASURED IN INCHES.<br/>OVERSIZED FIT SO DON'T CRY IF IT'S BIG.
-                </p>
-              </div>
             </motion.div>
-          </div>,
-          document.body
-        )}
-      </AnimatePresence>
-
-      {/* Custom Add to Cart Toast */}
-      <AnimatePresence>
-        {showToast && mounted && createPortal(
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.9 }}
-            className="fixed bottom-8 right-8 z-[9999] bg-[var(--color-electric-blue)] border-[4px] border-black shadow-[6px_6px_0_#111] p-4 pr-12 flex items-center gap-4"
-          >
-            <div className="w-12 h-12 bg-white border-[3px] border-black flex items-center justify-center p-1 shrink-0 overflow-hidden">
-               <div className="relative w-full h-full scale-110">
-                 <Image src={product.image ? product.image.split(',')[0].trim() : ""} alt="Added item" fill sizes="50px" className="object-contain" />
-               </div>
-            </div>
-            <div>
-              <h4 className="font-cartoon text-2xl text-white tracking-widest leading-none drop-shadow-[2px_2px_0_#111]">ADDED TO CART</h4>
-              <p className="font-black text-xs text-white uppercase tracking-widest mt-1">SIZE {selectedSize}</p>
-            </div>
-            <button 
-              onClick={() => setShowToast(false)}
-              className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center font-black text-white hover:text-black transition-colors"
-            >
-              X
-            </button>
-          </motion.div>,
-          document.body
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </main>
   );
 }
