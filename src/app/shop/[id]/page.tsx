@@ -119,6 +119,7 @@ export default function ProductDetailsPage() {
 
           <div className="mb-2">
              <span className="font-sans font-black text-black text-2xl tracking-wide">₹{Number(product.price).toFixed(2)}</span>
+             <span className="text-gray-500 font-bold text-xs md:text-sm tracking-widest uppercase ml-2">(INCL. OF 5% GST)</span>
           </div>
 
           {/* Reviews Summary */}

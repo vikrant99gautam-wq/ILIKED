@@ -44,6 +44,7 @@ export interface StoreSettings {
   instagram_link?: string;
   whatsapp_number?: string;
   store_address?: string;
+  gst_number?: string;
 }
 
 export async function getProducts() {

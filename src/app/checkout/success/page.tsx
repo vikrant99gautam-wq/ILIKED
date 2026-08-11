@@ -10,6 +10,7 @@ function SuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
   const [order, setOrder] = useState<any>(null);
+  const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,9 +19,14 @@ function SuccessContent() {
         setLoading(false);
         return;
       }
-      const { data, error } = await supabase.from('orders').select('*').eq('id', orderId).single();
-      if (!error && data) {
-        setOrder(data);
+      const { data: orderData, error: orderError } = await supabase.from('orders').select('*').eq('id', orderId).single();
+      const { data: settingsData } = await supabase.from('settings').select('*').single();
+      
+      if (!orderError && orderData) {
+        setOrder(orderData);
+      }
+      if (settingsData) {
+        setSettings(settingsData);
       }
       setLoading(false);
     }
@@ -58,6 +64,9 @@ function SuccessContent() {
           <h2 className="font-cartoon text-6xl mb-2 text-black">I LIKED</h2>
           <p className="text-gray-600 font-black text-lg tracking-widest uppercase mb-1">TAX INVOICE</p>
           <p className="text-sm text-gray-500 font-bold">STORE #001 - INTERNET</p>
+          {settings?.gst_number && (
+            <p className="text-sm text-black font-black mt-1">GSTIN: {settings.gst_number}</p>
+          )}
         </div>
 
         <div className="border-b-[3px] border-dashed border-black w-full my-6"></div>
@@ -122,16 +131,29 @@ function SuccessContent() {
         <div className="font-mono text-lg md:text-xl font-bold flex flex-col items-end space-y-3 mb-10 mt-6">
           <div className="flex justify-between w-full md:w-1/2">
             <span className="text-gray-500">SUBTOTAL</span>
-            <span>₹{subtotal}</span>
+            <span>₹{subtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between w-full md:w-1/2">
             <span className="text-gray-500">SHIPPING</span>
-            <span>₹{shipping}</span>
+            <span>₹{shipping.toFixed(2)}</span>
           </div>
           <div className="border-b-[3px] border-dashed border-gray-400 w-full md:w-1/2 my-2"></div>
+          {settings?.gst_number && (
+            <>
+              <div className="flex justify-between w-full md:w-1/2 text-sm">
+                <span className="text-gray-500">BASE AMOUNT</span>
+                <span>₹{(order.total / 1.05).toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between w-full md:w-1/2 text-sm">
+                <span className="text-gray-500">GST (5%)</span>
+                <span>₹{(order.total - (order.total / 1.05)).toFixed(2)}</span>
+              </div>
+              <div className="border-b-[3px] border-dashed border-gray-400 w-full md:w-1/2 my-2"></div>
+            </>
+          )}
           <div className="flex justify-between w-full md:w-1/2 text-2xl md:text-4xl font-black mt-2">
             <span>TOTAL</span>
-            <span>₹{order.total}</span>
+            <span>₹{order.total.toFixed(2)}</span>
           </div>
         </div>
 

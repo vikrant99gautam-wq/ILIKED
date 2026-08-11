@@ -148,6 +148,7 @@ export default function OrderDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const [order, setOrder] = useState<any>(null);
+  const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
 
@@ -164,6 +165,13 @@ export default function OrderDetailsPage() {
 
   const fetchOrder = async (email: string | undefined) => {
     if (!email) return;
+    
+    // Fetch settings
+    const { data: settingsData } = await supabase.from('settings').select('*').single();
+    if (settingsData) {
+      setSettings(settingsData);
+    }
+    
     const { data, error } = await supabase
       .from('orders')
       .select('*')
@@ -299,10 +307,22 @@ export default function OrderDetailsPage() {
                 <span className="text-xl">₹{calculatedDelivery}</span>
               </div>
             )}
+            {settings?.gst_number && (
+              <>
+                <div className="flex justify-between items-center text-gray-500 font-mono font-bold">
+                  <span className="uppercase text-sm">BASE AMOUNT</span>
+                  <span className="text-xl">₹{(order.total / 1.05).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center text-gray-500 font-mono font-bold">
+                  <span className="uppercase text-sm">GST (5%)</span>
+                  <span className="text-xl">₹{(order.total - (order.total / 1.05)).toFixed(2)}</span>
+                </div>
+              </>
+            )}
             <div className="flex justify-between items-end mt-2 pt-4 border-t-[2px] border-dashed border-gray-300">
               <div className="font-black text-black uppercase text-sm">TOTAL AMOUNT PAID</div>
               <div className="font-mono font-black text-3xl md:text-4xl text-black">
-                ₹{order.total}
+                ₹{order.total.toFixed(2)}
               </div>
             </div>
           </div>

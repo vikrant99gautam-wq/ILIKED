@@ -7,6 +7,7 @@ export default function PrintInvoicePage() {
   const params = useParams();
   const id = params?.id as string;
   const [order, setOrder] = useState<any>(null);
+  const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   
   const [isEditing, setIsEditing] = useState(true);
@@ -27,6 +28,12 @@ export default function PrintInvoicePage() {
   useEffect(() => {
     async function fetchOrder() {
       if (!id) return;
+      
+      const { data: settingsData } = await supabase.from('settings').select('*').single();
+      if (settingsData) {
+        setSettings(settingsData);
+      }
+      
       const { data, error } = await supabase.from('orders').select('*').eq('id', id).single();
       if (!error && data) {
         setOrder(data);
@@ -266,6 +273,9 @@ export default function PrintInvoicePage() {
               <h1 className="text-3xl font-bold tracking-widest text-black mb-1">I LIKED</h1>
               <h2 className="text-xl font-semibold text-gray-800">TAX INVOICE</h2>
               <p className="text-xs text-gray-500 mt-1 uppercase">Customer Copy</p>
+              {settings?.gst_number && (
+                <p className="text-xs text-gray-800 font-bold uppercase mt-1">GSTIN: {settings.gst_number}</p>
+              )}
             </div>
             <div className="text-right text-sm text-gray-800">
               <p>ORDER NO: <span className="font-semibold">#{order.id}</span></p>
@@ -308,15 +318,27 @@ export default function PrintInvoicePage() {
           <div className="mt-auto self-end w-2/3 md:w-1/2">
             <div className="flex justify-between py-1.5 text-sm text-gray-800">
               <span>SUBTOTAL</span>
-              <span className="font-semibold">₹{subtotal - discountTotal}</span>
+              <span className="font-semibold">₹{(subtotal - discountTotal).toFixed(2)}</span>
             </div>
             <div className="flex justify-between py-1.5 text-sm text-gray-800 border-b border-gray-300">
               <span>SHIPPING</span>
-              <span className="font-semibold">₹{calculatedDelivery}</span>
+              <span className="font-semibold">₹{calculatedDelivery.toFixed(2)}</span>
             </div>
+            {settings?.gst_number && (
+              <>
+                <div className="flex justify-between py-1.5 text-sm text-gray-800">
+                  <span>BASE AMOUNT</span>
+                  <span className="font-semibold">₹{(order.total / 1.05).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between py-1.5 text-sm text-gray-800 border-b border-gray-300">
+                  <span>GST (5%)</span>
+                  <span className="font-semibold">₹{(order.total - (order.total / 1.05)).toFixed(2)}</span>
+                </div>
+              </>
+            )}
             <div className="flex justify-between py-3 mt-1">
               <span className="text-lg font-bold">GRAND TOTAL</span>
-              <span className="text-lg font-bold">₹{order.total}</span>
+              <span className="text-lg font-bold">₹{order.total.toFixed(2)}</span>
             </div>
           </div>
           

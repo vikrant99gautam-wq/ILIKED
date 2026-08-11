@@ -30,7 +30,8 @@ export async function GET() {
     ]),
     instagram_link: 'https://instagram.com/iliked.in',
     whatsapp_number: '',
-    store_address: 'Designed in Mumbai, India'
+    store_address: 'Designed in Mumbai, India',
+    gst_number: ''
   };
 
   // If table exists but is empty
@@ -83,6 +84,9 @@ export async function GET() {
   }
   if (data.store_address === undefined || data.store_address === null) {
     finalData.store_address = defaultSettings.store_address;
+  }
+  if (data.gst_number === undefined || data.gst_number === null) {
+    finalData.gst_number = defaultSettings.gst_number;
   }
 
   return NextResponse.json(finalData);
