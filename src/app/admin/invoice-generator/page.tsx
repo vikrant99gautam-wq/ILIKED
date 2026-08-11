@@ -254,148 +254,123 @@ export default function InvoiceGeneratorPage() {
         </div>
       </div>
 
-      <div className="max-w-[21cm] mx-auto bg-white pt-[80px]">
+            <div className="max-w-[21cm] min-h-[29.7cm] mx-auto bg-white pt-[80px] p-8 flex flex-col">
         
-        {/* =========================================
-            PART 1: SHIPPING LABEL (Top Half)
-        ========================================== */}
-        <div className="p-8 h-[13cm] flex flex-col justify-between border-b border-dashed border-gray-400">
+        {/* INVOICE HEADER */}
+        <div className="flex justify-between items-start border-b-2 border-black pb-6 mb-8">
           <div>
-            <div className="flex justify-between items-start border-b-2 border-black pb-4 mb-6">
-              <div>
-                <h1 className="text-3xl font-bold tracking-widest text-black">I LIKED</h1>
-                <p className="text-sm mt-1 text-gray-700 font-bold uppercase">ORDER: #{formData.orderId}</p>
-                <p className="text-sm text-gray-700 font-bold uppercase">DATE: {new Date(formData.orderDate).toLocaleDateString()}</p>
-              </div>
-              <div className="text-right flex flex-col items-end gap-2">
-                <div className="border border-black p-3 bg-gray-50 text-center w-64">
-                  <p className="text-lg font-bold uppercase">{formData.paymentMethod === 'PARTIAL_COD' || formData.paymentMethod === 'COD' ? "COLLECT CASH" : "PREPAID - DO NOT COLLECT CASH"}</p>
-                  {(formData.paymentMethod === 'PARTIAL_COD' || formData.paymentMethod === 'COD') && <p className="text-xl font-black mt-1">₹{dueAmount > 0 ? dueAmount.toFixed(2) : grandTotal.toFixed(2)}</p>}
-                </div>
-                {formData.trackingNumber && (
-                  <div className="border border-black p-2 bg-gray-100 text-center w-64">
-                    <p className="text-xs font-bold uppercase text-gray-500">AWB / TRACKING ({formData.courierName})</p>
-                    <p className="font-bold text-lg uppercase">{formData.trackingNumber}</p>
-                  </div>
-                )}
-              </div>
+            <h1 className="text-4xl font-black tracking-widest text-black mb-2 uppercase">{formData.senderName}</h1>
+            <h2 className="text-xl font-bold text-gray-800 uppercase tracking-widest">TAX INVOICE</h2>
+            {settings?.gst_number && (
+              <p className="text-sm text-gray-800 font-bold uppercase mt-1">GSTIN: {settings.gst_number}</p>
+            )}
+          </div>
+          <div className="text-right text-sm text-gray-800">
+            <p className="text-lg font-bold uppercase mb-1">INVOICE NO: #{formData.orderId}</p>
+            <p className="font-semibold uppercase mb-2">DATE: {new Date(formData.orderDate).toLocaleDateString()}</p>
+            <div className="inline-block border-2 border-black p-2 bg-gray-50 text-center mt-2">
+              <p className="text-sm font-bold uppercase">{formData.paymentMethod === 'PARTIAL_COD' || formData.paymentMethod === 'COD' ? "CASH ON DELIVERY" : "PREPAID"}</p>
+              <p className="text-xs text-gray-600 font-bold mt-1 uppercase">{formData.paymentStatus}</p>
             </div>
+          </div>
+        </div>
 
-            <div className="flex justify-between">
-              <div className="w-1/2 pr-4 text-sm text-gray-800">
-                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">FROM (SENDER):</p>
-                <p className="font-bold uppercase">{formData.senderName}</p>
-                <p className="uppercase">{formData.senderAddressLine1}</p>
-                <p className="uppercase">{formData.senderAddressLine2}</p>
-                <p className="uppercase">{formData.senderEmail}</p>
-              </div>
-              
-              <div className="w-1/2 pl-4 border-l border-gray-300">
-                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">TO (RECEIVER):</p>
-                <h2 className="text-xl font-bold uppercase mb-1">{formData.receiverName || "CUSTOMER"}</h2>
-                <p className="text-sm leading-relaxed text-gray-800 uppercase">
-                  {formData.receiverAddressLine1}<br />
-                  {formData.receiverAddressLine2}<br />
-                  PHONE: <span className="font-semibold">{formData.receiverPhone}</span>
-                </p>
-              </div>
-            </div>
+        {/* ADDRESS BLOCK */}
+        <div className="flex justify-between mb-10">
+          <div className="w-1/2 pr-4 text-sm text-gray-800">
+            <p className="text-xs font-black text-gray-400 uppercase mb-2 tracking-widest">ISSUED BY:</p>
+            <p className="font-bold uppercase text-lg">{formData.senderName}</p>
+            <p className="uppercase mt-1">{formData.senderAddressLine1}</p>
+            <p className="uppercase">{formData.senderAddressLine2}</p>
+            <p className="uppercase font-semibold mt-2">{formData.senderEmail}</p>
           </div>
           
-          <div className="border-t border-gray-300 pt-4 mt-6">
-            <p className="text-center font-medium text-lg uppercase tracking-wide text-gray-700">
-              PLEASE DELIVER QUICKLY
+          <div className="w-1/2 pl-6 border-l-2 border-gray-200">
+            <p className="text-xs font-black text-gray-400 uppercase mb-2 tracking-widest">BILLED TO:</p>
+            <h2 className="text-xl font-bold uppercase mb-2">{formData.receiverName || "CUSTOMER"}</h2>
+            <p className="text-sm leading-relaxed text-gray-800 uppercase">
+              {formData.receiverAddressLine1}<br />
+              {formData.receiverAddressLine2}
             </p>
+            {formData.receiverPhone && (
+              <p className="mt-2 text-sm uppercase">PHONE: <span className="font-bold">{formData.receiverPhone}</span></p>
+            )}
           </div>
         </div>
 
-        {/* CUT LINE INDICATOR */}
-        <div className="text-center text-xs text-gray-500 py-2 tracking-widest no-print">
-          --------------------- CUT HERE ---------------------
-        </div>
-
-        {/* =========================================
-            PART 2: STORE INVOICE (Bottom Half)
-        ========================================== */}
-        <div className="p-8 h-[13cm] flex flex-col">
-          <div className="flex justify-between items-end border-b border-black pb-4 mb-6">
-            <div>
-              <h1 className="text-3xl font-bold tracking-widest text-black mb-1">I LIKED</h1>
-              <h2 className="text-xl font-semibold text-gray-800">TAX INVOICE</h2>
-              <p className="text-xs text-gray-500 mt-1 uppercase">Customer Copy</p>
-              {settings?.gst_number && (
-                <p className="text-xs text-gray-800 font-bold uppercase mt-1">GSTIN: {settings.gst_number}</p>
-              )}
-            </div>
-            <div className="text-right text-sm text-gray-800">
-              <p>ORDER NO: <span className="font-semibold uppercase">#{formData.orderId}</span></p>
-              <p>DATE: <span className="font-semibold uppercase">{new Date(formData.orderDate).toLocaleDateString()}</span></p>
-            </div>
-          </div>
-
-          <table className="w-full text-left border-collapse mb-8">
-            <thead>
-              <tr className="border-b border-black text-gray-700">
-                <th className="py-2 text-xs font-bold uppercase">ITEM DESCRIPTION</th>
-                <th className="py-2 text-xs font-bold uppercase text-center w-16">QTY</th>
-                <th className="py-2 text-xs font-bold uppercase text-right w-24">PRICE</th>
-                <th className="py-2 text-xs font-bold uppercase text-right w-24">TOTAL</th>
+        {/* ITEMS TABLE */}
+        <table className="w-full text-left border-collapse mb-8 flex-1">
+          <thead>
+            <tr className="border-b-2 border-black text-black">
+              <th className="py-3 text-sm font-black uppercase tracking-wider">ITEM DESCRIPTION</th>
+              <th className="py-3 text-sm font-black uppercase text-center w-20 tracking-wider">QTY</th>
+              <th className="py-3 text-sm font-black uppercase text-right w-32 tracking-wider">PRICE</th>
+              <th className="py-3 text-sm font-black uppercase text-right w-32 tracking-wider">TOTAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item: any, i: number) => (
+              <tr key={i} className="border-b border-gray-200">
+                <td className="py-4">
+                  <p className="font-bold text-base text-black uppercase">{item.name}</p>
+                  {item.size && <p className="text-sm text-gray-500 mt-1 uppercase font-semibold">SIZE: {item.size}</p>}
+                </td>
+                <td className="py-4 text-center text-base font-semibold">{item.quantity}</td>
+                <td className="py-4 text-right text-base font-semibold">₹{Number(item.price).toFixed(2)}</td>
+                <td className="py-4 text-right text-base font-bold">₹{(item.price * item.quantity).toFixed(2)}</td>
               </tr>
-            </thead>
-            <tbody>
-              {items.map((item: any, i: number) => (
-                <tr key={i} className="border-b border-gray-200">
-                  <td className="py-3">
-                    <p className="font-semibold text-sm text-gray-900 uppercase">{item.name}</p>
-                    <p className="text-xs text-gray-500 mt-0.5 uppercase">Size: {item.size}</p>
-                  </td>
-                  <td className="py-3 text-center text-sm">{item.quantity}</td>
-                  <td className="py-3 text-right text-sm">₹{Number(item.price).toFixed(2)}</td>
-                  <td className="py-3 text-right text-sm font-semibold">₹{(item.price * item.quantity).toFixed(2)}</td>
-                </tr>
-              ))}
-              {discountTotal > 0 && (
-                <tr className="border-b border-gray-200 bg-gray-50">
-                  <td className="py-2"><p className="font-semibold text-sm text-gray-700 uppercase">Discount</p></td>
-                  <td className="py-2 text-center text-sm">1</td>
-                  <td className="py-2 text-right text-sm">-</td>
-                  <td className="py-2 text-right text-sm font-semibold text-gray-700">-₹{discountTotal.toFixed(2)}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+            ))}
+            {discountTotal > 0 && (
+              <tr className="border-b border-gray-200 bg-gray-50">
+                <td className="py-3"><p className="font-bold text-sm text-red-600 uppercase">DISCOUNT APPLIED</p></td>
+                <td className="py-3 text-center text-sm font-semibold">1</td>
+                <td className="py-3 text-right text-sm font-semibold">-</td>
+                <td className="py-3 text-right text-sm font-bold text-red-600">-₹{discountTotal.toFixed(2)}</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-          <div className="mt-auto self-end w-2/3 md:w-1/2">
-            <div className="flex justify-between py-1.5 text-sm text-gray-800">
-              <span>SUBTOTAL</span>
-              <span className="font-semibold">₹{(subtotal - discountTotal).toFixed(2)}</span>
+        {/* TOTALS */}
+        <div className="flex justify-end mt-auto pt-8 border-t-2 border-black">
+          <div className="w-1/2">
+            <div className="flex justify-between py-2 text-base text-gray-800">
+              <span className="font-semibold uppercase tracking-wider">SUBTOTAL</span>
+              <span className="font-bold">₹{(subtotal - discountTotal).toFixed(2)}</span>
             </div>
-            <div className="flex justify-between py-1.5 text-sm text-gray-800 border-b border-gray-300">
-              <span>SHIPPING</span>
-              <span className="font-semibold">₹{shippingTotal.toFixed(2)}</span>
+            <div className="flex justify-between py-2 text-base text-gray-800 border-b-2 border-gray-200">
+              <span className="font-semibold uppercase tracking-wider">SHIPPING</span>
+              <span className="font-bold">₹{shippingTotal.toFixed(2)}</span>
             </div>
             {settings?.gst_number && (
               <>
-                <div className="flex justify-between py-1.5 text-sm text-gray-800">
-                  <span>BASE AMOUNT</span>
-                  <span className="font-semibold">₹{(grandTotal / 1.05).toFixed(2)}</span>
+                <div className="flex justify-between py-2 text-base text-gray-600">
+                  <span className="font-semibold uppercase tracking-wider">BASE AMOUNT</span>
+                  <span className="font-bold">₹{(grandTotal / 1.05).toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between py-1.5 text-sm text-gray-800 border-b border-gray-300">
-                  <span>GST (5%)</span>
-                  <span className="font-semibold">₹{(grandTotal - (grandTotal / 1.05)).toFixed(2)}</span>
+                <div className="flex justify-between py-2 text-base text-gray-600 border-b-2 border-gray-200">
+                  <span className="font-semibold uppercase tracking-wider">GST (5%)</span>
+                  <span className="font-bold">₹{(grandTotal - (grandTotal / 1.05)).toFixed(2)}</span>
                 </div>
               </>
             )}
-            <div className="flex justify-between py-3 mt-1">
-              <span className="text-lg font-bold">GRAND TOTAL</span>
-              <span className="text-lg font-bold">₹{grandTotal.toFixed(2)}</span>
+            <div className="flex justify-between py-4 mt-2 bg-gray-50 px-4 border-2 border-black">
+              <span className="text-2xl font-black uppercase tracking-wider">GRAND TOTAL</span>
+              <span className="text-2xl font-black">₹{grandTotal.toFixed(2)}</span>
             </div>
+            {(formData.paymentMethod === 'PARTIAL_COD' || formData.paymentMethod === 'COD') && dueAmount > 0 && (
+              <div className="flex justify-between py-2 mt-2 px-4 text-red-600">
+                <span className="text-lg font-bold uppercase tracking-wider">AMOUNT DUE</span>
+                <span className="text-lg font-black">₹{dueAmount.toFixed(2)}</span>
+              </div>
+            )}
           </div>
-          
-          <div className="mt-8 border-t border-gray-300 pt-4 text-center">
-            <p className="text-xs text-gray-500 uppercase">Thank you for shopping with {formData.senderName}.</p>
-            <p className="text-xs text-gray-500 uppercase">For support, email us at {formData.senderEmail}</p>
-          </div>
+        </div>
+        
+        {/* FOOTER */}
+        <div className="mt-12 pt-6 border-t-2 border-dashed border-gray-300 text-center">
+          <p className="text-sm font-bold text-gray-800 uppercase tracking-widest mb-1">THANK YOU FOR YOUR BUSINESS</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">FOR SUPPORT, PLEASE CONTACT {formData.senderEmail}</p>
         </div>
 
       </div>
