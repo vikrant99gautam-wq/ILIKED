@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 
 const COLLECTIONS_DATA = [
   { id: 1, image: "/images/model-anim-1.png", label: "NORMAL TEES", rotate: "rotate-[-3deg]", color: "bg-[var(--color-coral-red)]", isComingSoon: true },
@@ -48,10 +49,12 @@ export default function MoodsGallery() {
               
               {/* Image Container */}
               <div className={`relative w-full aspect-[4/5] ${item.color} border-[3px] border-black overflow-hidden flex items-center justify-center`}>
-                <img 
+                <Image 
                   src={item.image} 
                   alt={item.label}
-                  className="absolute w-full h-full object-contain drop-shadow-[4px_4px_0_#111] scale-[1.2] group-hover:scale-[1.3] transition-transform duration-500"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-contain drop-shadow-[4px_4px_0_#111] scale-[1.2] group-hover:scale-[1.3] transition-transform duration-500"
                 />
                 
                 {/* Overlay */}

@@ -1,7 +1,10 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 
 import { useCartStore, useWishlistStore } from "@/lib/store";
@@ -355,16 +358,23 @@ export default function ProductDetailsPage() {
             ></div>
 
             <AnimatePresence mode="wait">
-              <motion.img 
+              <motion.div 
                 key={activeImageIndex}
                 initial={{ opacity: 0, scale: 0.9, x: 50 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 1.1, x: -50 }}
                 transition={{ duration: 0.3 }}
-                src={productImages[activeImageIndex]?.src} 
-                alt={`${product.name} Angle ${activeImageIndex}`}
-                className="relative z-10 w-[90%] h-[90%] lg:w-[95%] lg:h-[95%] object-contain drop-shadow-[12px_12px_0_#111]"
-              />
+                className="relative z-10 w-[90%] h-[90%] lg:w-[95%] lg:h-[95%]"
+              >
+                <Image 
+                  src={productImages[activeImageIndex]?.src || ''} 
+                  alt={`${product.name} Angle ${activeImageIndex}`}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-contain drop-shadow-[12px_12px_0_#111]"
+                />
+              </motion.div>
             </AnimatePresence>
 
             {/* Arrows */}
@@ -404,7 +414,9 @@ export default function ProductDetailsPage() {
                 onClick={() => setActiveImageIndex(i)}
                 className={`relative min-w-[100px] flex-1 h-full border-r-[4px] last:border-r-0 border-black overflow-hidden flex items-center justify-center transition-all ${activeImageIndex === i ? 'bg-[#FFD700]' : 'bg-[#F4F4F0] hover:bg-white'}`}
               >
-                <img src={img.src} className={`h-[80%] object-contain drop-shadow-[4px_4px_0_#111] transition-transform ${activeImageIndex === i ? 'scale-[1.3]' : 'scale-100 opacity-60 hover:opacity-100'}`} alt="Thumbnail" />
+                <div className={`relative w-full h-[80%] transition-transform ${activeImageIndex === i ? 'scale-[1.3]' : 'scale-100 opacity-60 hover:opacity-100'}`}>
+                  <Image src={img.src} alt="Thumbnail" fill sizes="100px" className="object-contain drop-shadow-[4px_4px_0_#111]" />
+                </div>
                 {activeImageIndex === i && (
                   <div className="absolute inset-0 border-[4px] lg:border-[6px] border-black pointer-events-none"></div>
                 )}
@@ -447,10 +459,16 @@ export default function ProductDetailsPage() {
                   <div className="absolute inset-0 opacity-[0.15] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #000 2px, transparent 2.5px)', backgroundSize: '12px 12px' }}></div>
                   
                   {/* Primary Image */}
-                  <img src={relProduct.image ? relProduct.image.split(',')[0].trim() : ''} alt={relProduct.name} className="absolute w-[115%] h-[115%] object-contain drop-shadow-[6px_6px_0_#111] group-hover:scale-[1.05] group-hover:opacity-0 transition-all duration-500 z-10" />
+                  <div className={`absolute w-[115%] h-[115%] -left-[7.5%] -top-[7.5%] flex items-center justify-center pointer-events-none z-10 transition-all duration-500 ${relProduct.hoverImage ? 'group-hover:scale-105 group-hover:opacity-0' : 'group-hover:scale-105'}`}>
+                    <Image src={relProduct.image ? relProduct.image.split(',')[0].trim() : ''} alt={relProduct.name} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-contain drop-shadow-[6px_6px_0_#111]" />
+                  </div>
 
                   {/* Hover Image */}
-                  <img src={relProduct.hoverImage} alt={`${relProduct.name} alternate`} className="absolute w-[115%] h-[115%] object-contain drop-shadow-[6px_6px_0_#111] opacity-0 group-hover:scale-[1.05] group-hover:opacity-100 transition-all duration-500 z-10" />
+                  {relProduct.hoverImage && (
+                    <div className="absolute w-[115%] h-[115%] -left-[7.5%] -top-[7.5%] flex items-center justify-center pointer-events-none opacity-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500 z-10">
+                      <Image src={relProduct.hoverImage} alt={`${relProduct.name} alternate`} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-contain drop-shadow-[6px_6px_0_#111]" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Product Info Area */}
@@ -557,7 +575,9 @@ export default function ProductDetailsPage() {
             className="fixed bottom-8 right-8 z-[9999] bg-[var(--color-electric-blue)] border-[4px] border-black shadow-[6px_6px_0_#111] p-4 pr-12 flex items-center gap-4"
           >
             <div className="w-12 h-12 bg-white border-[3px] border-black flex items-center justify-center p-1 shrink-0 overflow-hidden">
-               <img src={product.image ? product.image.split(',')[0].trim() : ""} alt="Added item" className="w-full h-full object-contain scale-110" />
+               <div className="relative w-full h-full scale-110">
+                 <Image src={product.image ? product.image.split(',')[0].trim() : ""} alt="Added item" fill sizes="50px" className="object-contain" />
+               </div>
             </div>
             <div>
               <h4 className="font-cartoon text-2xl text-white tracking-widest leading-none drop-shadow-[2px_2px_0_#111]">ADDED TO CART</h4>

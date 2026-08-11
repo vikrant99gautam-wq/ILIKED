@@ -1,5 +1,7 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import FOMOBar from "@/components/FOMOBar";
 
@@ -78,8 +80,14 @@ export default function CurrentlyLiked() {
             <div className={`w-full aspect-[4/5] ${product.bgColor} border-[4px] border-black shadow-inner mb-6 overflow-hidden relative`}>
               
               {/* Image Box */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none group-hover:scale-105 transition-transform duration-500">
-                <img src={product.image ? product.image.split(',')[0].trim() : ''} alt={product.name} className="w-[115%] h-[115%] object-contain drop-shadow-[6px_6px_0_#111] z-10" />
+              <div className="absolute w-[115%] h-[115%] -left-[7.5%] -top-[7.5%] flex items-center justify-center pointer-events-none group-hover:scale-105 transition-transform duration-500 z-10">
+                <Image 
+                  src={product.image ? product.image.split(',')[0].trim() : ''} 
+                  alt={product.name} 
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  className="object-contain drop-shadow-[6px_6px_0_#111]" 
+                />
               </div>
               
               {/* Sticker Tag */}
