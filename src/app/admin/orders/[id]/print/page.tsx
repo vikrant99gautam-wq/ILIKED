@@ -184,7 +184,7 @@ export default function PrintInvoicePage() {
   // PRINT MODE
   // ==========================================
   return (
-    <div className="bg-white min-h-screen text-black w-full" style={{ fontFamily: "Arial, sans-serif" }}>
+    <div className="bg-white min-h-screen text-black w-full no-scrollbar" style={{ fontFamily: "Arial, sans-serif" }}>
       
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
@@ -193,6 +193,16 @@ export default function PrintInvoicePage() {
         }
         @page { size: A4 portrait; margin: 0; }
         * { box-sizing: border-box; }
+        
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}} />
 
       {/* Action Bar (Hidden when printing) */}
