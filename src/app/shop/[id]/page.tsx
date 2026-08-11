@@ -543,12 +543,18 @@ export default function ProductDetailsPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {(settings?.size_chart_data ? JSON.parse(settings.size_chart_data) : [
+                    {(() => {
+                      try {
+                        const parsed = settings?.size_chart_data ? JSON.parse(settings.size_chart_data) : [];
+                        if (parsed && Array.isArray(parsed) && parsed.length > 0) return parsed;
+                      } catch(e) {}
+                      return [
                         { size: 'S', chest: '22"', length: '28"' },
                         { size: 'M', chest: '24"', length: '29"' },
                         { size: 'L', chest: '26"', length: '30"' },
                         { size: 'XL', chest: '28"', length: '31"' }
-                      ]).map((row: any, i: number, arr: any[]) => (
+                      ];
+                    })().map((row: any, i: number, arr: any[]) => (
                         <tr key={i} className={i !== arr.length - 1 ? "border-b-[2px] border-black/20" : ""}>
                           <td className="py-3 font-bold">{row.size}</td>
                           <td className="py-3">{row.chest}</td>
