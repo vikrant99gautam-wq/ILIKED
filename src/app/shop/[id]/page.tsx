@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
+import { createPortal } from "react-dom";
 
 import { useCartStore, useWishlistStore } from "@/lib/store";
 
@@ -490,7 +491,7 @@ export default function ProductDetailsPage() {
 
       {/* Dirty Napkin Size Chart Modal */}
       <AnimatePresence>
-        {isSizeGuideOpen && (
+        {isSizeGuideOpen && mounted && createPortal(
           <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
             {/* Backdrop */}
             <motion.div 
@@ -561,13 +562,14 @@ export default function ProductDetailsPage() {
                 </p>
               </div>
             </motion.div>
-          </div>
+          </div>,
+          document.body
         )}
       </AnimatePresence>
 
       {/* Custom Add to Cart Toast */}
       <AnimatePresence>
-        {showToast && (
+        {showToast && mounted && createPortal(
           <motion.div
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -589,7 +591,8 @@ export default function ProductDetailsPage() {
             >
               X
             </button>
-          </motion.div>
+          </motion.div>,
+          document.body
         )}
       </AnimatePresence>
     </main>
