@@ -53,12 +53,14 @@ export default function InvoiceGeneratorPage() {
         if (draftFormData) setFormData(draftFormData);
         if (draftItems) setItems(draftItems);
       } catch(e) {}
-    } else {
-      // Fetch settings if no draft
-      async function fetchSettings() {
-        const { data: settingsData } = await supabase.from('settings').select('*').single();
-        if (settingsData) {
-          setSettings(settingsData);
+    }
+
+    // Always fetch settings
+    async function fetchSettings() {
+      const { data: settingsData } = await supabase.from('settings').select('*').single();
+      if (settingsData) {
+        setSettings(settingsData);
+        if (!draft) {
           setFormData(prev => ({
             ...prev,
             senderName: settingsData.store_name || prev.senderName,
@@ -68,8 +70,8 @@ export default function InvoiceGeneratorPage() {
           }));
         }
       }
-      fetchSettings();
     }
+    fetchSettings();
   }, []);
 
   // Save draft whenever formData or items change
