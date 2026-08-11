@@ -89,8 +89,18 @@ export default function AdminSettingsPage() {
     if (ref.current) ref.current.value = '';
   };
 
-  const parsedSizeChart = settings.size_chart_data ? JSON.parse(settings.size_chart_data) : [];
-  
+  const parsedSizeChart = (() => {
+    try {
+      const parsed = settings.size_chart_data ? JSON.parse(settings.size_chart_data) : [];
+      if (parsed && Array.isArray(parsed) && parsed.length > 0) return parsed;
+    } catch (e) {}
+    return [
+      { size: 'S', chest: '22"', length: '28"' },
+      { size: 'M', chest: '24"', length: '29"' },
+      { size: 'L', chest: '26"', length: '30"' },
+      { size: 'XL', chest: '28"', length: '31"' }
+    ];
+  })();
   const updateSizeChart = (index: number, field: string, value: string) => {
     const updated = [...parsedSizeChart];
     updated[index] = { ...updated[index], [field]: value };
