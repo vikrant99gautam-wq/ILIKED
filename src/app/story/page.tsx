@@ -91,13 +91,13 @@ export default function StoryPage() {
             </h2>
             <div className="space-y-6 font-bold text-lg md:text-xl leading-relaxed text-gray-800">
               <p>
-                Let's be real. Most streetwear today is just overpriced basics with a tiny logo slapped on it. We got sick of walking down the street and seeing everyone wearing the exact same boring uniform. The culture lacked color, personality, and that raw, unfiltered energy.
+                Let's be real. Most streetwear today is just overpriced basics with a tiny logo slapped on it. We got sick of walking down the street and seeing everyone wearing the exact same boring uniform. The culture lacked color, personality, and that raw, unfiltered hustle.
               </p>
-              <p className="p-6 bg-white border-[4px] border-black shadow-[6px_6px_0_#111] rotate-[1deg] text-black">
-                "WE DIDN'T START THIS BRAND TO BLEND IN. WE BUILT IT FOR THE ONES WHO WANT TO BE NOTICED."
+              <p className="p-6 bg-white border-[4px] border-black shadow-[6px_6px_0_#111] rotate-[1deg] text-black uppercase tracking-wide">
+                "We didn't start this brand to blend in. We built it for the ones who want to be noticed."
               </p>
               <p>
-                We took matters into our own hands. Hijacked some premium heavyweight cotton blanks, cracked open a screen printer, and started making the bold, aggressive graphics we actually wanted to wear. When random people on the streets started stopping us to ask where we got our fits... <span className="text-[var(--color-electric-blue)] font-black">I LIKED</span> was officially born.
+                Born in the streets of <span className="text-[var(--color-coral-red)] font-black underline decoration-4">Bhilai</span>, where nobody expected a streetwear revolution, we took matters into our own hands. We hijacked some premium heavyweight cotton blanks, cracked open a screen printer, and started making the bold, aggressive graphics we actually wanted to wear. When random people started stopping us to ask where we got our fits... <span className="text-[var(--color-electric-blue)] font-black text-2xl ml-1">I LIKED</span> was officially born.
               </p>
             </div>
           </div>

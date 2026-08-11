@@ -43,6 +43,17 @@ export default async function AdminDashboard() {
           </ul>
         </div>
       )}
+
+      {/* QUICK ACTIONS */}
+      <div className="mt-12 bg-[#FFD700] border-[4px] border-black p-6 md:p-8 shadow-[6px_6px_0_#111] flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+          <h3 className="font-cartoon text-3xl mb-2 text-black">CONNECT INSTAGRAM</h3>
+          <p className="font-bold text-gray-800">Link your Instagram account so customers can easily find you in the footer.</p>
+        </div>
+        <a href="/admin/settings" className="mt-4 md:mt-0 bg-black text-white px-8 py-3 font-black tracking-widest hover:bg-[var(--color-electric-blue)] transition-colors border-[3px] border-black whitespace-nowrap shadow-[4px_4px_0_#fff]">
+          CONNECT NOW
+        </a>
+      </div>
     </div>
   );
 }
