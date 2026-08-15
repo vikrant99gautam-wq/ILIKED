@@ -251,9 +251,11 @@ export default function ProductDetailsPage() {
 
           {/* Action Buttons */}
           <div className="flex flex-col md:flex-row gap-4 mb-4">
-            <button onClick={handleAddToCart} className="flex-1 cartoon-btn py-4 bg-white hover:bg-gray-100 text-black border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
-               <span className="font-cartoon text-2xl tracking-widest">{tagData.isPreorder ? "PRE-ORDER" : "ADD TO CART"}</span>
-            </button>
+            {!tagData.isPreorder && (
+              <button onClick={handleAddToCart} className="flex-1 cartoon-btn py-4 bg-white hover:bg-gray-100 text-black border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
+                 <span className="font-cartoon text-2xl tracking-widest">ADD TO CART</span>
+              </button>
+            )}
             <button onClick={handleBuyNow} className="flex-1 cartoon-btn py-4 bg-[#FFD700] hover:bg-[var(--color-electric-blue)] hover:text-white text-black border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
                <span className="font-cartoon text-2xl tracking-widest">{tagData.isPreorder ? "PRE-ORDER NOW" : "BUY NOW"}</span>
             </button>
