@@ -360,7 +360,7 @@ export default function ProductDetailsPage() {
                 animate={{ opacity: 1, scale: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 1.1, x: -50 }}
                 transition={{ duration: 0.3 }}
-                className="relative z-10 w-[90%] h-[90%] lg:w-[95%] lg:h-[95%]"
+                className="relative z-10 w-[85%] sm:w-[75%] lg:w-[70%] aspect-square border-[4px] border-black shadow-[12px_12px_0_#111] bg-white"
               >
                 <Image 
                   src={productImages[activeImageIndex]?.src || ''} 
@@ -368,7 +368,7 @@ export default function ProductDetailsPage() {
                   fill
                   priority
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-contain drop-shadow-[12px_12px_0_#111]"
+                  className="object-cover"
                 />
               </motion.div>
             </AnimatePresence>
