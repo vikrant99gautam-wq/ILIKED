@@ -108,7 +108,7 @@ export default function ProductDetailsPage() {
         <div className="w-full lg:w-[45%] p-6 md:p-8 lg:p-8 lg:pt-8 flex flex-col justify-start bg-white border-b-[8px] lg:border-b-0 lg:border-r-[8px] border-black relative z-20 overflow-y-auto">
           
           <div className="flex justify-between items-start mb-4 gap-4">
-            <h1 className="font-cartoon text-5xl md:text-6xl lg:text-6xl text-black tracking-widest leading-[1] drop-shadow-[3px_3px_0_var(--color-electric-blue)] uppercase">
+            <h1 className="font-sans font-black text-4xl md:text-5xl lg:text-5xl text-black tracking-tight leading-[1.1] uppercase">
               {product.name}
             </h1>
             <button 
@@ -349,14 +349,9 @@ export default function ProductDetailsPage() {
           
           {/* Main Image Area */}
           <div 
-            className={`relative w-full flex-1 flex items-center justify-center overflow-hidden transition-colors duration-500 cursor-crosshair ${productImages[activeImageIndex]?.color || product.bgColor}`}
+            className={`relative w-full flex-1 flex items-center justify-center overflow-hidden transition-colors duration-500 cursor-crosshair bg-white`}
           >
 
-            {/* Halftone Overlay */}
-            <div 
-              className="absolute inset-0 opacity-10 pointer-events-none"
-              style={{ backgroundImage: 'radial-gradient(circle, #000 2px, transparent 2.5px)', backgroundSize: '16px 16px' }}
-            ></div>
 
             <AnimatePresence mode="wait">
               <motion.div 
