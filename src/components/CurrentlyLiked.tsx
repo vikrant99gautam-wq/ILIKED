@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import FOMOBar from "@/components/FOMOBar";
+import { parseProductTag } from "@/lib/db";
 
 export default function CurrentlyLiked() {
   const [products, setProducts] = useState<any[]>([]);
@@ -91,9 +92,11 @@ export default function CurrentlyLiked() {
               </div>
               
               {/* Sticker Tag */}
-              <div className="absolute top-4 left-4 bg-white px-4 py-1 text-[14px] font-cartoon tracking-widest text-black border-[3px] border-black shadow-[4px_4px_0px_#111] rotate-[-6deg] group-hover:rotate-[0deg] transition-transform">
-                {product.tag}
-              </div>
+              {parseProductTag(product.tag).label && (
+                <div className="absolute top-4 left-4 bg-white px-4 py-1 text-[14px] font-cartoon tracking-widest text-black border-[3px] border-black shadow-[4px_4px_0px_#111] rotate-[-6deg] group-hover:rotate-[0deg] transition-transform">
+                  {parseProductTag(product.tag).label}
+                </div>
+              )}
             </div>
 
             {/* Product Details (Pop-Art Style) */}

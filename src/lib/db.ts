@@ -16,6 +16,30 @@ export interface Product {
   description: string;
 }
 
+export interface ProductTagData {
+  label?: string; // e.g. "NEW", "SELLING FAST"
+  isPreorder?: boolean;
+  preorderMessage?: string; // e.g. "SHIPS BY 15TH OCT"
+}
+
+export function parseProductTag(tagString?: string): ProductTagData {
+  if (!tagString) return {};
+  try {
+    const parsed = JSON.parse(tagString);
+    if (typeof parsed === 'object') return parsed;
+  } catch (e) {
+    // If it's just a raw string like "NEW" from old data
+    return { label: tagString };
+  }
+  return {};
+}
+
+export function stringifyProductTag(data: ProductTagData): string {
+  // If there's no preorder info and just a label, we could optionally just save the string,
+  // but saving JSON is safer and uniform going forward.
+  return JSON.stringify(data);
+}
+
 export interface Order {
   id: string;
   customer_name: string;

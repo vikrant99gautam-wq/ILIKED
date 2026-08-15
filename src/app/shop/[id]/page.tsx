@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { createPortal } from "react-dom";
 
 import { useCartStore, useWishlistStore } from "@/lib/store";
+import { parseProductTag } from "@/lib/db";
 
 export default function ProductDetailsPage() {
   const params = useParams();
@@ -42,6 +43,7 @@ export default function ProductDetailsPage() {
       size: selectedSize,
       quantity: 1,
       image: product.image ? product.image.split(',')[0].trim() : "",
+      preorderMessage: tagData.isPreorder ? tagData.preorderMessage : undefined,
     });
     
     setShowToast(true);
@@ -60,6 +62,7 @@ export default function ProductDetailsPage() {
       size: selectedSize,
       quantity: 1,
       image: product.image ? product.image.split(',')[0].trim() : "",
+      preorderMessage: tagData.isPreorder ? tagData.preorderMessage : undefined,
     });
     router.push('/bag');
   };
@@ -97,6 +100,8 @@ export default function ProductDetailsPage() {
         { src: imageList[0] || product.image, color: product.bgColor || "bg-[#F4F4F0]" },
         ...(product.hoverImage ? [{ src: product.hoverImage, color: "bg-[#FFD700]" }] : [])
       ];
+
+  const tagData = parseProductTag(product.tag);
 
   return (
     <main className="min-h-screen bg-[#F4F4F0] pt-[76px]">
@@ -214,9 +219,13 @@ export default function ProductDetailsPage() {
             </div>
           </div>
 
-          {/* FOMO Indicator */}
+          {/* FOMO Indicator / Pre-Order Message */}
           <div className="mb-4 flex">
-             {selectedSize ? (() => {
+             {tagData.isPreorder ? (
+                <span className="font-black text-[var(--color-electric-blue)] text-sm tracking-widest bg-white border-[2px] border-black px-3 py-1 shadow-[2px_2px_0_#111]">
+                  PRE-ORDER: {tagData.preorderMessage?.toUpperCase() || "SHIPPING SOON"}
+                </span>
+             ) : selectedSize ? (() => {
                 const stockStr = product.sizes?.find((s: string) => s.startsWith(selectedSize + ':'))?.split(':')[1];
                 const stock = stockStr ? parseInt(stockStr) : 0;
                 if (stock > 0 && stock <= 5) {
@@ -243,10 +252,10 @@ export default function ProductDetailsPage() {
           {/* Action Buttons */}
           <div className="flex flex-col md:flex-row gap-4 mb-4">
             <button onClick={handleAddToCart} className="flex-1 cartoon-btn py-4 bg-white hover:bg-gray-100 text-black border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
-               <span className="font-cartoon text-2xl tracking-widest">ADD TO CART</span>
+               <span className="font-cartoon text-2xl tracking-widest">{tagData.isPreorder ? "PRE-ORDER" : "ADD TO CART"}</span>
             </button>
             <button onClick={handleBuyNow} className="flex-1 cartoon-btn py-4 bg-[#FFD700] hover:bg-[var(--color-electric-blue)] hover:text-white text-black border-[4px] border-black shadow-[6px_6px_0_#111] active:shadow-[2px_2px_0_#111] active:translate-y-1 active:translate-x-1 transition-all">
-               <span className="font-cartoon text-2xl tracking-widest">BUY NOW</span>
+               <span className="font-cartoon text-2xl tracking-widest">{tagData.isPreorder ? "PRE-ORDER NOW" : "BUY NOW"}</span>
             </button>
           </div>
 

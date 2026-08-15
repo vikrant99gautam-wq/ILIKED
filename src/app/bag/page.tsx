@@ -107,6 +107,11 @@ export default function BagPage() {
                       <div>
                         <h3 className="font-cartoon text-3xl tracking-widest uppercase">{item.name}</h3>
                         <p className="font-black text-gray-500 tracking-widest">SIZE: {item.size}</p>
+                        {item.preorderMessage && (
+                          <div className="mt-2 inline-block bg-[var(--color-electric-blue)] text-white border-[2px] border-black px-2 py-0.5 shadow-[2px_2px_0_#111]">
+                            <p className="font-black text-[10px] tracking-widest uppercase">PRE-ORDER: {item.preorderMessage}</p>
+                          </div>
+                        )}
                       </div>
                       
                       <div className="flex items-center justify-between mt-6">
@@ -148,7 +153,7 @@ export default function BagPage() {
                   <div className="border-t-[3px] border-dashed border-black py-6 space-y-4">
                     {cart.map(item => (
                       <div key={`receipt-${item.id}`} className="flex justify-between text-lg md:text-xl font-bold">
-                        <span>{item.quantity}x {item.name.substring(0,12)}..</span>
+                        <span>{item.quantity}x {item.name.substring(0,12)}{item.preorderMessage ? '*' : ''}..</span>
                         <span>₹{item.price * item.quantity}</span>
                       </div>
                     ))}

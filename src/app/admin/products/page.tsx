@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { Product } from "@/lib/db";
+import { Product, parseProductTag, stringifyProductTag, ProductTagData } from "@/lib/db";
 import { supabase } from "@/lib/supabase";
 
 export default function AdminProductsPage() {
@@ -14,6 +14,9 @@ export default function AdminProductsPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [activeUploadIndex, setActiveUploadIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Tag Data State (for pre-order, labels, etc.)
+  const [tagData, setTagData] = useState<ProductTagData>({});
 
   useEffect(() => {
     fetchProducts();
@@ -40,7 +43,8 @@ export default function AdminProductsPage() {
         body: JSON.stringify({
           ...currentProduct,
           stock: totalStock,
-          sizes: newSizes
+          sizes: newSizes,
+          tag: stringifyProductTag(tagData)
         }),
       });
     } else {
@@ -51,7 +55,8 @@ export default function AdminProductsPage() {
         body: JSON.stringify({
           ...currentProduct,
           stock: totalStock,
-          sizes: newSizes
+          sizes: newSizes,
+          tag: stringifyProductTag(tagData)
         }),
       });
     }
@@ -109,6 +114,7 @@ export default function AdminProductsPage() {
           onClick={() => { 
             setCurrentProduct({}); 
             setSizeInventory([{size: "S", stock: 1}, {size: "M", stock: 1}, {size: "L", stock: 1}]);
+            setTagData({});
             setIsEditing(true); 
           }}
           className="cartoon-btn px-6 py-2 bg-black text-white font-black tracking-widest"
@@ -157,6 +163,7 @@ export default function AdminProductsPage() {
                         return parts.length === 2 ? { size: parts[0], stock: parseInt(parts[1]) } : { size: s, stock: 1 };
                       });
                       setSizeInventory(parsed);
+                      setTagData(parseProductTag(p.tag));
                       setIsEditing(true); 
                     }} className="px-4 py-2 border-[2px] border-black bg-[#FFD700] hover:bg-black hover:text-white font-black text-sm">EDIT</button>
                     <button onClick={() => handleDelete(p.id)} className="px-4 py-2 border-[2px] border-black bg-[var(--color-coral-red)] text-white hover:bg-black font-black text-sm">DEL</button>
@@ -190,6 +197,7 @@ export default function AdminProductsPage() {
                         return parts.length === 2 ? { size: parts[0], stock: parseInt(parts[1]) } : { size: s, stock: 1 };
                       });
                       setSizeInventory(parsed);
+                      setTagData(parseProductTag(p.tag));
                       setIsEditing(true); 
                     }} className="px-4 py-2 border-[2px] border-black bg-[#FFD700] font-black text-sm">EDIT</button>
                     <button onClick={() => handleDelete(p.id)} className="px-4 py-2 border-[2px] border-black bg-[var(--color-coral-red)] text-white font-black text-sm">DEL</button>
@@ -383,6 +391,47 @@ export default function AdminProductsPage() {
                   })}
                 </div>
               </div>
+              
+              <div className="border-[3px] border-black p-4 bg-[#F4F4F0] mt-4">
+                <h3 className="font-black text-xl mb-4 border-b-[2px] border-black pb-2">PRE-ORDER & TAG SETTINGS</h3>
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <label className="block font-black mb-1">PRODUCT LABEL / BADGE</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. NEW, BESTSELLER, SELLING FAST"
+                      value={tagData.label || ''} 
+                      onChange={e => setTagData({...tagData, label: e.target.value})}
+                      className="w-full border-[3px] border-black p-2 font-bold"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-2 mt-2">
+                    <input 
+                      type="checkbox" 
+                      id="isPreorder"
+                      checked={tagData.isPreorder || false} 
+                      onChange={e => setTagData({...tagData, isPreorder: e.target.checked})}
+                      className="w-5 h-5 border-[3px] border-black"
+                    />
+                    <label htmlFor="isPreorder" className="font-black text-lg">ENABLE PRE-ORDER MODE</label>
+                  </div>
+                  
+                  {tagData.isPreorder && (
+                    <div>
+                      <label className="block font-black mb-1 text-[var(--color-coral-red)]">PRE-ORDER DISPATCH MESSAGE</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. SHIPS BY 15 OCT"
+                        value={tagData.preorderMessage || ''} 
+                        onChange={e => setTagData({...tagData, preorderMessage: e.target.value})}
+                        className="w-full border-[3px] border-black p-2 font-bold"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div>
                 <label className="block font-black mb-1">DESCRIPTION</label>
                 <textarea 

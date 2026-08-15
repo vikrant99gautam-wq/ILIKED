@@ -412,8 +412,12 @@ export default function CheckoutPage() {
                       <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
                     </div>
                     <div>
-                      <p className="font-black text-lg leading-none">{item.name}</p>
+                      <p className="font-black text-lg leading-none">
+                        {item.name} 
+                        {item.preorderMessage && <span className="text-[var(--color-electric-blue)] ml-1" title={item.preorderMessage}>*</span>}
+                      </p>
                       <p className="text-gray-500 text-sm mt-1">SIZE: {item.size} | QTY: {item.quantity}</p>
+                      {item.preorderMessage && <p className="text-[var(--color-electric-blue)] font-bold text-xs uppercase mt-1">PRE-ORDER: {item.preorderMessage}</p>}
                     </div>
                   </div>
                   <p className="font-black text-xl">₹{item.price}</p>
