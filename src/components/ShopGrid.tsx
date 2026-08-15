@@ -276,7 +276,7 @@ export default function ShopGrid({ filterMode = "all" }: ShopGridProps) {
                       </div>
 
                       {/* Product Info Area */}
-                      <div className="flex flex-col w-full group-hover:translate-x-1 transition-transform duration-300 relative">
+                      <div className="flex flex-col w-full group-hover:translate-x-1 transition-transform duration-300 relative z-20">
                         <h3 className="font-cartoon text-2xl text-black tracking-wide leading-tight group-hover:text-[var(--color-electric-blue)] transition-colors mb-3">
                           {product.name}
                         </h3>
