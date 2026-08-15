@@ -388,18 +388,7 @@ export default function ProductDetailsPage() {
               <span className="font-black text-2xl lg:text-3xl">→</span>
             </button>
 
-            {/* Floating Sticker Easter Egg */}
-            <motion.div 
-              drag
-              dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
-              className="absolute top-[10%] right-[10%] z-40 cursor-grab"
-              whileHover={{ scale: 1.1 }}
-              whileDrag={{ scale: 1.2, cursor: "grabbing" }}
-            >
-              <div className="bg-white border-[4px] border-black px-4 py-2 rotate-12 shadow-[6px_6px_0_#111]">
-                 <span className="font-cartoon text-xl tracking-widest text-[var(--color-coral-red)]">DRAG ME!</span>
-              </div>
-            </motion.div>
+
           </div>
 
           {/* Thumbnails (Previews) */}
