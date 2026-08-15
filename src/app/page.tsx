@@ -36,15 +36,19 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Pre-book Banner */}
-      <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 mb-12 flex justify-center z-40 relative">
-        <a href="/prebook" className="group">
-          <div className="bg-[var(--color-electric-blue)] border-[4px] border-black shadow-[6px_6px_0_#111] group-hover:shadow-[8px_8px_0_#111] group-hover:-translate-y-1 transition-all px-6 py-3 md:px-8 md:py-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 rotate-1 cursor-pointer">
-             <span className="font-cartoon text-2xl md:text-4xl text-white tracking-widest drop-shadow-[2px_2px_0_#111]">NEW DROPS OUT!</span>
-             <span className="bg-[#FFD700] font-black text-black text-sm md:text-base px-4 py-1 border-[2px] border-black uppercase tracking-widest group-hover:scale-105 transition-transform shadow-[2px_2px_0_#111]">PRE-BOOK NOW →</span>
-          </div>
-        </a>
-      </div>
+      {/* Pre-book Banner Section */}
+      <a href="/prebook" className="group block w-full bg-[var(--color-electric-blue)] border-y-[6px] border-black py-6 md:py-8 relative z-40 cursor-pointer overflow-hidden mb-12">
+        <div className="absolute inset-0 opacity-[0.1] mix-blend-overlay" style={{ backgroundImage: 'radial-gradient(circle, #000 2px, transparent 2.5px)', backgroundSize: '12px 12px' }}></div>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10 group-hover:scale-[1.02] transition-transform duration-300">
+           <div className="flex flex-col items-center md:items-start text-center md:text-left">
+             <span className="font-cartoon text-5xl md:text-7xl text-white tracking-widest drop-shadow-[4px_4px_0_#111] leading-none">NEW DROPS OUT!</span>
+             <span className="font-black text-[#FFD700] text-xl md:text-2xl uppercase tracking-widest mt-2 drop-shadow-[2px_2px_0_#111]">GET 5% OFF ON PRE-BOOKING</span>
+           </div>
+           <div className="bg-[#FFD700] font-cartoon text-black text-2xl md:text-4xl px-8 py-4 border-[4px] border-black tracking-widest shadow-[6px_6px_0_#111] group-hover:shadow-[8px_8px_0_#111] group-hover:-translate-y-1 transition-all flex items-center gap-2">
+             PRE-BOOK NOW <span className="font-black">→</span>
+           </div>
+        </div>
+      </a>
 
       <CurrentlyLiked />
       <Moods 
