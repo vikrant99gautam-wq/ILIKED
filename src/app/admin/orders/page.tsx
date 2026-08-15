@@ -86,9 +86,14 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody>
-              {orders.map(order => (
+              {orders.map(order => {
+                const isPrebookOrder = order.items?.some((item: any) => item.preorderMessage || item.id === 'PREBOOK-DISCOUNT');
+                return (
                 <tr key={order.id} className="border-b-[2px] border-black/10 last:border-0 hover:bg-gray-50">
-                  <td className="p-4 font-bold">#{order.id.slice(-6)}</td>
+                  <td className="p-4 font-bold">
+                    #{order.id.slice(-6)}
+                    {isPrebookOrder && <span className="ml-2 text-[10px] bg-[var(--color-electric-blue)] text-white px-2 py-0.5 border border-black font-black uppercase shadow-[2px_2px_0_#111]">Pre-book</span>}
+                  </td>
                   <td className="p-4 font-bold">{order.customer_name}</td>
                   <td className="p-4">{new Date(order.created_at || Date.now()).toLocaleDateString()}</td>
                   <td className="p-4 font-cartoon text-xl">₹{order.total}</td>
@@ -114,17 +119,22 @@ export default function AdminOrdersPage() {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
 
           {/* Mobile Cards */}
           <div className="md:hidden flex flex-col">
-            {orders.map(order => (
+            {orders.map(order => {
+              const isPrebookOrder = order.items?.some((item: any) => item.preorderMessage || item.id === 'PREBOOK-DISCOUNT');
+              return (
               <div key={order.id} className="border-b-[4px] border-black last:border-0 p-4 flex flex-col gap-4">
                 <div className="flex justify-between items-start">
                   <div className="flex flex-col">
-                    <span className="font-bold text-lg">#{order.id.slice(-6)}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-lg">#{order.id.slice(-6)}</span>
+                      {isPrebookOrder && <span className="text-[10px] bg-[var(--color-electric-blue)] text-white px-1.5 py-0.5 border border-black font-black uppercase shadow-[2px_2px_0_#111]">Pre-book</span>}
+                    </div>
                     <span className="font-bold text-gray-600">{order.customer_name}</span>
                   </div>
                   <span className={`font-black px-2 py-1 border-[2px] border-black text-sm ${getStatusColor(order.status)}`}>
@@ -149,7 +159,7 @@ export default function AdminOrdersPage() {
                   </div>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         </div>
       )}
