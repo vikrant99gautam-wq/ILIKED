@@ -36,6 +36,16 @@ export default async function Home() {
         </div>
       </div>
 
+      {/* Pre-book Banner */}
+      <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 mb-12 flex justify-center z-40 relative">
+        <a href="/prebook" className="group">
+          <div className="bg-[var(--color-electric-blue)] border-[4px] border-black shadow-[6px_6px_0_#111] group-hover:shadow-[8px_8px_0_#111] group-hover:-translate-y-1 transition-all px-6 py-3 md:px-8 md:py-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 rotate-1 cursor-pointer">
+             <span className="font-cartoon text-2xl md:text-4xl text-white tracking-widest drop-shadow-[2px_2px_0_#111]">NEW DROPS OUT!</span>
+             <span className="bg-[#FFD700] font-black text-black text-sm md:text-base px-4 py-1 border-[2px] border-black uppercase tracking-widest group-hover:scale-105 transition-transform shadow-[2px_2px_0_#111]">PRE-BOOK NOW →</span>
+          </div>
+        </a>
+      </div>
+
       <CurrentlyLiked />
       <Moods 
         image1={settings?.collection_image_1} 
