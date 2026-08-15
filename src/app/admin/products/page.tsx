@@ -420,13 +420,18 @@ export default function AdminProductsPage() {
                   {tagData.isPreorder && (
                     <div>
                       <label className="block font-black mb-1 text-[var(--color-coral-red)]">PRE-ORDER DISPATCH MESSAGE</label>
-                      <input 
-                        type="text" 
-                        placeholder="e.g. SHIPS BY 15 OCT"
+                      <select 
                         value={tagData.preorderMessage || ''} 
                         onChange={e => setTagData({...tagData, preorderMessage: e.target.value})}
-                        className="w-full border-[3px] border-black p-2 font-bold"
-                      />
+                        className="w-full border-[3px] border-black p-2 font-bold uppercase"
+                      >
+                        <option value="" disabled>Select Dispatch Message</option>
+                        <option value="SHIPS IN 7-10 DAYS">SHIPS IN 7-10 DAYS</option>
+                        <option value="SHIPS IN 2 WEEKS">SHIPS IN 2 WEEKS</option>
+                        <option value="SHIPS IN 3 WEEKS">SHIPS IN 3 WEEKS</option>
+                        <option value="SHIPS IN 4 WEEKS">SHIPS IN 4 WEEKS</option>
+                        <option value="SHIPS NEXT MONTH">SHIPS NEXT MONTH</option>
+                      </select>
                     </div>
                   )}
                 </div>
