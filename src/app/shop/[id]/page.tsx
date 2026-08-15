@@ -469,7 +469,7 @@ export default function ProductDetailsPage() {
 
                 {/* Product Info Area */}
                 <div className="flex flex-col w-full group-hover:translate-x-1 transition-transform duration-300 relative z-20">
-                  <h3 className="font-cartoon text-2xl text-black tracking-wide leading-tight group-hover:text-[var(--color-electric-blue)] transition-colors mb-3">
+                  <h3 className="font-black text-xl md:text-2xl uppercase text-black tracking-widest leading-tight group-hover:text-[var(--color-electric-blue)] transition-colors mb-3">
                     {relProduct.name}
                   </h3>
                   

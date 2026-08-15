@@ -103,7 +103,7 @@ export default function CurrentlyLiked() {
             <div className="flex flex-col w-full group-hover:translate-x-1 transition-transform duration-300">
               <div className="flex justify-between items-start w-full">
                 <div className="flex flex-col">
-                  <span className="text-[20px] xl:text-[24px] font-cartoon tracking-widest text-black leading-tight group-hover:text-[var(--color-electric-blue)] transition-colors">{product.name}</span>
+                  <span className="text-[20px] xl:text-[24px] font-black uppercase tracking-widest text-black leading-tight group-hover:text-[var(--color-electric-blue)] transition-colors">{product.name}</span>
                   <span className="text-[10px] xl:text-[12px] font-black text-black mt-2 tracking-widest uppercase border-[2px] border-black bg-white w-fit px-2 py-0.5 shadow-[2px_2px_0px_#111] rotate-[1deg]">{product.color}</span>
                 </div>
                 <div className="relative">

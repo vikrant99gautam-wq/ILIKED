@@ -54,6 +54,9 @@ export default function ShopGrid({ filterMode = "all" }: ShopGridProps) {
     if (filterMode === "preorder") {
       const tagData = parseProductTag(p.tag);
       if (!tagData.isPreorder) return false;
+    } else {
+      const tagData = parseProductTag(p.tag);
+      if (tagData.isPreorder) return false;
     }
     
     if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) return false;
@@ -277,7 +280,7 @@ export default function ShopGrid({ filterMode = "all" }: ShopGridProps) {
 
                       {/* Product Info Area */}
                       <div className="flex flex-col w-full group-hover:translate-x-1 transition-transform duration-300 relative z-20">
-                        <h3 className="font-cartoon text-2xl text-black tracking-wide leading-tight group-hover:text-[var(--color-electric-blue)] transition-colors mb-3">
+                        <h3 className="font-black text-xl md:text-2xl uppercase text-black tracking-widest leading-tight group-hover:text-[var(--color-electric-blue)] transition-colors mb-3">
                           {product.name}
                         </h3>
                         
