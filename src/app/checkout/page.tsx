@@ -136,7 +136,15 @@ export default function CheckoutPage() {
     }
   }
   
-  const discountedSubtotal = Math.max(0, subtotal - discountAmount);
+  const prebookItems = cartItems.filter(item => item.preorderMessage);
+  let prebookDiscount = 0;
+  if (prebookItems.length > 0) {
+     const prebookSubtotal = prebookItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+     prebookDiscount = Math.floor(prebookSubtotal * 0.05);
+  }
+
+  const totalDiscount = discountAmount + prebookDiscount;
+  const discountedSubtotal = Math.max(0, subtotal - totalDiscount);
   
   let shipping = 0;
   if (settings) {
@@ -165,6 +173,14 @@ export default function CheckoutPage() {
           name: `Discount (${appliedPromo.code})`,
           size: "-",
           price: -discountAmount,
+          quantity: 1,
+          image: ""
+        }] : []),
+        ...(prebookDiscount > 0 ? [{
+          id: `PREBOOK-DISCOUNT`,
+          name: `Pre-Book Discount (5%)`,
+          size: "-",
+          price: -prebookDiscount,
           quantity: 1,
           image: ""
         }] : []),
@@ -469,6 +485,12 @@ export default function CheckoutPage() {
                 <div className="flex justify-between text-[#19B85A]">
                   <span className="font-bold tracking-widest text-sm">DISCOUNT ({appliedPromo.code})</span>
                   <span className="font-black">-₹{discountAmount}</span>
+                </div>
+              )}
+              {prebookDiscount > 0 && (
+                <div className="flex justify-between text-[#19B85A]">
+                  <span className="font-bold tracking-widest text-sm">PRE-BOOK DISCOUNT (5%)</span>
+                  <span className="font-black">-₹{prebookDiscount}</span>
                 </div>
               )}
               <div className="flex justify-between">
