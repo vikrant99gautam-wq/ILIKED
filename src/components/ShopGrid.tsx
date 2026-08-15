@@ -6,6 +6,11 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import FOMOBar from "@/components/FOMOBar";
 import { useWishlistStore } from "@/lib/store";
+import { parseProductTag } from "@/lib/db";
+
+interface ShopGridProps {
+  filterMode?: "all" | "preorder";
+}
 
 const CATEGORIES = ["NORMAL TEES", "OVERSIZED TEES", "OPTIC WASH TEES"];
 const SIZES = ["S", "M", "L", "XL", "ONE SIZE"];
@@ -17,7 +22,7 @@ const COLORS = [
   { name: "YELLOW", hex: "#FFD700" }
 ];
 
-export default function ShopGrid() {
+export default function ShopGrid({ filterMode = "all" }: ShopGridProps) {
   const [products, setProducts] = useState<any[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -46,6 +51,11 @@ export default function ShopGrid() {
 
   // Filter & Sort Logic
   const filteredProducts = [...products].filter(p => {
+    if (filterMode === "preorder") {
+      const tagData = parseProductTag(p.tag);
+      if (!tagData.isPreorder) return false;
+    }
+    
     if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) return false;
     if (selectedSizes.length > 0 && !p.sizes.some((s: string) => selectedSizes.includes(s.split(':')[0]))) return false;
     if (selectedColors.length > 0 && !selectedColors.includes(p.color)) return false;
@@ -63,7 +73,7 @@ export default function ShopGrid() {
         <div className="mb-8 border-b-[4px] border-black pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <h1 className="font-cartoon text-6xl md:text-8xl text-black tracking-widest drop-shadow-[4px_4px_0_var(--color-coral-red)]">
-              THE DROPS
+              {filterMode === "preorder" ? "PRE-BOOKS" : "THE DROPS"}
             </h1>
             <p className="font-black text-black text-sm md:text-base tracking-widest uppercase mt-2">
               Showing {filteredProducts.length} items
