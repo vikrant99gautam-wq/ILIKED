@@ -1,6 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
 
+import Image from "next/image";
+
 const Polaroid = ({ color, rotate, tapeRotate, delay, label, isComingSoon, image }: { color: string, rotate: string, tapeRotate: string, delay: number, label: string, isComingSoon?: boolean, image?: string | null }) => {
   return (
     <motion.div 
@@ -17,7 +19,7 @@ const Polaroid = ({ color, rotate, tapeRotate, delay, label, isComingSoon, image
       {/* Image Area */}
       <div className={`w-[220px] h-[280px] md:w-[300px] md:h-[380px] ${color} border-[3px] border-black flex items-center justify-center relative overflow-hidden group-hover:after:absolute group-hover:after:inset-0 group-hover:after:bg-black/10 transition-colors`}>
         {image ? (
-          <img src={image} alt={label} className="absolute inset-0 w-full h-full object-cover z-10" />
+          <Image src={image} alt={label} fill sizes="(max-width: 768px) 100vw, 300px" className="absolute inset-0 object-cover z-10" />
         ) : (
           <>
             {/* Abstract shape to make it look less empty */}

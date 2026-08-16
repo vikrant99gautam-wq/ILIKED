@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import type { Session, User } from "@supabase/supabase-js";
 import { useWishlistStore } from "@/lib/store";
@@ -325,7 +327,7 @@ function Dashboard({ user }: { user: User }) {
                         </svg>
                       </button>
                       <Link href={`/shop/${item.id}`} className="block relative w-full aspect-[4/5] border-[3px] border-black mb-4 bg-[#F4F4F0] overflow-hidden flex items-center justify-center">
-                        <img src={item.image} alt={item.name} className="w-[115%] h-[115%] object-contain group-hover:scale-105 transition-transform drop-shadow-[4px_4px_0_#111]" />
+                        <Image src={item.image} alt={item.name} fill sizes="(max-width: 768px) 100vw, 300px" className="object-contain scale-110 group-hover:scale-125 transition-transform drop-shadow-[4px_4px_0_#111]" />
                       </Link>
                       <div className="flex-1 flex flex-col justify-between">
                         <Link href={`/shop/${item.id}`}>

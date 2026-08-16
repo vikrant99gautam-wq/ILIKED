@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 
 import { useCartStore } from "@/lib/store";
 
@@ -99,7 +100,7 @@ export default function BagPage() {
                   >
                     {/* Item Image */}
                     <div className="w-full md:w-40 h-40 bg-white border-[3px] border-black flex-shrink-0 overflow-hidden relative">
-                      <img src={item.image} alt={item.name} className="absolute w-full h-full object-contain drop-shadow-[4px_4px_0_#111] scale-125" />
+                      <Image src={item.image} alt={item.name} fill sizes="(max-width: 768px) 100vw, 160px" className="absolute object-contain drop-shadow-[4px_4px_0_#111] scale-125" />
                     </div>
 
                     {/* Item Details */}

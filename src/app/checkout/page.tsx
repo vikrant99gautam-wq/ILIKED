@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useCartStore } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
@@ -424,8 +425,8 @@ export default function CheckoutPage() {
               {cartItems.map((item) => (
                 <div key={`${item.id}-${item.size}`} className="flex justify-between items-center">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-white border-[3px] border-black flex items-center justify-center p-1 shrink-0">
-                      <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                    <div className="w-16 h-16 bg-white border-[3px] border-black flex items-center justify-center p-1 shrink-0 relative">
+                      <Image src={item.image} alt={item.name} fill sizes="(max-width: 768px) 64px, 64px" className="object-contain" />
                     </div>
                     <div>
                       <p className="font-black text-lg leading-none">
