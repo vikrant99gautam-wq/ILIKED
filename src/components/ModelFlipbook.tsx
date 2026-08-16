@@ -9,7 +9,7 @@ export default function ModelFlipbook({ initialHeroImage }: { initialHeroImage?:
       
       {/* Single Static Image */}
       <div className="absolute inset-0 w-full h-full flex justify-center items-end z-10 pointer-events-none">
-        <div className="relative w-full md:w-[95%] h-[85%] md:h-[90%] flex justify-center items-end">
+        <div className="absolute bottom-0 w-full md:w-[95%] h-[85%] md:h-[90%] flex justify-center">
           <Image 
             src={heroImage} 
             alt="I LIKED Primary Model"
