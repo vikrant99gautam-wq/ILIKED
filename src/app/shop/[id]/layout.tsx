@@ -1,95 +1,40 @@
-import { Metadata, ResolvingMetadata } from "next";
-import { supabase } from "@/lib/supabase";
-
-type Props = {
-  params: Promise<{ id: string }>;
-};
+import { Metadata } from 'next';
+import { supabase } from '@/lib/supabase';
 
 export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
+  props: { params: Promise<{ id: string }> }
 ): Promise<Metadata> {
-  const { id } = await params;
+  const params = await props.params;
+  const id = params.id;
+  const { data } = await supabase.from('products').select('*').eq('id', id).single();
+  
+  if (!data) return {};
 
-  const { data: product } = await supabase
-    .from("products")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if (!product) {
-    return {
-      title: "Product Not Found | I LIKED",
-    };
-  }
-
-  // Get the primary image
-  const imageUrl = product.image ? product.image.split(',')[0].trim() : "https://iliked.in/images/logo.png";
+  const images = data.image ? data.image.split(',') : [];
+  const imageUrl = images[0]?.trim() || '';
 
   return {
-    title: `${product.name} | I LIKED`,
-    description: `${product.name} - ₹${product.price}. Premium oversized streetwear from I LIKED.`,
-    alternates: {
-      canonical: `https://iliked.in/shop/${id}`,
-    },
+    title: `${data.name} | I LIKED`,
+    description: data.description || "Check out this awesome product from I LIKED.",
     openGraph: {
+      title: `${data.name} | I LIKED`,
+      description: data.description || "Check out this awesome product from I LIKED.",
+      images: [imageUrl],
       type: "website",
-      title: `${product.name} | I LIKED`,
-      description: `₹${product.price} - Premium oversized fit. Buy now at I LIKED.`,
-      images: [
-        {
-          url: imageUrl,
-          width: 800,
-          height: 800,
-          alt: product.name,
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${product.name} | I LIKED`,
-      description: `₹${product.price} - Premium oversized fit.`,
+      title: `${data.name} | I LIKED`,
+      description: data.description || "Check out this awesome product from I LIKED.",
       images: [imageUrl],
-    },
+    }
   };
 }
 
-export default async function ProductLayout({
+export default function ProductLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const { data: product } = await supabase.from("products").select("*").eq("id", id).single();
-
-  if (!product) return <>{children}</>;
-
-  const imageUrl = product.image ? product.image.split(',')[0].trim() : "https://iliked.in/images/logo.png";
-  
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.name,
-    image: imageUrl,
-    description: product.description || `${product.name} - Premium oversized streetwear`,
-    offers: {
-      '@type': 'Offer',
-      price: product.price,
-      priceCurrency: 'INR',
-      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-      url: `https://iliked.in/shop/${id}`
-    }
-  };
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }
