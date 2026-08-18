@@ -25,9 +25,22 @@ export default function AdminDiscountsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<AdvancedPromoCode>>({});
 
+  const [products, setProducts] = useState<any[]>([]);
+  const [productSearch, setProductSearch] = useState("");
+  const [isProductDropdownOpen, setIsProductDropdownOpen] = useState(false);
+
   useEffect(() => {
     fetchSettings();
+    fetchProducts();
   }, []);
+
+  const fetchProducts = async () => {
+    const res = await fetch("/api/products");
+    const data = await res.json();
+    if (data && !data.error) {
+      setProducts(data);
+    }
+  };
 
   const fetchSettings = async () => {
     setIsLoading(true);
@@ -261,18 +274,76 @@ export default function AdminDiscountsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#E5F1FB] border-[3px] border-black">
               <div className="md:col-span-2">
-                <label className="block font-black mb-2 text-xl">COMBO OFFER: REQUIRED PRODUCT IDs</label>
-                <input 
-                  type="text" 
-                  value={formData.requiredProductIds?.join(',') || ""} 
-                  onChange={e => {
-                    const ids = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
-                    setFormData({...formData, requiredProductIds: ids});
-                  }}
-                  className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
-                  placeholder="e.g. t-shirt-001, hoodie-005 (Comma Separated)"
-                />
-                <p className="text-gray-600 font-bold text-xs mt-1 uppercase">Leave empty to apply to all products. Code will only work if ALL listed product IDs are in cart.</p>
+                <label className="block font-black mb-2 text-xl">COMBO OFFER: REQUIRED PRODUCTS</label>
+                
+                {/* Selected Products Chips */}
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {(formData.requiredProductIds || []).map(id => {
+                    const prod = products.find(p => p.id === id);
+                    return (
+                      <div key={id} className="flex items-center gap-2 bg-white border-[2px] border-black px-3 py-1 text-sm font-bold shadow-[2px_2px_0_#111]">
+                        <span>{prod ? prod.name : id}</span>
+                        <button 
+                          type="button"
+                          onClick={() => setFormData({
+                            ...formData, 
+                            requiredProductIds: formData.requiredProductIds!.filter(pid => pid !== id)
+                          })}
+                          className="text-red-500 hover:text-red-700 font-black"
+                        >×</button>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    value={productSearch} 
+                    onChange={e => {
+                      setProductSearch(e.target.value);
+                      setIsProductDropdownOpen(true);
+                    }}
+                    onFocus={() => setIsProductDropdownOpen(true)}
+                    onBlur={() => setTimeout(() => setIsProductDropdownOpen(false), 200)}
+                    className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
+                    placeholder="Search by name or ID to add..."
+                  />
+                  {isProductDropdownOpen && (
+                    <div className="absolute top-full left-0 right-0 bg-white border-[3px] border-black mt-1 shadow-[4px_4px_0_#111] max-h-60 overflow-y-auto z-50">
+                      {products.filter(p => 
+                        !formData.requiredProductIds?.includes(p.id) &&
+                        (p.name.toLowerCase().includes(productSearch.toLowerCase()) || 
+                         p.id.toLowerCase().includes(productSearch.toLowerCase()))
+                      ).map(p => (
+                        <div 
+                          key={p.id}
+                          onClick={() => {
+                            setFormData({
+                              ...formData,
+                              requiredProductIds: [...(formData.requiredProductIds || []), p.id]
+                            });
+                            setProductSearch("");
+                            setIsProductDropdownOpen(false);
+                          }}
+                          className="p-3 border-b-[2px] border-black/10 hover:bg-gray-100 cursor-pointer flex justify-between items-center"
+                        >
+                          <span className="font-bold">{p.name}</span>
+                          <span className="text-xs font-mono text-gray-500">ID: {p.id}</span>
+                        </div>
+                      ))}
+                      {products.filter(p => 
+                        !formData.requiredProductIds?.includes(p.id) &&
+                        (p.name.toLowerCase().includes(productSearch.toLowerCase()) || 
+                         p.id.toLowerCase().includes(productSearch.toLowerCase()))
+                      ).length === 0 && (
+                        <div className="p-3 text-gray-500 font-bold text-sm text-center">No products found</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                
+                <p className="text-gray-600 font-bold text-xs mt-2 uppercase">Leave empty to apply to all products. Code will only work if ALL listed products are in cart.</p>
               </div>
               <div className="md:col-span-2">
                 <label className="block font-black mb-2 text-xl">FREE SHIPPING</label>
