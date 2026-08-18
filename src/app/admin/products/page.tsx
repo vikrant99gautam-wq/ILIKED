@@ -108,20 +108,17 @@ export default function AdminProductsPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-end mb-8 border-b-[4px] border-black pb-4">
-        <h1 className="font-cartoon text-5xl">MANAGE PRODUCTS</h1>
-        <button 
-          onClick={() => { 
-            setCurrentProduct({}); 
-            setSizeInventory([{size: "S", stock: 1}, {size: "M", stock: 1}, {size: "L", stock: 1}]);
-            setTagData({});
+        <div className="flex justify-between items-end mb-8 border-b-[4px] border-black pb-4">
+          <h1 className="font-cartoon text-5xl tracking-widest">PRODUCTS</h1>
+          <button onClick={() => { 
+            setCurrentProduct({ id: Date.now().toString() }); 
+            setSizeInventory([]); 
+            setTagData({}); 
             setIsEditing(true); 
-          }}
-          className="cartoon-btn px-6 py-2 bg-black text-white font-black tracking-widest"
-        >
-          + ADD NEW
-        </button>
-      </div>
+          }} className="cartoon-btn px-6 py-2 bg-black text-white font-black tracking-widest hover:bg-[#FFD700] hover:text-black transition-colors">
+            + ADD NEW
+          </button>
+        </div>
 
       {isLoading ? (
         <div className="font-cartoon text-3xl animate-pulse">LOADING STUFF...</div>
@@ -133,10 +130,10 @@ export default function AdminProductsPage() {
             <thead className="bg-black text-white font-black tracking-widest">
               <tr>
                 <th className="p-4">IMAGE</th>
-                <th className="p-4">NAME</th>
+                <th className="p-4">PRODUCT INFO</th>
+                <th className="p-4">CATEGORY</th>
                 <th className="p-4">COLOR</th>
                 <th className="p-4">PRICE</th>
-                <th className="p-4">STOCK</th>
                 <th className="p-4">ACTIONS</th>
               </tr>
             </thead>
@@ -146,8 +143,13 @@ export default function AdminProductsPage() {
                   <td className="p-4">
                     <img src={p.image?.split(',')[0]?.trim() || ''} className="w-16 h-16 object-contain bg-gray-100 border-[2px] border-black" alt={p.name} />
                   </td>
-                  <td className="p-4 font-bold">{p.name}</td>
-                  <td className="p-4 font-bold text-sm text-gray-600 uppercase">{p.color || '-'}</td>
+                  <td className="p-4 font-bold text-lg">
+                    <div className="flex flex-col">
+                      <span>{p.name}</span>
+                      <span className="text-xs font-mono text-gray-500 uppercase tracking-widest mt-1">ID: {p.id}</span>
+                    </div>
+                  </td>
+                  <td className="p-4 font-bold text-sm text-gray-600 uppercase">{p.category || '-'}</td>
                   <td className="p-4 font-cartoon text-xl">₹{p.price}</td>
                   <td className="p-4">
                     <span className={`font-black px-2 py-1 border-[2px] border-black ${p.stock <= 3 ? 'bg-[var(--color-coral-red)] text-white' : 'bg-[#19B85A] text-black'}`}>
@@ -181,7 +183,8 @@ export default function AdminProductsPage() {
                   <img src={p.image?.split(',')[0]?.trim() || ''} className="w-20 h-20 object-contain bg-gray-100 border-[2px] border-black shrink-0" alt={p.name} />
                   <div className="flex flex-col">
                     <span className="font-bold text-lg leading-tight">{p.name}</span>
-                    <span className="font-bold text-sm text-gray-500 uppercase">{p.color || '-'}</span>
+                    <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest mt-0.5">ID: {p.id}</span>
+                    <span className="font-bold text-sm text-gray-500 uppercase mt-1">{p.color || '-'}</span>
                     <span className="font-cartoon text-2xl">₹{p.price}</span>
                   </div>
                 </div>
@@ -214,9 +217,31 @@ export default function AdminProductsPage() {
       {isEditing && (
         <div className="fixed inset-0 z-[9999] bg-black/80 flex items-end md:items-center justify-center p-0 md:p-4">
           <div className="bg-white w-full max-w-2xl border-t-[4px] md:border-[4px] border-black p-6 md:p-8 shadow-[0_-10px_0_#111] md:shadow-[10px_10px_0_#111] max-h-[90vh] overflow-y-auto">
-            <h2 className="font-cartoon text-3xl md:text-4xl mb-6">{currentProduct.id ? 'EDIT PRODUCT' : 'NEW PRODUCT'}</h2>
+            <h2 className="font-cartoon text-3xl md:text-4xl mb-6">{currentProduct.id && !currentProduct.id.match(/^\d+$/) ? 'EDIT PRODUCT' : 'PRODUCT DETAILS'}</h2>
             
             <div className="flex flex-col gap-4">
+              <div>
+                <label className="block font-black mb-1">PRODUCT ID (Auto-Generated)</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    value={currentProduct.id || ''} 
+                    readOnly
+                    className="w-full border-[3px] border-black p-2 font-bold bg-gray-100 text-gray-600 font-mono text-sm"
+                  />
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard.writeText(currentProduct.id || '');
+                      alert("Product ID Copied!");
+                    }}
+                    className="px-4 border-[3px] border-black bg-[var(--color-electric-blue)] text-white font-black whitespace-nowrap hover:bg-black"
+                    type="button"
+                  >
+                    COPY
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <label className="block font-black mb-1">NAME</label>
                 <input 

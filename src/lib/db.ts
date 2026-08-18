@@ -98,8 +98,8 @@ export async function updateProduct(id: string, updates: Partial<Product>) {
   return data;
 }
 
-export async function addProduct(product: Omit<Product, 'id'>) {
-  const newId = Date.now().toString();
+export async function addProduct(product: any) {
+  const newId = product.id || Date.now().toString();
   const { data, error } = await supabase.from('products').insert([{ ...product, id: newId }]).select().single();
   if (error) {
     console.error("Error adding product:", error);
