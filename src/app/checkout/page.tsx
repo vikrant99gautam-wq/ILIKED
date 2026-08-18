@@ -122,6 +122,16 @@ export default function CheckoutPage() {
         return;
       }
 
+      if (found.requiredProductIds && found.requiredProductIds.length > 0) {
+        const cartIds = cartItems.map(item => item.id);
+        const hasAll = found.requiredProductIds.every((id: string) => cartIds.includes(id));
+        if (!hasAll) {
+          setPromoError("This combo offer requires specific items in your cart.");
+          setAppliedPromo(null);
+          return;
+        }
+      }
+
       setAppliedPromo(found);
     } catch(e) {
       setPromoError("Promo system offline.");
@@ -148,7 +158,9 @@ export default function CheckoutPage() {
   const discountedSubtotal = Math.max(0, subtotal - totalDiscount);
   
   let shipping = 0;
-  if (settings) {
+  if (appliedPromo && appliedPromo.grantsFreeShipping) {
+    shipping = 0;
+  } else if (settings) {
     if (settings.free_shipping_threshold > 0 && discountedSubtotal >= settings.free_shipping_threshold) {
       shipping = 0;
     } else {

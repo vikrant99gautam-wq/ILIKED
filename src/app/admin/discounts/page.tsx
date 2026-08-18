@@ -11,6 +11,8 @@ export interface AdvancedPromoCode {
   currentUses: number;
   minOrderValue: number | null;
   restrictedToEmail: string | null;
+  requiredProductIds: string[];
+  grantsFreeShipping: boolean;
 }
 
 export default function AdminDiscountsPage() {
@@ -45,7 +47,9 @@ export default function AdminDiscountsPage() {
           maxUses: p.maxUses || null,
           currentUses: p.currentUses || 0,
           minOrderValue: p.minOrderValue || null,
-          restrictedToEmail: p.restrictedToEmail || null
+          restrictedToEmail: p.restrictedToEmail || null,
+          requiredProductIds: p.requiredProductIds || [],
+          grantsFreeShipping: p.grantsFreeShipping || false
         }));
         setDiscounts(migrated);
       } catch (e) {
@@ -94,7 +98,9 @@ export default function AdminDiscountsPage() {
       maxUses: null,
       currentUses: 0,
       minOrderValue: null,
-      restrictedToEmail: null
+      restrictedToEmail: null,
+      requiredProductIds: [],
+      grantsFreeShipping: false
     });
     setEditingId("NEW");
   };
@@ -248,9 +254,40 @@ export default function AdminDiscountsPage() {
                   value={formData.restrictedToEmail || ""} 
                   onChange={e => setFormData({...formData, restrictedToEmail: e.target.value || null})}
                   className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
-                  placeholder="user@example.com"
+                  placeholder="e.g. user@example.com"
                 />
-                <p className="text-gray-500 font-bold text-sm mt-1">Only this specific email address can use this code.</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#E5F1FB] border-[3px] border-black">
+              <div className="md:col-span-2">
+                <label className="block font-black mb-2 text-xl">COMBO OFFER: REQUIRED PRODUCT IDs</label>
+                <input 
+                  type="text" 
+                  value={formData.requiredProductIds?.join(',') || ""} 
+                  onChange={e => {
+                    const ids = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+                    setFormData({...formData, requiredProductIds: ids});
+                  }}
+                  className="w-full border-[3px] border-black p-3 font-bold focus:outline-none focus:ring-4 focus:ring-[#FFD700]"
+                  placeholder="e.g. t-shirt-001, hoodie-005 (Comma Separated)"
+                />
+                <p className="text-gray-600 font-bold text-xs mt-1 uppercase">Leave empty to apply to all products. Code will only work if ALL listed product IDs are in cart.</p>
+              </div>
+              <div className="md:col-span-2">
+                <label className="block font-black mb-2 text-xl">FREE SHIPPING</label>
+                <div className="flex items-center gap-4 mt-1">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={formData.grantsFreeShipping || false} 
+                      onChange={e => setFormData({...formData, grantsFreeShipping: e.target.checked})}
+                      className="sr-only peer" 
+                    />
+                    <div className="w-14 h-8 bg-gray-300 peer-focus:outline-none border-[3px] border-black peer-checked:bg-[#19B85A] after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-[3px] after:border-black after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-6"></div>
+                  </label>
+                  <span className="font-black tracking-widest">{formData.grantsFreeShipping ? "YES, GRANTS FREE SHIPPING" : "NO"}</span>
+                </div>
               </div>
             </div>
 
