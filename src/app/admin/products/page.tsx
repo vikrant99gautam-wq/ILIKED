@@ -35,7 +35,9 @@ export default function AdminProductsPage() {
     const totalStock = sizeInventory.reduce((acc, curr) => acc + curr.stock, 0);
     const newSizes = sizeInventory.map(s => `${s.size}:${s.stock}`);
 
-    if (currentProduct.id) {
+    const isExisting = products.some(p => p.id === currentProduct.id);
+
+    if (isExisting) {
       // Update
       await fetch(`/api/products/${currentProduct.id}`, {
         method: "PUT",
