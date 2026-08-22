@@ -13,8 +13,13 @@ export default function CurrentlyLiked() {
     fetch('/api/products')
       .then(r => r.json())
       .then(data => {
-        // Show latest products
-        setProducts(data.reverse().slice(0, 4));
+        // Show latest products by sorting ID (which is a timestamp)
+        const sortedData = [...data].sort((a, b) => {
+          const timeA = Number(a.id) || 0;
+          const timeB = Number(b.id) || 0;
+          return timeB - timeA;
+        });
+        setProducts(sortedData.slice(0, 4));
       });
   }, []);
 

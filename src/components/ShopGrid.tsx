@@ -65,6 +65,13 @@ export default function ShopGrid({ filterMode = "all" }: ShopGridProps) {
     return true;
   });
 
+  if (sortBy === "NEWEST") {
+    filteredProducts.sort((a, b) => {
+      const timeA = Number(a.id) || 0;
+      const timeB = Number(b.id) || 0;
+      return timeB - timeA;
+    });
+  }
   if (sortBy === "PRICE_LOW") filteredProducts.sort((a, b) => a.price - b.price);
   if (sortBy === "PRICE_HIGH") filteredProducts.sort((a, b) => b.price - a.price);
 
