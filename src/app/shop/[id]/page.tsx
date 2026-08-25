@@ -19,6 +19,7 @@ export default function ProductDetailsPage() {
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [colorVariants, setColorVariants] = useState<any[]>([]);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedFit, setSelectedFit] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -30,17 +31,25 @@ export default function ProductDetailsPage() {
   const isLiked = (id: string) => mounted ? wishlistItems.some((i) => i.id === id) : false;
 
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  
+  const productCats = product?.category ? product.category.split(',').map((c: string) => c.trim()) : [];
+  const showFitSelector = productCats.includes("OVERSIZED TEES") && productCats.includes("NORMAL TEES");
 
   const handleAddToCart = () => {
+    if (showFitSelector && !selectedFit) {
+      alert("Please select a fit first!");
+      return;
+    }
     if (!selectedSize) {
       alert("Please select a size first!");
       return;
     }
+    const finalSize = showFitSelector ? `${selectedSize} (${selectedFit})` : selectedSize;
     addToCart({
       id: product.id,
       name: product.name,
       price: product.price,
-      size: selectedSize,
+      size: finalSize,
       quantity: 1,
       image: product.image ? product.image.split(',')[0].trim() : "",
       preorderMessage: tagData.isPreorder ? tagData.preorderMessage : undefined,
@@ -51,15 +60,20 @@ export default function ProductDetailsPage() {
   };
 
   const handleBuyNow = () => {
+    if (showFitSelector && !selectedFit) {
+      alert("Please select a fit first!");
+      return;
+    }
     if (!selectedSize) {
       alert("Please select a size first!");
       return;
     }
+    const finalSize = showFitSelector ? `${selectedSize} (${selectedFit})` : selectedSize;
     addToCart({
       id: product.id,
       name: product.name,
       price: product.price,
-      size: selectedSize,
+      size: finalSize,
       quantity: 1,
       image: product.image ? product.image.split(',')[0].trim() : "",
       preorderMessage: tagData.isPreorder ? tagData.preorderMessage : undefined,
@@ -197,6 +211,27 @@ export default function ProductDetailsPage() {
                     />
                   );
                 })}
+              </div>
+            </div>
+          )}
+
+          {/* Fit Selector */}
+          {showFitSelector && (
+            <div className="mb-6">
+              <h3 className="font-black tracking-[0.2em] text-gray-500 text-sm mb-3">SELECT FIT</h3>
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => setSelectedFit('REGULAR')}
+                  className={`px-6 py-2 border-[3px] border-black font-black uppercase transition-all ${selectedFit === 'REGULAR' ? 'bg-black text-white shadow-[4px_4px_0_var(--color-coral-red)] -translate-y-1' : 'bg-white hover:bg-gray-100 shadow-[4px_4px_0_#111]'}`}
+                >
+                  REGULAR FIT
+                </button>
+                <button 
+                  onClick={() => setSelectedFit('OVERSIZED')}
+                  className={`px-6 py-2 border-[3px] border-black font-black uppercase transition-all ${selectedFit === 'OVERSIZED' ? 'bg-black text-white shadow-[4px_4px_0_var(--color-electric-blue)] -translate-y-1' : 'bg-white hover:bg-gray-100 shadow-[4px_4px_0_#111]'}`}
+                >
+                  OVERSIZED FIT
+                </button>
               </div>
             </div>
           )}
