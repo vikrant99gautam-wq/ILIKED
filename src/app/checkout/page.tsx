@@ -148,6 +148,14 @@ export default function CheckoutPage() {
   }
   
   const prebookItems = cartItems.filter(item => item.preorderMessage);
+  const hasPrebookItems = prebookItems.length > 0;
+  
+  useEffect(() => {
+    if (hasPrebookItems && paymentMethod === 'PARTIAL_COD') {
+      setPaymentMethod('ONLINE');
+    }
+  }, [hasPrebookItems, paymentMethod]);
+
   let prebookDiscount = 0;
 
   const totalDiscount = discountAmount + prebookDiscount;
@@ -542,18 +550,20 @@ export default function CheckoutPage() {
                   />
                   <span className="font-bold">Pay Full Amount Online (Cards / UPI)</span>
                 </label>
-                <label className={`flex items-center p-3 border-[2px] cursor-pointer transition-colors ${paymentMethod === 'PARTIAL_COD' ? 'border-black bg-gray-100' : 'border-gray-300 hover:border-black'}`}>
+                <label className={`flex items-center p-3 border-[2px] transition-colors ${paymentMethod === 'PARTIAL_COD' ? 'border-black bg-gray-100' : 'border-gray-300 hover:border-black'} ${hasPrebookItems ? 'opacity-50 cursor-not-allowed hover:border-gray-300' : 'cursor-pointer'}`}>
                   <input 
                     type="radio" 
                     name="paymentMethod" 
                     value="PARTIAL_COD" 
                     checked={paymentMethod === 'PARTIAL_COD'}
-                    onChange={() => setPaymentMethod('PARTIAL_COD')}
+                    onChange={() => !hasPrebookItems && setPaymentMethod('PARTIAL_COD')}
+                    disabled={hasPrebookItems}
                     className="w-5 h-5 accent-black mr-3 shrink-0"
                   />
                   <div className="flex flex-col">
                     <span className="font-bold">Partial Cash on Delivery</span>
                     <span className="text-xs text-gray-500 font-bold uppercase mt-1">Pay ₹149 now, rest on delivery</span>
+                    {hasPrebookItems && <span className="text-xs text-[var(--color-coral-red)] font-bold uppercase mt-1">Not available for pre-orders</span>}
                   </div>
                 </label>
               </div>
