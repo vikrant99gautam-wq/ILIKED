@@ -283,18 +283,31 @@ export default function AdminProductsPage() {
               </div>
               <div>
                 <label className="block font-black mb-1">COLOR</label>
-                <select 
-                  value={currentProduct.color || ''} 
-                  onChange={e => setCurrentProduct({...currentProduct, color: e.target.value})}
-                  className="w-full border-[3px] border-black p-2 font-bold uppercase"
-                >
-                  <option value="" disabled>Select Color</option>
-                  <option value="BLACK">BLACK</option>
-                  <option value="WHITE">WHITE</option>
-                  <option value="RED">RED</option>
-                  <option value="BLUE">BLUE</option>
-                  <option value="YELLOW">YELLOW</option>
-                </select>
+                <div className="flex flex-col gap-2 p-2 border-[3px] border-black bg-white">
+                  {["BLACK", "WHITE", "RED", "BLUE", "YELLOW"].map(color => {
+                    const currentColors = currentProduct.color ? currentProduct.color.split(',').map(c => c.trim()) : [];
+                    const isChecked = currentColors.includes(color);
+                    return (
+                      <label key={color} className="flex items-center gap-2 cursor-pointer font-bold uppercase">
+                        <input 
+                          type="checkbox" 
+                          checked={isChecked}
+                          onChange={(e) => {
+                            let newColors = [...currentColors];
+                            if (e.target.checked) {
+                              newColors.push(color);
+                            } else {
+                              newColors = newColors.filter(c => c !== color);
+                            }
+                            setCurrentProduct({...currentProduct, color: newColors.join(', ')});
+                          }}
+                          className="w-5 h-5 border-[2px] border-black accent-black"
+                        />
+                        {color}
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">

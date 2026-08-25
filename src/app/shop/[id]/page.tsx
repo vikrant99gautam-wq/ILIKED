@@ -20,6 +20,7 @@ export default function ProductDetailsPage() {
   const [colorVariants, setColorVariants] = useState<any[]>([]);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedFit, setSelectedFit] = useState<string | null>(null);
+  const [selectedLocalColor, setSelectedLocalColor] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -35,7 +36,14 @@ export default function ProductDetailsPage() {
   const productCats = product?.category ? product.category.split(',').map((c: string) => c.trim()) : [];
   const showFitSelector = productCats.includes("OVERSIZED TEES") && productCats.includes("NORMAL TEES");
 
+  const inPageColors = product?.color ? product.color.split(',').map((c: string) => c.trim()) : [];
+  const showLocalColorSelector = inPageColors.length > 1;
+
   const handleAddToCart = () => {
+    if (showLocalColorSelector && !selectedLocalColor) {
+      alert("Please select a color first!");
+      return;
+    }
     if (showFitSelector && !selectedFit) {
       alert("Please select a fit first!");
       return;
@@ -44,7 +52,10 @@ export default function ProductDetailsPage() {
       alert("Please select a size first!");
       return;
     }
-    const finalSize = showFitSelector ? `${selectedSize} (${selectedFit})` : selectedSize;
+    let finalSize = selectedSize;
+    if (showFitSelector) finalSize = `${finalSize} (${selectedFit})`;
+    if (showLocalColorSelector) finalSize = `${finalSize} [${selectedLocalColor}]`;
+
     addToCart({
       id: product.id,
       name: product.name,
@@ -60,6 +71,10 @@ export default function ProductDetailsPage() {
   };
 
   const handleBuyNow = () => {
+    if (showLocalColorSelector && !selectedLocalColor) {
+      alert("Please select a color first!");
+      return;
+    }
     if (showFitSelector && !selectedFit) {
       alert("Please select a fit first!");
       return;
@@ -68,7 +83,10 @@ export default function ProductDetailsPage() {
       alert("Please select a size first!");
       return;
     }
-    const finalSize = showFitSelector ? `${selectedSize} (${selectedFit})` : selectedSize;
+    let finalSize = selectedSize;
+    if (showFitSelector) finalSize = `${finalSize} (${selectedFit})`;
+    if (showLocalColorSelector) finalSize = `${finalSize} [${selectedLocalColor}]`;
+
     addToCart({
       id: product.id,
       name: product.name,
@@ -186,7 +204,34 @@ export default function ProductDetailsPage() {
           </div>
 
           {/* Color Selector */}
-          {colorVariants.length > 0 && (
+          {showLocalColorSelector ? (
+            <div className="mb-6">
+              <h3 className="font-black tracking-[0.2em] text-gray-500 text-sm mb-3">
+                SELECT COLOR
+              </h3>
+              <div className="flex gap-4">
+                {inPageColors.map((colorName: string) => {
+                  const getBgColor = (c: string) => {
+                    const lc = c?.toLowerCase();
+                    if (lc === "white") return "#fff";
+                    if (lc === "red") return "#ff3333";
+                    if (lc === "blue") return "var(--color-electric-blue)";
+                    if (lc === "yellow") return "#FFD700";
+                    return "#222";
+                  };
+                  return (
+                    <button
+                      key={colorName}
+                      onClick={() => setSelectedLocalColor(colorName)}
+                      className={`w-10 h-10 rounded-full border-[3px] border-black shadow-[2px_2px_0_#111] transition-all hover:-translate-y-1 ${selectedLocalColor === colorName ? 'ring-[4px] ring-[var(--color-electric-blue)] ring-offset-2 scale-110' : ''}`}
+                      style={{ backgroundColor: getBgColor(colorName) }}
+                      title={colorName}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          ) : colorVariants.length > 1 ? (
             <div className="mb-6">
               <h3 className="font-black tracking-[0.2em] text-gray-500 text-sm mb-3">
                 SELECT COLOR: <span className="text-black uppercase">{product.color || "SIGNATURE"}</span>
@@ -213,7 +258,7 @@ export default function ProductDetailsPage() {
                 })}
               </div>
             </div>
-          )}
+          ) : null}
 
           {/* Fit Selector */}
           {showFitSelector && (
