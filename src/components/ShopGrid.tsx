@@ -59,7 +59,10 @@ export default function ShopGrid({ filterMode = "all" }: ShopGridProps) {
       if (tagData.isPreorder) return false;
     }
     
-    if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) return false;
+    if (selectedCategories.length > 0) {
+      const productCats = p.category ? p.category.split(',').map((c: string) => c.trim()) : [];
+      if (!productCats.some((c: string) => selectedCategories.includes(c))) return false;
+    }
     if (selectedSizes.length > 0 && !p.sizes.some((s: string) => selectedSizes.includes(s.split(':')[0]))) return false;
     if (selectedColors.length > 0 && !selectedColors.includes(p.color)) return false;
     return true;

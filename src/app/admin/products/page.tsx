@@ -255,16 +255,31 @@ export default function AdminProductsPage() {
               </div>
               <div>
                 <label className="block font-black mb-1">CATEGORY</label>
-                <select 
-                  value={currentProduct.category || ''} 
-                  onChange={e => setCurrentProduct({...currentProduct, category: e.target.value})}
-                  className="w-full border-[3px] border-black p-2 font-bold uppercase"
-                >
-                  <option value="" disabled>Select Category</option>
-                  <option value="NORMAL TEES">NORMAL TEES</option>
-                  <option value="OVERSIZED TEES">OVERSIZED TEES</option>
-                  <option value="OPTIC WASH TEES">OPTIC WASH TEES</option>
-                </select>
+                <div className="flex flex-col gap-2 p-2 border-[3px] border-black bg-white">
+                  {["NORMAL TEES", "OVERSIZED TEES", "OPTIC WASH TEES"].map(cat => {
+                    const currentCats = currentProduct.category ? currentProduct.category.split(',').map(c => c.trim()) : [];
+                    const isChecked = currentCats.includes(cat);
+                    return (
+                      <label key={cat} className="flex items-center gap-2 cursor-pointer font-bold uppercase">
+                        <input 
+                          type="checkbox" 
+                          checked={isChecked}
+                          onChange={(e) => {
+                            let newCats = [...currentCats];
+                            if (e.target.checked) {
+                              newCats.push(cat);
+                            } else {
+                              newCats = newCats.filter(c => c !== cat);
+                            }
+                            setCurrentProduct({...currentProduct, category: newCats.join(', ')});
+                          }}
+                          className="w-5 h-5 border-[2px] border-black accent-black"
+                        />
+                        {cat}
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
               <div>
                 <label className="block font-black mb-1">COLOR</label>
