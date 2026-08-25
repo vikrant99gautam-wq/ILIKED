@@ -149,10 +149,6 @@ export default function CheckoutPage() {
   
   const prebookItems = cartItems.filter(item => item.preorderMessage);
   let prebookDiscount = 0;
-  if (prebookItems.length > 0) {
-     const prebookSubtotal = prebookItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-     prebookDiscount = Math.floor(prebookSubtotal * 0.05);
-  }
 
   const totalDiscount = discountAmount + prebookDiscount;
   const discountedSubtotal = Math.max(0, subtotal - totalDiscount);
