@@ -138,9 +138,12 @@ export default function AdminFinancesPage() {
               <span className="font-cartoon text-3xl text-white">₹{totalCostPerUnit.toFixed(2)}</span>
             </div>
             
-            <div className="flex justify-between items-center mb-6">
-              <span className="font-black tracking-widest text-gray-400">NET PROFIT / UNIT</span>
-              <span className="font-cartoon text-4xl text-[#19B85A]">₹{profitPerUnit.toFixed(2)}</span>
+            <div className="flex justify-between items-end mb-6">
+              <div className="flex flex-col">
+                <span className="font-black tracking-widest text-gray-400">NET PROFIT / UNIT</span>
+                <span className={`font-black text-sm uppercase ${profitPerUnit > 0 ? 'text-[#19B85A]' : 'text-[var(--color-coral-red)]'}`}>{marginPercentage}% Margin</span>
+              </div>
+              <span className={`font-cartoon text-4xl ${profitPerUnit > 0 ? 'text-[#19B85A]' : 'text-[var(--color-coral-red)]'}`}>₹{profitPerUnit.toFixed(2)}</span>
             </div>
 
             <div className="w-full bg-white/10 h-6 border-[2px] border-white/20 relative overflow-hidden">
@@ -168,9 +171,12 @@ export default function AdminFinancesPage() {
               </div>
             </div>
 
-            <div className={`p-6 border-[4px] border-black text-center ${totalProfit >= 0 ? 'bg-[#19B85A] text-black shadow-inner' : 'bg-[var(--color-coral-red)] text-white shadow-inner'}`}>
+            <div className={`p-6 border-[4px] border-black text-center flex flex-col items-center justify-center ${totalProfit >= 0 ? 'bg-[#19B85A] text-black shadow-inner' : 'bg-[var(--color-coral-red)] text-white shadow-inner'}`}>
               <p className="font-black tracking-widest mb-1 text-sm">TOTAL ESTIMATED PROFIT</p>
               <p className="font-cartoon text-6xl">₹{totalProfit.toLocaleString()}</p>
+              <div className={`font-black text-sm mt-3 px-4 py-1 border-[2px] border-black shadow-[2px_2px_0_#111] ${totalProfit >= 0 ? 'bg-black text-[#19B85A]' : 'bg-black text-[var(--color-coral-red)]'}`}>
+                {marginPercentage}% OVERALL MARGIN
+              </div>
             </div>
           </div>
           
