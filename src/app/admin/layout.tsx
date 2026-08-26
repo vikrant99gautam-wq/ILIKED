@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/invoice-generator", label: "Invoice Gen", color: "hover:bg-[#246BFD]" },
     { href: "/admin/reviews", label: "Reviews", color: "hover:bg-[#FF8C00]" },
     { href: "/admin/discounts", label: "Discounts", color: "hover:bg-[#19B85A]" },
-    { href: "/admin/finances", label: "Finances", color: "hover:bg-[#8A2BE2]" },
+    { href: "/admin/finances", label: "Calculator", color: "hover:bg-[#8A2BE2]" },
     { href: "/admin/settings", label: "Settings", color: "hover:bg-black" },
   ];
 

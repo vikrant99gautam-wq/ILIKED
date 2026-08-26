@@ -1,191 +1,186 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Order } from "@/lib/db";
-
-interface Expense {
-  id: string;
-  name: string;
-  amount: number;
-}
+import { useState, useEffect } from "react";
 
 export default function AdminFinancesPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
+  const [sellingPrice, setSellingPrice] = useState<number>(999);
+  const [expectedUnits, setExpectedUnits] = useState<number>(100);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // Per Unit Costs
+  const [blankCost, setBlankCost] = useState<number>(300);
+  const [printCost, setPrintCost] = useState<number>(100);
+  const [packagingCost, setPackagingCost] = useState<number>(50);
+  const [shippingCost, setShippingCost] = useState<number>(70);
+  const [marketingCac, setMarketingCac] = useState<number>(150);
+  const [otherCosts, setOtherCosts] = useState<number>(30);
 
-  const fetchData = async () => {
-    setIsLoading(true);
-    try {
-      const [ordersRes, settingsRes] = await Promise.all([
-        fetch("/api/orders"),
-        fetch("/api/settings")
-      ]);
-      
-      const ordersData = await ordersRes.json();
-      if (Array.isArray(ordersData)) {
-        setOrders(ordersData);
-      }
-
-      const settingsData = await settingsRes.json();
-      if (settingsData && settingsData.finances_data) {
-        try {
-          const parsed = JSON.parse(settingsData.finances_data);
-          if (Array.isArray(parsed)) {
-            setExpenses(parsed);
-          }
-        } catch (e) {
-          console.error("Failed to parse finances_data", e);
-        }
-      }
-    } catch (err) {
-      console.error("Network error:", err);
-    }
-    setIsLoading(false);
-  };
-
-  const handleSaveExpenses = async () => {
-    setIsSaving(true);
-    try {
-      await fetch('/api/settings', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ finances_data: JSON.stringify(expenses) })
-      });
-      alert("Expenses saved successfully!");
-    } catch (error) {
-      alert("Failed to save expenses.");
-    }
-    setIsSaving(false);
-  };
-
-  const addExpense = () => {
-    setExpenses([...expenses, { id: Date.now().toString(), name: "", amount: 0 }]);
-  };
-
-  const updateExpense = (id: string, field: keyof Expense, value: string | number) => {
-    setExpenses(expenses.map(e => e.id === id ? { ...e, [field]: value } : e));
-  };
-
-  const removeExpense = (id: string) => {
-    setExpenses(expenses.filter(e => e.id !== id));
-  };
-
-  // Calculate Finances
-  // Exclude cancelled orders from revenue
-  const validOrders = orders.filter(o => o.status !== 'Cancelled');
-  const totalRevenue = validOrders.reduce((sum, order) => sum + (order.total || 0), 0);
+  // Calculations
+  const pgFee = sellingPrice * 0.02; // Approx 2% Payment Gateway fee
   
-  const totalExpenses = expenses.reduce((sum, expense) => sum + (expense.amount || 0), 0);
+  const totalCostPerUnit = blankCost + printCost + packagingCost + shippingCost + marketingCac + otherCosts + pgFee;
+  const profitPerUnit = sellingPrice - totalCostPerUnit;
+  const marginPercentage = sellingPrice > 0 ? ((profitPerUnit / sellingPrice) * 100).toFixed(1) : "0.0";
   
-  const netProfit = totalRevenue - totalExpenses;
-  const profitMargin = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : "0.0";
+  const totalRevenue = sellingPrice * expectedUnits;
+  const totalProfit = profitPerUnit * expectedUnits;
+  const totalCost = totalCostPerUnit * expectedUnits;
 
   return (
     <div>
       <div className="flex justify-between items-end mb-8 border-b-[4px] border-black pb-4">
-        <h1 className="font-cartoon text-5xl text-black">FINANCES & PROFIT</h1>
+        <div>
+          <h1 className="font-cartoon text-5xl text-black leading-none drop-shadow-[3px_3px_0_var(--color-electric-blue)]">PROFIT CALCULATOR</h1>
+          <p className="font-black text-gray-500 uppercase tracking-widest text-sm mt-2">Plan your next drop's pricing</p>
+        </div>
       </div>
 
-      {isLoading ? (
-        <div className="font-cartoon text-3xl animate-pulse">CALCULATING MATH...</div>
-      ) : (
-        <div className="flex flex-col gap-8">
-          
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-black text-white p-6 border-[4px] border-black shadow-[6px_6px_0_var(--color-electric-blue)]">
-              <h3 className="font-black tracking-widest text-gray-400 mb-2">TOTAL REVENUE</h3>
-              <p className="font-cartoon text-5xl">₹{totalRevenue.toLocaleString()}</p>
-              <p className="font-bold text-sm mt-2">From {validOrders.length} valid orders</p>
-            </div>
-            
-            <div className="bg-white text-black p-6 border-[4px] border-black shadow-[6px_6px_0_var(--color-coral-red)]">
-              <h3 className="font-black tracking-widest text-gray-500 mb-2">TOTAL EXPENSES</h3>
-              <p className="font-cartoon text-5xl">₹{totalExpenses.toLocaleString()}</p>
-              <p className="font-bold text-sm mt-2">From {expenses.length} expense items</p>
-            </div>
-            
-            <div className={`p-6 border-[4px] border-black ${netProfit >= 0 ? 'bg-[#19B85A] text-black shadow-[6px_6px_0_#111]' : 'bg-[var(--color-coral-red)] text-white shadow-[6px_6px_0_#111]'}`}>
-              <h3 className="font-black tracking-widest mb-2">NET PROFIT</h3>
-              <p className="font-cartoon text-5xl">₹{netProfit.toLocaleString()}</p>
-              <p className="font-bold text-sm mt-2">Margin: {profitMargin}%</p>
-            </div>
-          </div>
-
-          {/* Expenses Manager */}
+      <div className="flex flex-col lg:flex-row gap-8">
+        
+        {/* Input Section */}
+        <div className="w-full lg:w-1/2 flex flex-col gap-6">
           <div className="bg-white border-[4px] border-black shadow-[6px_6px_0_#111] p-6 md:p-8">
-            <div className="flex justify-between items-center mb-6 border-b-[2px] border-black pb-4">
-              <h2 className="font-cartoon text-3xl">EXPENSES</h2>
-              <button 
-                onClick={addExpense}
-                className="px-4 py-2 border-[2px] border-black bg-[var(--color-electric-blue)] text-white font-black hover:bg-black transition-colors shadow-[2px_2px_0_#111]"
-              >
-                + ADD EXPENSE
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              {expenses.length === 0 ? (
-                <div className="p-8 border-[2px] border-dashed border-gray-400 text-center text-gray-500 font-bold uppercase">
-                  No expenses added yet. Click "+ ADD EXPENSE" to start calculating profit.
-                </div>
-              ) : (
-                expenses.map((expense) => (
-                  <div key={expense.id} className="flex flex-col md:flex-row gap-4 items-center bg-gray-50 p-4 border-[2px] border-black">
-                    <div className="flex-1 w-full">
-                      <label className="block font-black text-xs mb-1">EXPENSE NAME</label>
-                      <input 
-                        type="text" 
-                        value={expense.name}
-                        onChange={(e) => updateExpense(expense.id, 'name', e.target.value)}
-                        placeholder="e.g. Facebook Ads, T-shirt blanks, Packaging"
-                        className="w-full border-[2px] border-black p-2 font-bold"
-                      />
-                    </div>
-                    <div className="w-full md:w-48">
-                      <label className="block font-black text-xs mb-1">AMOUNT (₹)</label>
-                      <input 
-                        type="number" 
-                        value={expense.amount || ''}
-                        onChange={(e) => updateExpense(expense.id, 'amount', Number(e.target.value))}
-                        placeholder="0"
-                        className="w-full border-[2px] border-black p-2 font-bold text-right"
-                      />
-                    </div>
-                    <div className="w-full md:w-auto mt-auto flex justify-end">
-                      <button 
-                        onClick={() => removeExpense(expense.id)}
-                        className="px-4 py-2 border-[2px] border-black bg-[var(--color-coral-red)] text-white font-black hover:bg-black transition-colors"
-                      >
-                        REMOVE
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {expenses.length > 0 && (
-              <div className="mt-8 pt-4 border-t-[2px] border-black flex justify-end">
-                <button 
-                  onClick={handleSaveExpenses}
-                  disabled={isSaving}
-                  className="px-8 py-4 border-[4px] border-black bg-[#FFD700] text-black font-black text-xl hover:bg-black hover:text-[#FFD700] transition-colors shadow-[4px_4px_0_#111] disabled:opacity-50"
-                >
-                  {isSaving ? 'SAVING...' : 'SAVE EXPENSES'}
-                </button>
+            <h2 className="font-cartoon text-3xl mb-6 border-b-[2px] border-black pb-2">THE BASICS</h2>
+            <div className="flex flex-col md:flex-row gap-4 mb-4">
+              <div className="flex-1">
+                <label className="block font-black text-sm mb-2 text-gray-600">SELLING PRICE (₹)</label>
+                <input 
+                  type="number" 
+                  value={sellingPrice || ''}
+                  onChange={(e) => setSellingPrice(Number(e.target.value))}
+                  className="w-full border-[3px] border-black p-3 font-cartoon text-2xl text-center shadow-[4px_4px_0_var(--color-electric-blue)] focus:outline-none focus:-translate-y-1 transition-transform"
+                />
               </div>
-            )}
+              <div className="flex-1">
+                <label className="block font-black text-sm mb-2 text-gray-600">EXPECTED SALES (UNITS)</label>
+                <input 
+                  type="number" 
+                  value={expectedUnits || ''}
+                  onChange={(e) => setExpectedUnits(Number(e.target.value))}
+                  className="w-full border-[3px] border-black p-3 font-cartoon text-2xl text-center shadow-[4px_4px_0_#111] focus:outline-none focus:-translate-y-1 transition-transform"
+                />
+              </div>
+            </div>
+          </div>
 
+          <div className="bg-[#F4F4F0] border-[4px] border-black shadow-[6px_6px_0_#111] p-6 md:p-8">
+            <h2 className="font-cartoon text-3xl mb-6 border-b-[2px] border-black pb-2">COSTS PER UNIT (₹)</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block font-black text-xs mb-1">BLANK T-SHIRT / FABRIC</label>
+                <input 
+                  type="number" 
+                  value={blankCost || ''}
+                  onChange={(e) => setBlankCost(Number(e.target.value))}
+                  className="w-full border-[2px] border-black p-2 font-bold text-right"
+                />
+              </div>
+              <div>
+                <label className="block font-black text-xs mb-1">PRINTING & WASH</label>
+                <input 
+                  type="number" 
+                  value={printCost || ''}
+                  onChange={(e) => setPrintCost(Number(e.target.value))}
+                  className="w-full border-[2px] border-black p-2 font-bold text-right"
+                />
+              </div>
+              <div>
+                <label className="block font-black text-xs mb-1">PACKAGING (Boxes, Tags)</label>
+                <input 
+                  type="number" 
+                  value={packagingCost || ''}
+                  onChange={(e) => setPackagingCost(Number(e.target.value))}
+                  className="w-full border-[2px] border-black p-2 font-bold text-right"
+                />
+              </div>
+              <div>
+                <label className="block font-black text-xs mb-1">SHIPPING COST</label>
+                <input 
+                  type="number" 
+                  value={shippingCost || ''}
+                  onChange={(e) => setShippingCost(Number(e.target.value))}
+                  className="w-full border-[2px] border-black p-2 font-bold text-right"
+                />
+              </div>
+              <div>
+                <label className="block font-black text-xs mb-1 text-[var(--color-coral-red)]">FB ADS / CAC</label>
+                <input 
+                  type="number" 
+                  value={marketingCac || ''}
+                  onChange={(e) => setMarketingCac(Number(e.target.value))}
+                  className="w-full border-[2px] border-black p-2 font-bold text-right"
+                />
+              </div>
+              <div>
+                <label className="block font-black text-xs mb-1">OTHER (RTO loss, labor)</label>
+                <input 
+                  type="number" 
+                  value={otherCosts || ''}
+                  onChange={(e) => setOtherCosts(Number(e.target.value))}
+                  className="w-full border-[2px] border-black p-2 font-bold text-right"
+                />
+              </div>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t-[2px] border-dashed border-black">
+              <p className="font-black text-xs text-gray-500 uppercase text-right">
+                + ₹{pgFee.toFixed(2)} PAYMENT GATEWAY FEE (2%)
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Results Section */}
+        <div className="w-full lg:w-1/2 flex flex-col gap-6">
+          <div className="bg-black text-white border-[4px] border-black shadow-[8px_8px_0_var(--color-coral-red)] p-8">
+            <h2 className="font-cartoon text-3xl mb-6 border-b-[2px] border-white/20 pb-2 text-[var(--color-coral-red)]">PER UNIT BREAKDOWN</h2>
+            
+            <div className="flex justify-between items-center mb-4">
+              <span className="font-black tracking-widest text-gray-400">TOTAL COST / UNIT</span>
+              <span className="font-cartoon text-3xl text-white">₹{totalCostPerUnit.toFixed(2)}</span>
+            </div>
+            
+            <div className="flex justify-between items-center mb-6">
+              <span className="font-black tracking-widest text-gray-400">NET PROFIT / UNIT</span>
+              <span className="font-cartoon text-4xl text-[#19B85A]">₹{profitPerUnit.toFixed(2)}</span>
+            </div>
+
+            <div className="w-full bg-white/10 h-6 border-[2px] border-white/20 relative overflow-hidden">
+              <div 
+                className={`absolute top-0 left-0 h-full ${profitPerUnit > 0 ? 'bg-[#19B85A]' : 'bg-[var(--color-coral-red)]'}`} 
+                style={{ width: `${Math.max(0, Math.min(100, (profitPerUnit / sellingPrice) * 100))}%` }}
+              ></div>
+              <div className="absolute inset-0 flex items-center justify-center font-black text-[10px] tracking-widest mix-blend-difference text-white">
+                PROFIT MARGIN: {marginPercentage}%
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#FFD700] border-[4px] border-black shadow-[8px_8px_0_#111] p-8">
+            <h2 className="font-cartoon text-3xl mb-6 border-b-[2px] border-black/20 pb-2">THE BIG PICTURE (For {expectedUnits} units)</h2>
+            
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-white border-[2px] border-black p-4 text-center">
+                <p className="font-black text-xs text-gray-500 mb-1">TOTAL EXPENSE</p>
+                <p className="font-cartoon text-2xl">₹{totalCost.toLocaleString()}</p>
+              </div>
+              <div className="bg-white border-[2px] border-black p-4 text-center">
+                <p className="font-black text-xs text-gray-500 mb-1">TOTAL REVENUE</p>
+                <p className="font-cartoon text-2xl">₹{totalRevenue.toLocaleString()}</p>
+              </div>
+            </div>
+
+            <div className={`p-6 border-[4px] border-black text-center ${totalProfit >= 0 ? 'bg-[#19B85A] text-black shadow-inner' : 'bg-[var(--color-coral-red)] text-white shadow-inner'}`}>
+              <p className="font-black tracking-widest mb-1 text-sm">TOTAL ESTIMATED PROFIT</p>
+              <p className="font-cartoon text-6xl">₹{totalProfit.toLocaleString()}</p>
+            </div>
           </div>
           
+          <div className="p-4 border-[2px] border-dashed border-black text-center font-black text-xs uppercase text-gray-500 tracking-widest bg-white">
+            Pro Tip: Keep marketing CAC under 20% of selling price and aim for at least 30% profit margin for a healthy drop.
+          </div>
+
         </div>
-      )}
+
+      </div>
     </div>
   );
 }
