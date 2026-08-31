@@ -1,8 +1,17 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms & Conditions",
-  description: "Terms and conditions for I LIKED.",
+  title: "Terms of Service & Delivery Policy | I LIKED™",
+  description: "Read the terms of service, payment options, shipping policies, and IP protection terms for I LIKED™ streetwear.",
+  alternates: {
+    canonical: 'https://iliked.in/terms',
+  },
+  openGraph: {
+    title: "Terms of Service & Delivery Policy | I LIKED™",
+    description: "Terms and conditions for shopping at I LIKED™ streetwear.",
+    url: "https://iliked.in/terms",
+    siteName: "I LIKED™",
+  },
 };
 
 export default function TermsPage() {

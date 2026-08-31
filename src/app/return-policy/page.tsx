@@ -1,13 +1,65 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Return Policy",
-  description: "Return policy for I LIKED.",
+  title: "Return & Exchange Policy (3-Day Easy Return) | I LIKED™",
+  description: "Check the official return, exchange, and refund policy for I LIKED™. 3-day easy return window, QC guidelines, reverse pickups, and refund processing details.",
+  alternates: {
+    canonical: 'https://iliked.in/return-policy',
+  },
+  openGraph: {
+    title: "Return & Exchange Policy | I LIKED™",
+    description: "3-day return policy and exchange guidelines for I LIKED™ streetwear.",
+    url: "https://iliked.in/return-policy",
+    siteName: "I LIKED™",
+  },
 };
 
 export default function ReturnPolicyPage() {
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'What is the return window for I LIKED streetwear orders?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'You have exactly 3 days from the delivery date to request a return or exchange on I LIKED products.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What condition should the product be in for return approval?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'The clothes must be completely unworn, unwashed, with the original hangtag intact, and free from stains or odors.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How do I initiate a return or exchange?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Contact I LIKED support via WhatsApp or email with your Order ID and photos of the product with tags attached. A reverse pickup will be scheduled if your pincode is serviceable.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How are refunds processed for COD and Prepaid orders?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Once the returned item passes quality check, refunds are processed via bank transfer or store credit for COD orders, and back to original payment mode for prepaid orders.',
+        },
+      },
+    ],
+  };
+
   return (
     <main className="min-h-screen bg-[#F4F4F0] pt-[120px] pb-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <div className="max-w-[800px] mx-auto px-6 md:px-12">
         <div className="bg-white border-[4px] lg:border-[8px] border-black p-8 md:p-16 shadow-[8px_8px_0_#111] lg:shadow-[16px_16px_0_#111] relative">
           

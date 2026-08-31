@@ -5,8 +5,32 @@ import { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
 
 export const metadata: Metadata = {
+  title: "I LIKED™ | Premium Oversized Streetwear & Graphic Tees India",
+  description: "Shop the sickest oversized streetwear tees in India. Premium heavyweight cotton, drop-shoulder baggy fits, optic wash tees & limited drops. Cash on delivery & fast pan-India shipping.",
+  keywords: [
+    "oversized t-shirts India",
+    "streetwear India",
+    "graphic tees online",
+    "heavyweight cotton t-shirts",
+    "drop shoulder tees",
+    "optic wash streetwear",
+    "baggy fit t-shirts",
+    "I LIKED clothing"
+  ],
   alternates: {
     canonical: 'https://iliked.in',
+  },
+  openGraph: {
+    title: "I LIKED™ | Premium Oversized Streetwear & Graphic Tees India",
+    description: "Shop the sickest oversized streetwear tees in India. Heavyweight cotton, baggy fits & limited drops.",
+    url: "https://iliked.in",
+    siteName: "I LIKED™",
+    images: [{
+      url: "https://iliked.in/images/logo.png",
+      width: 1200,
+      height: 630,
+      alt: "I LIKED™ Streetwear"
+    }],
   },
 };
 

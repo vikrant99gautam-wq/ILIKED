@@ -3,8 +3,23 @@ import { supabase } from "@/lib/supabase";
 import { unstable_cache } from "next/cache";
 
 export const metadata: Metadata = {
-  title: "Contact Us",
-  description: "Get in touch with I LIKED.",
+  title: "Contact Support & WhatsApp Helpline | I LIKED™",
+  description: "Get in touch with I LIKED™ customer support via WhatsApp or Email. We're here for order tracking, size queries, and assistance.",
+  alternates: {
+    canonical: 'https://iliked.in/contact',
+  },
+  openGraph: {
+    title: "Contact Support & WhatsApp Helpline | I LIKED™",
+    description: "Get in touch with I LIKED™ customer support via WhatsApp or Email.",
+    url: "https://iliked.in/contact",
+    siteName: "I LIKED™",
+    images: [{
+      url: "https://iliked.in/images/logo.png",
+      width: 1200,
+      height: 630,
+      alt: "I LIKED™ Contact"
+    }],
+  },
 };
 
 const getSettings = unstable_cache(
@@ -19,8 +34,27 @@ const getSettings = unstable_cache(
 export default async function ContactPage() {
   const settings = await getSettings();
 
+  const contactSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: 'I LIKED™ Contact & Support',
+    url: 'https://iliked.in/contact',
+    description: 'Contact I LIKED streetwear team via WhatsApp or Email.',
+    mainEntity: {
+      '@type': 'Organization',
+      name: 'I LIKED',
+      telephone: settings?.whatsapp_number ? `+91${settings.whatsapp_number}` : '+91-9876543210',
+      email: settings?.contact_email || 'support@iliked.in',
+      address: settings?.store_address || 'Mumbai, India',
+    },
+  };
+
   return (
     <main className="min-h-screen bg-[#F4F4F0] pt-[120px] pb-24 flex items-center justify-center">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}
+      />
       <div className="max-w-[600px] w-full px-6 md:px-12">
         <div className="bg-white border-[4px] lg:border-[8px] border-black p-8 md:p-16 shadow-[8px_8px_0_#111] lg:shadow-[16px_16px_0_#111] relative text-center">
           
