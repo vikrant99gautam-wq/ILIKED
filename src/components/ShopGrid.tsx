@@ -3,6 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import FOMOBar from "@/components/FOMOBar";
 import { useWishlistStore } from "@/lib/store";
@@ -23,6 +24,7 @@ const COLORS = [
 ];
 
 export default function ShopGrid({ filterMode = "all" }: ShopGridProps) {
+  const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -36,7 +38,6 @@ export default function ShopGrid({ filterMode = "all" }: ShopGridProps) {
   const isLiked = (id: string) => mounted ? wishlistItems.some((i) => i.id === id) : false;
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     setMounted(true);
     fetch('/api/products')
       .then(r => r.json())
@@ -235,7 +236,7 @@ export default function ShopGrid({ filterMode = "all" }: ShopGridProps) {
                       exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.3 }}
                       key={product.id}
-                      onClick={() => window.location.href = `/shop/${product.id}`}
+                      onClick={() => router.push(`/shop/${product.id}`)}
                       className="cartoon-card relative bg-white bg-paper-noise p-4 pb-6 flex flex-col cursor-pointer group"
                     >
                       {/* Product Image Area */}

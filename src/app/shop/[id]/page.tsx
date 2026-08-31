@@ -39,6 +39,8 @@ export default function ProductDetailsPage() {
   const inPageColors = product?.color ? product.color.split(',').map((c: string) => c.trim()) : [];
   const showLocalColorSelector = inPageColors.length > 1;
 
+  const tagData = parseProductTag(product?.tag);
+
   const handleAddToCart = () => {
     if (showLocalColorSelector && !selectedLocalColor) {
       alert("Please select a color first!");
@@ -132,8 +134,6 @@ export default function ProductDetailsPage() {
         { src: imageList[0] || product.image, color: product.bgColor || "bg-[#F4F4F0]" },
         ...(product.hoverImage ? [{ src: product.hoverImage, color: "bg-[#FFD700]" }] : [])
       ];
-
-  const tagData = parseProductTag(product.tag);
 
   return (
     <main className="min-h-screen bg-[#F4F4F0] pt-[76px]">

@@ -489,7 +489,11 @@ export default function CheckoutPage() {
                 )}
               </div>
               {promoError && <p className="text-red-600 font-bold text-sm mt-2 uppercase">{promoError}</p>}
-              {appliedPromo && <p className="text-[#19B85A] font-bold text-sm mt-2 uppercase">Code {appliedPromo.code} applied! (-{appliedPromo.discount}%)</p>}
+              {appliedPromo && (
+                <p className="text-[#19B85A] font-bold text-sm mt-2 uppercase">
+                  Code {appliedPromo.code} applied! (-{appliedPromo.type === 'fixed' ? `₹${appliedPromo.value}` : `${appliedPromo.value || appliedPromo.discount}%`})
+                </p>
+              )}
             </div>
 
             {/* Totals */}

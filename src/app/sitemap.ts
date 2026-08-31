@@ -6,15 +6,14 @@ export const revalidate = 3600; // Revalidate sitemap every hour
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://iliked.in';
 
-  // Fetch all active products
+  // Fetch all products
   const { data: products } = await supabase
     .from('products')
-    .select('id, updated_at')
-    .eq('is_active', true);
+    .select('id');
 
   const productUrls = (products || []).map((product) => ({
     url: `${baseUrl}/shop/${product.id}`,
-    lastModified: product.updated_at ? new Date(product.updated_at) : new Date(),
+    lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));
@@ -39,10 +38,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/prebook`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/story`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/terms`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/return-policy`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
     ...productUrls,
   ];

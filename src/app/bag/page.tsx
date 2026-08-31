@@ -79,9 +79,9 @@ export default function BagPage() {
           <div className="w-full py-32 flex flex-col items-center justify-center border-[6px] border-dashed border-black bg-white">
             <h2 className="font-cartoon text-5xl tracking-widest text-black mb-4">It's Empty!</h2>
             <p className="font-black tracking-widest uppercase text-xl mb-8">Start shopping.</p>
-            <a href="/shop" className="cartoon-btn px-8 py-4 bg-[var(--color-electric-blue)] text-white font-cartoon text-2xl tracking-widest">
+            <Link href="/shop" className="cartoon-btn px-8 py-4 bg-[var(--color-electric-blue)] text-white font-cartoon text-2xl tracking-widest">
               BACK TO SHOP
-            </a>
+            </Link>
           </div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">

@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-
+import Link from "next/link";
 import Image from "next/image";
 
 const Polaroid = ({ color, rotate, tapeRotate, delay, label, isComingSoon, image }: { color: string, rotate: string, tapeRotate: string, delay: number, label: string, isComingSoon?: boolean, image?: string | null }) => {
@@ -108,15 +108,16 @@ export default function Moods({ image1, image2, image3 }: { image1?: string | nu
         </div>
         
         {/* View Lookbook Button */}
-        <motion.button 
-          whileHover={{ scale: 1.05, rotate: -2 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => window.location.href = '/collections'}
-          className="mt-32 cartoon-btn px-10 py-5 bg-white text-black text-xl font-black tracking-widest border-[4px] border-black shadow-[8px_8px_0_#111] group"
-        >
-          VIEW ALL COLLECTIONS 
-          <span className="inline-block ml-4 text-[var(--color-coral-red)] group-hover:translate-x-2 transition-transform">★</span>
-        </motion.button>
+        <Link href="/collections">
+          <motion.button 
+            whileHover={{ scale: 1.05, rotate: -2 }}
+            whileTap={{ scale: 0.95 }}
+            className="mt-32 cartoon-btn px-10 py-5 bg-white text-black text-xl font-black tracking-widest border-[4px] border-black shadow-[8px_8px_0_#111] group"
+          >
+            VIEW ALL COLLECTIONS 
+            <span className="inline-block ml-4 text-[var(--color-coral-red)] group-hover:translate-x-2 transition-transform">★</span>
+          </motion.button>
+        </Link>
         
       </div>
     </section>

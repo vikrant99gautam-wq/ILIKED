@@ -2,11 +2,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import FOMOBar from "@/components/FOMOBar";
 import { parseProductTag } from "@/lib/db";
 
 export default function CurrentlyLiked() {
+  const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
 
   useEffect(() => {
@@ -63,19 +66,19 @@ export default function CurrentlyLiked() {
           </span>
         </h2>
         
-        <button 
-          onClick={() => window.location.href = '/shop'}
+        <Link 
+          href="/shop"
           className="cartoon-btn group relative inline-flex items-center justify-center bg-[#FFD700] px-8 py-3 w-full max-w-[400px]"
         >
           <span className="font-cartoon text-black text-xl tracking-widest">VIEW THE COLLECTION</span>
           <span className="ml-3 font-bold group-hover:translate-x-2 transition-transform">→</span>
-        </button>
+        </Link>
       </div>
 
       {/* 4-Column Cartoon Grid */}
       <div className="w-full max-w-[1440px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 z-10 relative mx-auto">
         {products.map((product) => (
-          <div key={product.id} onClick={() => window.location.href = `/shop/${product.id}`} className="cartoon-card cursor-pointer flex flex-col relative bg-white bg-paper-noise p-4 pb-6 group">
+          <div key={product.id} onClick={() => router.push(`/shop/${product.id}`)} className="cartoon-card cursor-pointer flex flex-col relative bg-white bg-paper-noise p-4 pb-6 group">
             
             {/* Image Placeholder Box */}
             <div className={`w-full aspect-[4/5] ${product.bgColor} border-[4px] border-black shadow-inner mb-6 overflow-hidden relative`}>

@@ -6,7 +6,7 @@ type ReviewEntry = {
   rating: number;
   comment: string;
   date: string;
-  product_id: number;
+  product_id: string | number;
   product_name: string;
   raw_index: number;
 };
@@ -54,7 +54,7 @@ export default function AdminReviewsPage() {
     }
   };
 
-  const handleDeleteReview = async (productId: number, rawIndex: number) => {
+  const handleDeleteReview = async (productId: string | number, rawIndex: number) => {
     if (!confirm("Are you sure you want to delete this review?")) return;
     
     setIsLoading(true);

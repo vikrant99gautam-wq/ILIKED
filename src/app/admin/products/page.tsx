@@ -136,6 +136,7 @@ export default function AdminProductsPage() {
                 <th className="p-4">CATEGORY</th>
                 <th className="p-4">COLOR</th>
                 <th className="p-4">PRICE</th>
+                <th className="p-4">STOCK</th>
                 <th className="p-4">ACTIONS</th>
               </tr>
             </thead>
@@ -152,25 +153,28 @@ export default function AdminProductsPage() {
                     </div>
                   </td>
                   <td className="p-4 font-bold text-sm text-gray-600 uppercase">{p.category || '-'}</td>
+                  <td className="p-4 font-bold text-sm text-gray-600 uppercase">{p.color || '-'}</td>
                   <td className="p-4 font-cartoon text-xl">₹{p.price}</td>
                   <td className="p-4">
                     <span className={`font-black px-2 py-1 border-[2px] border-black ${p.stock <= 3 ? 'bg-[var(--color-coral-red)] text-white' : 'bg-[#19B85A] text-black'}`}>
                       {p.stock}
                     </span>
                   </td>
-                  <td className="p-4 flex gap-2">
-                    <button onClick={() => { 
-                      setCurrentProduct(p); 
-                      // Parse existing sizes "S:5" to {size: "S", stock: 5}
-                      const parsed = (p.sizes || []).map((s: string) => {
-                        const parts = s.split(':');
-                        return parts.length === 2 ? { size: parts[0], stock: parseInt(parts[1]) } : { size: s, stock: 1 };
-                      });
-                      setSizeInventory(parsed);
-                      setTagData(parseProductTag(p.tag));
-                      setIsEditing(true); 
-                    }} className="px-4 py-2 border-[2px] border-black bg-[#FFD700] hover:bg-black hover:text-white font-black text-sm">EDIT</button>
-                    <button onClick={() => handleDelete(p.id)} className="px-4 py-2 border-[2px] border-black bg-[var(--color-coral-red)] text-white hover:bg-black font-black text-sm">DEL</button>
+                  <td className="p-4">
+                    <div className="flex gap-2">
+                      <button onClick={() => { 
+                        setCurrentProduct(p); 
+                        // Parse existing sizes "S:5" to {size: "S", stock: 5}
+                        const parsed = (p.sizes || []).map((s: string) => {
+                          const parts = s.split(':');
+                          return parts.length === 2 ? { size: parts[0], stock: parseInt(parts[1]) } : { size: s, stock: 1 };
+                        });
+                        setSizeInventory(parsed);
+                        setTagData(parseProductTag(p.tag));
+                        setIsEditing(true); 
+                      }} className="px-4 py-2 border-[2px] border-black bg-[#FFD700] hover:bg-black hover:text-white font-black text-sm">EDIT</button>
+                      <button onClick={() => handleDelete(p.id)} className="px-4 py-2 border-[2px] border-black bg-[var(--color-coral-red)] text-white hover:bg-black font-black text-sm">DEL</button>
+                    </div>
                   </td>
                 </tr>
               ))}
